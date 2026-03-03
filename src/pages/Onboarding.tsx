@@ -34,7 +34,10 @@ export default function Onboarding() {
         role,
         country: 'MX',
       })
-      navigate(role === 'ORGANIZADOR' ? '/org' : '/atleta')
+      if (role === "ORGANIZADOR") {
+        await client.mutations.switchToOrganizer({})
+      }
+      navigate(role === "ORGANIZADOR" ? "/org" : "/atleta")
     } catch (err) {
       console.error('Error creating profile:', err)
     } finally {

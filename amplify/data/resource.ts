@@ -283,6 +283,14 @@ const schema = a.schema({
       allow.group('atletas').to(['read']),
       allow.guest().to(['read']),
     ]),
+
+  // Custom mutations
+  switchToOrganizer: a
+    .mutation()
+    .arguments({})
+    .returns(a.boolean())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function('switchToOrganizer')),
 })
 
 export type Schema = ClientSchema<typeof schema>
