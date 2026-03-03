@@ -60,6 +60,22 @@ export default function EventDetail() {
         registeredAt: new Date().toISOString(),
         waiverSigned: true,
       })
+      // Decrement spots
+      if (event.spotsRemaining && event.spotsRemaining > 0) {
+        await client.models.Event.update({
+          id: event.id,
+          spotsRemaining: event.spotsRemaining - 1,
+        })
+      }
+      if (dist) {
+        const currentSpots = dist.spotsRemaining ?? dist.spotsTotal ?? 0
+        if (currentSpots > 0) {
+          await client.models.EventDistance.update({
+            id: dist.id,
+            spotsRemaining: currentSpots - 1,
+          })
+        }
+      }
       setRegistered(true)
     } catch (err) {
       console.error('Registration failed:', err)
