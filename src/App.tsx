@@ -23,6 +23,7 @@ const SerialsBrowser = lazy(() => import('./pages/SerialsBrowser'))
 const Blog = lazy(() => import('./pages/Blog'))
 const OrgUploadResults = lazy(() => import('./pages/organizador/UploadResults'))
 const Profile = lazy(() => import('./pages/Profile'))
+const GuestRegistration = lazy(() => import('./pages/GuestRegistration'))
 const NotFound = lazy(() => import('./pages/NotFound'))
 
 function Loading() {
@@ -56,6 +57,7 @@ function AppRoutes() {
         <Route path="/seriales" element={<Layout><SerialsBrowser /></Layout>} />
         <Route path="/blog" element={<Layout><Blog /></Layout>} />
         <Route path="/evento/:slug" element={<Layout><EventDetail /></Layout>} />
+        <Route path="/evento/:slug/inscripcion" element={<GuestRegistration />} />
         <Route path="/login" element={
           <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-emerald-50/80 via-white to-white px-6 relative overflow-hidden">
             <div className="absolute -top-20 right-[10%] w-72 h-72 rounded-full bg-gradient-to-br from-emerald-200/30 to-teal-200/20 blur-3xl pointer-events-none" />

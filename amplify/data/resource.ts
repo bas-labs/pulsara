@@ -95,6 +95,7 @@ const schema = a.schema({
       // Relations
       distances: a.hasMany('EventDistance', 'eventId'),
       registrations: a.hasMany('Registration', 'eventId'),
+      guestRegistrations: a.hasMany('GuestRegistration', 'eventId'),
       results: a.hasMany('Result', 'eventId'),
     })
     .secondaryIndexes((idx) => [
@@ -168,6 +169,43 @@ const schema = a.schema({
     ])
     .authorization((allow) => [
       allow.owner(),
+      allow.group('organizadores').to(['read', 'update']),
+    ]),
+
+  // ─── GUEST REGISTRATIONS ───
+  GuestRegistration: a
+    .model({
+      firstName: a.string().required(),
+      lastName: a.string().required(),
+      email: a.string().required(),
+      phone: a.string(),
+      dateOfBirth: a.date(),
+      gender: a.enum(['M', 'F', 'NB', 'OTHER']),
+      eventId: a.id().required(),
+      event: a.belongsTo('Event', 'eventId'),
+      distanceId: a.id().required(),
+      distanceName: a.string(),
+      distanceKm: a.float(),
+      category: a.enum(['ELITE', 'GENERAL', 'FUN']),
+      bibNumber: a.integer(),
+      status: a.enum(['PENDING', 'CONFIRMED', 'CANCELLED', 'DNS', 'DNF', 'FINISHED']),
+      paymentStatus: a.enum(['PENDING', 'PAID', 'REFUNDED']),
+      stripePaymentIntentId: a.string(),
+      amountPaid: a.integer(),
+      currency: a.string().default('MXN'),
+      registeredAt: a.datetime(),
+      checkedInAt: a.datetime(),
+      waiverSigned: a.boolean().default(false),
+      teamName: a.string(),
+      promoCode: a.string(),
+      shirtSize: a.string(),
+    })
+    .secondaryIndexes((idx) => [
+      idx('eventId').sortKeys(['status']),
+      idx('email'),
+    ])
+    .authorization((allow) => [
+      allow.guest().to(['create']),
       allow.group('organizadores').to(['read', 'update']),
     ]),
 
@@ -311,6 +349,21 @@ const schema = a.schema({
     .returns(a.string())
     .authorization((allow) => [allow.authenticated()])
     .handler(a.handler.function('createCheckout')),
+
+  createGuestCheckoutSession: a
+    .mutation()
+    .arguments({
+      eventId: a.string().required(),
+      distanceId: a.string().required(),
+      distanceName: a.string().required(),
+      eventTitle: a.string().required(),
+      priceInCentavos: a.integer().required(),
+      guestEmail: a.string().required(),
+      guestRegistrationId: a.string().required(),
+    })
+    .returns(a.string())
+    .authorization((allow) => [allow.guest()])
+    .handler(a.handler.function('createGuestCheckout')),
 })
 
 export type Schema = ClientSchema<typeof schema>

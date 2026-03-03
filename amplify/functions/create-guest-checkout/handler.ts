@@ -3,25 +3,24 @@ import type { AppSyncResolverHandler } from 'aws-lambda'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-02-25.clover' })
 
-interface CreateCheckoutArgs {
+interface CreateGuestCheckoutArgs {
   eventId: string
   distanceId: string
   distanceName: string
   eventTitle: string
   priceInCentavos: number
-  userId: string
-  userEmail: string
-  registrationId: string
+  guestEmail: string
+  guestRegistrationId: string
 }
 
-export const handler: AppSyncResolverHandler<CreateCheckoutArgs, string> = async (event) => {
+export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = async (event) => {
   const args = event.arguments
-  const successUrl = `${process.env.APP_URL}/atleta/mis-eventos?payment=success`
-  const cancelUrl = `${process.env.APP_URL}/evento/${args.eventId}?payment=cancelled`
+  const successUrl = `${process.env.APP_URL}/eventos?payment=success`
+  const cancelUrl = `${process.env.APP_URL}/eventos?payment=cancelled`
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
-    customer_email: args.userEmail,
+    customer_email: args.guestEmail,
     line_items: [{
       price_data: {
         currency: 'mxn',
@@ -34,10 +33,10 @@ export const handler: AppSyncResolverHandler<CreateCheckoutArgs, string> = async
       quantity: 1,
     }],
     metadata: {
+      type: 'guest',
       eventId: args.eventId,
       distanceId: args.distanceId,
-      userId: args.userId,
-      registrationId: args.registrationId,
+      guestRegistrationId: args.guestRegistrationId,
     },
     success_url: successUrl,
     cancel_url: cancelUrl,

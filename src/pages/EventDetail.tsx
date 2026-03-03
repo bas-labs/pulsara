@@ -224,9 +224,14 @@ export default function EventDetail() {
                       {event.status === 'SOLDOUT' ? (
                         <Button disabled className="w-full">Agotado</Button>
                       ) : !user ? (
-                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/login')}>
-                          Inicia sesión para inscribirte
-                        </Button>
+                        <div className="space-y-2">
+                          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}/inscripcion`)}>
+                            Inscribirme
+                          </Button>
+                          <Button variant="outline" className="w-full" onClick={() => navigate('/login')}>
+                            Ya tengo cuenta
+                          </Button>
+                        </div>
                       ) : (
                         <Button
                           className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"

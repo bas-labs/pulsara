@@ -14,11 +14,22 @@ import { fadeUp, fadeIn, stagger, staggerFast, springHover } from '@/lib/animati
 
 const client = generateClient<Schema>()
 
+type MergedRegistration = {
+  id: string
+  type: 'registered' | 'guest'
+  name: string
+  distanceName: string | null
+  status: string | null
+  paymentStatus: string | null
+  registeredAt: string | null
+}
+
 export default function OrgEventManage() {
   const { eventId } = useParams()
   const navigate = useNavigate()
   const [event, setEvent] = useState<Schema['Event']['type'] | null>(null)
   const [registrations, setRegistrations] = useState<Schema['Registration']['type'][]>([])
+  const [guestRegistrations, setGuestRegistrations] = useState<Schema['GuestRegistration']['type'][]>([])
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -32,6 +43,8 @@ export default function OrgEventManage() {
       if (ev) {
         const { data: regs } = await client.models.Registration.listRegistrationByEventIdAndStatus({ eventId: ev.id })
         setRegistrations(regs)
+        const { data: guestRegs } = await client.models.GuestRegistration.listGuestRegistrationByEventIdAndStatus({ eventId: ev.id })
+        setGuestRegistrations(guestRegs)
       }
     } catch (err) {
       console.error(err)
@@ -39,6 +52,31 @@ export default function OrgEventManage() {
       setLoading(false)
     }
   }
+
+  const mergedRegistrations: MergedRegistration[] = [
+    ...registrations.map(r => ({
+      id: r.id,
+      type: 'registered' as const,
+      name: r.userId ?? '—',
+      distanceName: r.distanceName,
+      status: r.status,
+      paymentStatus: r.paymentStatus,
+      registeredAt: r.registeredAt,
+    })),
+    ...guestRegistrations.map(r => ({
+      id: r.id,
+      type: 'guest' as const,
+      name: `${r.firstName} ${r.lastName}`,
+      distanceName: r.distanceName,
+      status: r.status,
+      paymentStatus: r.paymentStatus,
+      registeredAt: r.registeredAt,
+    })),
+  ].sort((a, b) => {
+    if (!a.registeredAt) return 1
+    if (!b.registeredAt) return -1
+    return new Date(b.registeredAt).getTime() - new Date(a.registeredAt).getTime()
+  })
 
   async function publishEvent() {
     if (!event) return
@@ -49,7 +87,7 @@ export default function OrgEventManage() {
   if (loading) return <LoadingSpinner />
   if (!event) return <div className="flex items-center justify-center h-64 text-zinc-400">Evento no encontrado</div>
 
-  const confirmed = registrations.filter(r => r.status === 'CONFIRMED').length
+  const confirmed = mergedRegistrations.filter(r => r.status === 'CONFIRMED').length
 
   return (
     <PageWrapper>
@@ -99,8 +137,8 @@ export default function OrgEventManage() {
         </motion.div>
 
         {/* Registrations */}
-        <h2 className="text-xl font-bold text-zinc-900 mb-4">Inscripciones ({registrations.length})</h2>
-        {registrations.length === 0 ? (
+        <h2 className="text-xl font-bold text-zinc-900 mb-4">Inscripciones ({mergedRegistrations.length})</h2>
+        {mergedRegistrations.length === 0 ? (
           <EmptyState icon={CheckCircle} title="Aún no hay inscripciones" description="Las inscripciones aparecerán aquí cuando los atletas se registren." />
         ) : (
           <Card>
@@ -108,7 +146,8 @@ export default function OrgEventManage() {
               <motion.table className="w-full" initial="hidden" animate="visible" variants={staggerFast}>
                 <thead>
                   <tr className="border-b border-zinc-100">
-                    <th className="text-left text-xs text-zinc-500 font-medium p-4">ID</th>
+                    <th className="text-left text-xs text-zinc-500 font-medium p-4">Nombre</th>
+                    <th className="text-left text-xs text-zinc-500 font-medium p-4">Tipo</th>
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Distancia</th>
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Estado</th>
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Pago</th>
@@ -116,9 +155,14 @@ export default function OrgEventManage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {registrations.map((reg, i) => (
+                  {mergedRegistrations.map((reg, i) => (
                     <motion.tr key={reg.id} variants={fadeIn} custom={i} className="border-b border-zinc-50 hover:bg-zinc-50 transition-colors">
-                      <td className="p-4 text-sm font-mono text-zinc-600">{reg.id.substring(0, 8)}...</td>
+                      <td className="p-4 text-sm text-zinc-900">{reg.name}</td>
+                      <td className="p-4">
+                        <Badge variant="outline" className={`text-xs ${reg.type === 'guest' ? 'border-amber-300 text-amber-700 bg-amber-50' : 'border-emerald-300 text-emerald-700 bg-emerald-50'}`}>
+                          {reg.type === 'guest' ? 'Invitado' : 'Registrado'}
+                        </Badge>
+                      </td>
                       <td className="p-4 text-sm text-zinc-900">{reg.distanceName ?? '—'}</td>
                       <td className="p-4">
                         <Badge variant="outline" className="text-xs">

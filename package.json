@@ -7,7 +7,9 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "setup:stripe:sandbox": "./scripts/setup-stripe-webhook.sh sandbox",
+    "setup:stripe:prod": "./scripts/setup-stripe-webhook.sh production"
   },
   "dependencies": {
     "@aws-amplify/ui-react": "^6.15.1",
