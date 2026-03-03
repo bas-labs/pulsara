@@ -2,6 +2,7 @@ import { defineBackend } from '@aws-amplify/backend'
 import { auth } from './auth/resource'
 import { data } from './data/resource'
 import { storage } from './storage/resource'
+import { postConfirmation } from './functions/post-confirmation/resource'
 import { switchToOrganizer } from './functions/switch-to-organizer/resource'
 import { createCheckout } from './functions/create-checkout/resource'
 import { stripeWebhook } from './functions/stripe-webhook/resource'
@@ -11,10 +12,20 @@ const backend = defineBackend({
   auth,
   data,
   storage,
+  postConfirmation,
   switchToOrganizer,
   createCheckout,
   stripeWebhook,
 })
+
+// Grant postConfirmation Lambda permission to add users to groups
+backend.postConfirmation.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['cognito-idp:AdminAddUserToGroup'],
+    resources: [backend.auth.resources.userPool.userPoolArn],
+  })
+)
 
 // Grant switchToOrganizer Lambda permission to manage Cognito groups
 const userPoolId = backend.auth.resources.userPool.userPoolId

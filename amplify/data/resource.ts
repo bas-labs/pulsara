@@ -110,6 +110,7 @@ const schema = a.schema({
       allow.group('organizadores').to(['create', 'update']),
       allow.group('atletas').to(['read']),
       allow.guest().to(['read']),
+
     ]),
 
   // ─── EVENT DISTANCES ───
@@ -134,6 +135,7 @@ const schema = a.schema({
       allow.authenticated().to(['read']),
       allow.group('organizadores'),
       allow.guest().to(['read']),
+
     ]),
 
   // ─── REGISTRATIONS ───
@@ -227,6 +229,7 @@ const schema = a.schema({
       allow.authenticated().to(['read']),
       allow.group('organizadores'),
       allow.guest().to(['read']),
+
     ]),
 
   // ─── ORDERS ───
@@ -282,6 +285,7 @@ const schema = a.schema({
       allow.group('organizadores'),
       allow.group('atletas').to(['read']),
       allow.guest().to(['read']),
+
     ]),
 
   // Custom mutations

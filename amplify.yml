@@ -27,6 +27,9 @@ applications:
               value: 'nosniff'
     backend:
       phases:
+        preBuild:
+          commands:
+            - npm ci
         build:
           commands:
             - npx ampx pipeline-deploy --branch $AWS_BRANCH --app-id $AWS_APP_ID
