@@ -122,3 +122,188 @@
     @apply bg-background text-foreground;
     }
 }
+
+/* ─── Glow Utilities ─── */
+.glow-emerald {
+  box-shadow: 0 0 0 3px oklch(0.696 0.17 162.48 / 0.2), 0 4px 16px oklch(0.696 0.17 162.48 / 0.1);
+}
+
+/* ─── Nav Underline ─── */
+.nav-underline {
+  position: relative;
+}
+.nav-underline::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 0;
+  height: 2px;
+  background: linear-gradient(to right, #10B981, #14B8A6);
+  border-radius: 9999px;
+  transition: width 0.25s ease;
+}
+.nav-underline:hover::after,
+.nav-underline.active::after {
+  width: 100%;
+}
+
+/* ─── Hero Dynamic Gradient ─── */
+@keyframes hero-blob-1 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  25%      { transform: translate(8%, -12%) scale(1.15); }
+  50%      { transform: translate(-5%, 8%) scale(0.9); }
+  75%      { transform: translate(12%, 5%) scale(1.08); }
+}
+@keyframes hero-blob-2 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  30%      { transform: translate(-10%, 10%) scale(1.1); }
+  60%      { transform: translate(6%, -8%) scale(0.95); }
+  80%      { transform: translate(-8%, -5%) scale(1.12); }
+}
+@keyframes hero-blob-3 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  20%      { transform: translate(10%, 6%) scale(1.05); }
+  45%      { transform: translate(-12%, -10%) scale(1.15); }
+  70%      { transform: translate(5%, 12%) scale(0.92); }
+}
+@keyframes hero-blob-4 {
+  0%, 100% { transform: translate(0%, 0%) scale(1); }
+  35%      { transform: translate(-6%, -8%) scale(1.12); }
+  55%      { transform: translate(8%, 10%) scale(0.88); }
+  85%      { transform: translate(-10%, 4%) scale(1.06); }
+}
+
+.hero-blob {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.7;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* ─── Floating Sport Icons ─── */
+@keyframes float-1 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-14px) rotate(6deg); }
+}
+@keyframes float-2 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-10px) rotate(-5deg); }
+}
+@keyframes float-3 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-18px) rotate(4deg); }
+}
+@keyframes float-4 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-8px) rotate(-3deg); }
+}
+@keyframes float-5 {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50%      { transform: translateY(-12px) rotate(7deg); }
+}
+
+/* ─── Shimmer Text ─── */
+@keyframes shimmer {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+.shimmer-text {
+  background-size: 200% auto;
+  animation: shimmer 4s linear infinite;
+}
+
+/* ─── Amplify Authenticator Theme ─── */
+[data-amplify-authenticator] {
+  --amplify-colors-brand-primary-10: #ecfdf5;
+  --amplify-colors-brand-primary-20: #d1fae5;
+  --amplify-colors-brand-primary-40: #6ee7b7;
+  --amplify-colors-brand-primary-60: #34d399;
+  --amplify-colors-brand-primary-80: #059669;
+  --amplify-colors-brand-primary-90: #047857;
+  --amplify-colors-brand-primary-100: #065f46;
+  --amplify-colors-background-primary: white;
+  --amplify-colors-background-secondary: #f9fafb;
+  --amplify-colors-border-primary: #e4e4e7;
+  --amplify-colors-border-secondary: #e4e4e7;
+  --amplify-colors-border-focus: #10b981;
+  --amplify-colors-font-primary: #18181b;
+  --amplify-colors-font-secondary: #71717a;
+  --amplify-colors-font-interactive: #059669;
+  --amplify-components-authenticator-router-border-color: transparent;
+  --amplify-components-authenticator-router-box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.07), 0 2px 4px -2px rgb(0 0 0 / 0.07);
+  --amplify-components-authenticator-router-border-width: 1px;
+  --amplify-radii-small: 0.5rem;
+  --amplify-radii-medium: 0.75rem;
+  --amplify-radii-large: 1rem;
+  --amplify-radii-xl: 1.25rem;
+  --amplify-space-small: 0.75rem;
+  --amplify-space-medium: 1rem;
+  --amplify-space-large: 1.5rem;
+  --amplify-fonts-default-variable: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji";
+  --amplify-fonts-default-static: ui-sans-serif, system-ui, sans-serif;
+  font-family: ui-sans-serif, system-ui, sans-serif;
+}
+
+[data-amplify-authenticator] [data-amplify-router] {
+  border-radius: 1.25rem;
+  border-color: #e4e4e7;
+  overflow: hidden;
+}
+
+[data-amplify-authenticator] .amplify-button--primary {
+  background: linear-gradient(to right, #10b981, #14b8a6);
+  border: none;
+  border-radius: 0.75rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  transition: opacity 0.2s, transform 0.1s;
+}
+[data-amplify-authenticator] .amplify-button--primary:hover {
+  opacity: 0.9;
+}
+[data-amplify-authenticator] .amplify-button--primary:active {
+  transform: scale(0.98);
+}
+
+[data-amplify-authenticator] .amplify-button--link {
+  color: #059669;
+  font-weight: 500;
+}
+[data-amplify-authenticator] .amplify-button--link:hover {
+  color: #047857;
+  background: #ecfdf5;
+}
+
+[data-amplify-authenticator] .amplify-input,
+[data-amplify-authenticator] .amplify-field-group__outer-end .amplify-button {
+  border-radius: 0.625rem;
+  border-color: #e4e4e7;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+[data-amplify-authenticator] .amplify-input:focus {
+  border-color: #10b981;
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.15);
+}
+
+[data-amplify-authenticator] .amplify-tabs__item {
+  color: #71717a;
+  font-weight: 600;
+  border-color: transparent;
+  transition: color 0.2s;
+}
+[data-amplify-authenticator] .amplify-tabs__item--active {
+  color: #059669;
+  border-color: #10b981;
+}
+[data-amplify-authenticator] .amplify-tabs__item:hover {
+  color: #18181b;
+}
+
+[data-amplify-authenticator] .amplify-label {
+  font-weight: 500;
+  color: #3f3f46;
+  font-size: 0.875rem;
+}
