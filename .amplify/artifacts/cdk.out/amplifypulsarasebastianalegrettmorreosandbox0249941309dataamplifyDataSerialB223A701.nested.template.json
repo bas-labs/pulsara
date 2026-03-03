@@ -1,0 +1,2310 @@
+{
+ "Parameters": {
+  "DynamoDBModelTableReadIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of read IOPS the table should support."
+  },
+  "DynamoDBModelTableWriteIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of write IOPS the table should support."
+  },
+  "DynamoDBBillingMode": {
+   "Type": "String",
+   "Default": "PAY_PER_REQUEST",
+   "AllowedValues": [
+    "PAY_PER_REQUEST",
+    "PROVISIONED"
+   ],
+   "Description": "Configure @model types to create DynamoDB tables with PAY_PER_REQUEST or PROVISIONED billing modes."
+  },
+  "DynamoDBEnablePointInTimeRecovery": {
+   "Type": "String",
+   "Default": "false",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Whether to enable Point in Time Recovery on the table."
+  },
+  "DynamoDBEnableServerSideEncryption": {
+   "Type": "String",
+   "Default": "true",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Enable server side encryption powered by KMS."
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource10EE16A5Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTD8AE9BED": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref": {
+   "Type": "String"
+  }
+ },
+ "Conditions": {
+  "HasEnvironmentParameter": {
+   "Fn::Not": [
+    {
+     "Fn::Equals": [
+      "NONE",
+      "NONE"
+     ]
+    }
+   ]
+  },
+  "ShouldUsePayPerRequestBilling": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBBillingMode"
+    },
+    "PAY_PER_REQUEST"
+   ]
+  },
+  "ShouldUsePointInTimeRecovery": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBEnablePointInTimeRecovery"
+    },
+    "true"
+   ]
+  },
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "SerialTable": {
+   "Type": "Custom::AmplifyDynamoDBTable",
+   "Properties": {
+    "ServiceToken": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource10EE16A5Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTD8AE9BED"
+    },
+    "tableName": {
+     "Fn::Join": [
+      "",
+      [
+       "Serial-",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "attributeDefinitions": [
+     {
+      "attributeName": "id",
+      "attributeType": "S"
+     },
+     {
+      "attributeName": "slug",
+      "attributeType": "S"
+     }
+    ],
+    "keySchema": [
+     {
+      "attributeName": "id",
+      "keyType": "HASH"
+     }
+    ],
+    "globalSecondaryIndexes": [
+     {
+      "indexName": "serialsBySlug",
+      "keySchema": [
+       {
+        "attributeName": "slug",
+        "keyType": "HASH"
+       }
+      ],
+      "projection": {
+       "projectionType": "ALL"
+      },
+      "provisionedThroughput": {
+       "Fn::If": [
+        "ShouldUsePayPerRequestBilling",
+        {
+         "Ref": "AWS::NoValue"
+        },
+        {
+         "ReadCapacityUnits": {
+          "Ref": "DynamoDBModelTableReadIOPS"
+         },
+         "WriteCapacityUnits": {
+          "Ref": "DynamoDBModelTableWriteIOPS"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "provisionedThroughput": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      {
+       "Ref": "AWS::NoValue"
+      },
+      {
+       "ReadCapacityUnits": {
+        "Ref": "DynamoDBModelTableReadIOPS"
+       },
+       "WriteCapacityUnits": {
+        "Ref": "DynamoDBModelTableWriteIOPS"
+       }
+      }
+     ]
+    },
+    "sseSpecification": {
+     "sseEnabled": false
+    },
+    "streamSpecification": {
+     "streamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "deletionProtectionEnabled": false,
+    "allowDestructiveGraphqlSchemaUpdates": true,
+    "replaceTableUponGsiUpdate": true,
+    "pointInTimeRecoverySpecification": {
+     "Fn::If": [
+      "ShouldUsePointInTimeRecovery",
+      {
+       "PointInTimeRecoveryEnabled": true
+      },
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    },
+    "billingMode": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      "PAY_PER_REQUEST",
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SerialTable/Default/Default"
+   }
+  },
+  "SerialIAMRoleB6E31A5E": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:UpdateItem",
+          "dynamodb:ConditionCheckItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:GetRecords",
+          "dynamodb:GetShardIterator"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "Serial-",
+                {
+                 "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          },
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}/*",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "Serial-",
+                {
+                 "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": {
+     "Fn::Join": [
+      "",
+      [
+       "SerialIAMRolec6ac57-",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SerialIAMRole/Resource"
+   }
+  },
+  "SerialDataSource": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DynamoDBConfig": {
+     "AwsRegion": {
+      "Ref": "AWS::Region"
+     },
+     "TableName": {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::Split": [
+         "/",
+         {
+          "Fn::Select": [
+           5,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::GetAtt": [
+               "SerialTable",
+               "TableArn"
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "Name": "SerialTable",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "SerialIAMRoleB6E31A5E",
+      "Arn"
+     ]
+    },
+    "Type": "AMAZON_DYNAMODB"
+   },
+   "DependsOn": [
+    "SerialIAMRoleB6E31A5E"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SerialDataSource/Resource"
+   }
+  },
+  "QuerygetSerialauth0FunctionQuerygetSerialauth0FunctionAppSyncFunction4229C56F": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerygetSerialauth0Function/QuerygetSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerygetSerialpostAuth0FunctionQuerygetSerialpostAuth0FunctionAppSyncFunction73F71267": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerygetSerialpostAuth0Function/QuerygetSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryGetSerialDataResolverFnQueryGetSerialDataResolverFnAppSyncFunction9B8C8A0B": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryGetSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/08f4d557693d96c1a4efba0f9dc91330e4b19772fd5477c156468843e3d9cb5e.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4c6a2d29f01c6091bd1d9afe16e5849d456c96f17c3b215938c8067399532719.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QueryGetSerialDataResolverFn/QueryGetSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "GetSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "getSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerygetSerialauth0FunctionQuerygetSerialauth0FunctionAppSyncFunction4229C56F",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerygetSerialpostAuth0FunctionQuerygetSerialpostAuth0FunctionAppSyncFunction73F71267",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryGetSerialDataResolverFnQueryGetSerialDataResolverFnAppSyncFunction9B8C8A0B",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/queryGetSerialResolver"
+   }
+  },
+  "QuerylistSerialsauth0FunctionQuerylistSerialsauth0FunctionAppSyncFunction38DA714A": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSerialsauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerylistSerialsauth0Function/QuerylistSerialsauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerylistSerialspostAuth0FunctionQuerylistSerialspostAuth0FunctionAppSyncFunctionB5F2D311": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSerialspostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerylistSerialspostAuth0Function/QuerylistSerialspostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryListSerialsDataResolverFnQueryListSerialsDataResolverFnAppSyncFunction72FD6B9B": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryListSerialsDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9fcbe070ecd3023c5bf5b966fa9584757db9762eef123bad0820bd87591b2174.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/cc01911d0269d4080ea57505dc445dfc315ef7ad85d3d9d4ea1357858bff451d.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QueryListSerialsDataResolverFn/QueryListSerialsDataResolverFn.AppSyncFunction"
+   }
+  },
+  "ListSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "listSerials",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerylistSerialsauth0FunctionQuerylistSerialsauth0FunctionAppSyncFunction38DA714A",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerylistSerialspostAuth0FunctionQuerylistSerialspostAuth0FunctionAppSyncFunctionB5F2D311",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryListSerialsDataResolverFnQueryListSerialsDataResolverFnAppSyncFunction72FD6B9B",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listSerials\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/queryListSerialsResolver"
+   }
+  },
+  "MutationcreateSerialinit0FunctionMutationcreateSerialinit0FunctionAppSyncFunction1DDBA2BA": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSerialinit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a183ddccbd956316c38ef97177b8f088ef0826f62023323f5ae6053d348ccffc.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationcreateSerialinit0Function/MutationcreateSerialinit0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateSerialauth0FunctionMutationcreateSerialauth0FunctionAppSyncFunction99340C64": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/41cc3fe33726ffce3750534f88b3cbf72218e833c149c04351ad48b28a8d33f0.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationcreateSerialauth0Function/MutationcreateSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateSerialpostAuth0FunctionMutationcreateSerialpostAuth0FunctionAppSyncFunctionBA9628F2": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationcreateSerialpostAuth0Function/MutationcreateSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationCreateSerialDataResolverFnMutationCreateSerialDataResolverFnAppSyncFunction1B92ED36": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationCreateSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3419bc120fd75585644f563b9684664a0329870ae275bbf8eea00a60475adf52.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationCreateSerialDataResolverFn/MutationCreateSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "CreateSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "createSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSerialinit0FunctionMutationcreateSerialinit0FunctionAppSyncFunction1DDBA2BA",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSerialauth0FunctionMutationcreateSerialauth0FunctionAppSyncFunction99340C64",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateSerialpostAuth0FunctionMutationcreateSerialpostAuth0FunctionAppSyncFunctionBA9628F2",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationCreateSerialDataResolverFnMutationCreateSerialDataResolverFnAppSyncFunction1B92ED36",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/mutationCreateSerialResolver"
+   }
+  },
+  "MutationupdateSerialinit0FunctionMutationupdateSerialinit0FunctionAppSyncFunctionC622D425": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSerialinit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/06db846fd14e6fc371f22b12b5545ba8e2dbfeda85d8c8d586c71c282166657b.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationupdateSerialinit0Function/MutationupdateSerialinit0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateSerialauth0FunctionMutationupdateSerialauth0FunctionAppSyncFunction4E6DA2B2": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/44beb489a171c3dec04bedb9aa3d4370e19a97426532192d5cf9fdec1b284cc9.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationupdateSerialauth0Function/MutationupdateSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateSerialpostAuth0FunctionMutationupdateSerialpostAuth0FunctionAppSyncFunctionA196D644": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationupdateSerialpostAuth0Function/MutationupdateSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationUpdateSerialDataResolverFnMutationUpdateSerialDataResolverFnAppSyncFunction9E2DF635": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationUpdateSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/474bf0776ec2164a13191d1a0a9e057154931e4918fea5086f49850d02a5371b.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationUpdateSerialDataResolverFn/MutationUpdateSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "UpdateSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "updateSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSerialinit0FunctionMutationupdateSerialinit0FunctionAppSyncFunctionC622D425",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSerialauth0FunctionMutationupdateSerialauth0FunctionAppSyncFunction4E6DA2B2",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateSerialpostAuth0FunctionMutationupdateSerialpostAuth0FunctionAppSyncFunctionA196D644",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationUpdateSerialDataResolverFnMutationUpdateSerialDataResolverFnAppSyncFunction9E2DF635",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/mutationUpdateSerialResolver"
+   }
+  },
+  "MutationdeleteSerialauth0FunctionMutationdeleteSerialauth0FunctionAppSyncFunctionD5E286B8": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3735f2b375241bf7e58fe66a6cd60e5ff2c80ae6b39edb8c495bb496cfbcf2c7.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationdeleteSerialauth0Function/MutationdeleteSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationdeleteSerialpostAuth0FunctionMutationdeleteSerialpostAuth0FunctionAppSyncFunctionCFCBAE7B": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationdeleteSerialpostAuth0Function/MutationdeleteSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationDeleteSerialDataResolverFnMutationDeleteSerialDataResolverFnAppSyncFunctionE1E679AA": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationDeleteSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4f7907d1209a2c9953a0c053df402c634e359546d70c7cc5c2e8e21ea734880f.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/MutationDeleteSerialDataResolverFn/MutationDeleteSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "DeleteSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "deleteSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteSerialauth0FunctionMutationdeleteSerialauth0FunctionAppSyncFunctionD5E286B8",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteSerialpostAuth0FunctionMutationdeleteSerialpostAuth0FunctionAppSyncFunctionCFCBAE7B",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationDeleteSerialDataResolverFnMutationDeleteSerialDataResolverFnAppSyncFunctionE1E679AA",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/mutationDeleteSerialResolver"
+   }
+  },
+  "SubscriptiononCreateSerialauth0FunctionSubscriptiononCreateSerialauth0FunctionAppSyncFunction14F20480": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononCreateSerialauth0Function/SubscriptiononCreateSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateSerialpostAuth0FunctionSubscriptiononCreateSerialpostAuth0FunctionAppSyncFunction7B8BE6AA": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononCreateSerialpostAuth0Function/SubscriptiononCreateSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnCreateSerialDataResolverFnSubscriptionOnCreateSerialDataResolverFnAppSyncFunction288C0221": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnCreateSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptionOnCreateSerialDataResolverFn/SubscriptionOnCreateSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onCreateSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateSerialauth0FunctionSubscriptiononCreateSerialauth0FunctionAppSyncFunction14F20480",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateSerialpostAuth0FunctionSubscriptiononCreateSerialpostAuth0FunctionAppSyncFunction7B8BE6AA",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnCreateSerialDataResolverFnSubscriptionOnCreateSerialDataResolverFnAppSyncFunction288C0221",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/subscriptionOnCreateSerialResolver"
+   }
+  },
+  "SubscriptiononUpdateSerialauth0FunctionSubscriptiononUpdateSerialauth0FunctionAppSyncFunction88C109C9": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononUpdateSerialauth0Function/SubscriptiononUpdateSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateSerialpostAuth0FunctionSubscriptiononUpdateSerialpostAuth0FunctionAppSyncFunction7E379441": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononUpdateSerialpostAuth0Function/SubscriptiononUpdateSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnUpdateSerialDataResolverFnSubscriptionOnUpdateSerialDataResolverFnAppSyncFunctionEABF1407": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnUpdateSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptionOnUpdateSerialDataResolverFn/SubscriptionOnUpdateSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onUpdateSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateSerialauth0FunctionSubscriptiononUpdateSerialauth0FunctionAppSyncFunction88C109C9",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateSerialpostAuth0FunctionSubscriptiononUpdateSerialpostAuth0FunctionAppSyncFunction7E379441",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnUpdateSerialDataResolverFnSubscriptionOnUpdateSerialDataResolverFnAppSyncFunctionEABF1407",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/subscriptionOnUpdateSerialResolver"
+   }
+  },
+  "SubscriptiononDeleteSerialauth0FunctionSubscriptiononDeleteSerialauth0FunctionAppSyncFunctionF5709DDF": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteSerialauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononDeleteSerialauth0Function/SubscriptiononDeleteSerialauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteSerialpostAuth0FunctionSubscriptiononDeleteSerialpostAuth0FunctionAppSyncFunction6E80A09F": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteSerialpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptiononDeleteSerialpostAuth0Function/SubscriptiononDeleteSerialpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnDeleteSerialDataResolverFnSubscriptionOnDeleteSerialDataResolverFnAppSyncFunction14ECF203": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnDeleteSerialDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/SubscriptionOnDeleteSerialDataResolverFn/SubscriptionOnDeleteSerialDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteSerialResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onDeleteSerial",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteSerialauth0FunctionSubscriptiononDeleteSerialauth0FunctionAppSyncFunctionF5709DDF",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteSerialpostAuth0FunctionSubscriptiononDeleteSerialpostAuth0FunctionAppSyncFunction6E80A09F",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnDeleteSerialDataResolverFnSubscriptionOnDeleteSerialDataResolverFnAppSyncFunction14ECF203",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteSerial\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/subscriptionOnDeleteSerialResolver"
+   }
+  },
+  "QuerylistSerialBySlugauth0FunctionQuerylistSerialBySlugauth0FunctionAppSyncFunction4B63125D": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSerialBySlugauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerylistSerialBySlugauth0Function/QuerylistSerialBySlugauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerylistSerialBySlugpostAuth0FunctionQuerylistSerialBySlugpostAuth0FunctionAppSyncFunction1B22DE67": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistSerialBySlugpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QuerylistSerialBySlugpostAuth0Function/QuerylistSerialBySlugpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryListSerialBySlugDataResolverFnQueryListSerialBySlugDataResolverFnAppSyncFunction7DCE19F2": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SerialDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryListSerialBySlugDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/aece5d8fe6f5632cd88bfa29642a947d121be7213517ce87666d13b8026481be.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/098c998f215c333f57348ca8912f66057ae6b574fe34013033dc54362ee2372c.vtl"
+    }
+   },
+   "DependsOn": [
+    "SerialDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/QueryListSerialBySlugDataResolverFn/QueryListSerialBySlugDataResolverFn.AppSyncFunction"
+   }
+  },
+  "QuerylistSerialBySlugResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "listSerialBySlug",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerylistSerialBySlugauth0FunctionQuerylistSerialBySlugauth0FunctionAppSyncFunction4B63125D",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerylistSerialBySlugpostAuth0FunctionQuerylistSerialBySlugpostAuth0FunctionAppSyncFunction1B22DE67",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryListSerialBySlugDataResolverFnQueryListSerialBySlugDataResolverFnAppSyncFunction7DCE19F2",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listSerialBySlug\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "SerialTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/queryListSerialBySlugResolver"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW6DMAyGn6X34LV0O+y4gnbcJti9MompUsBBsdOqQrz7BJ067fT7kz/Zfw758w62G7xKZl2X9b6B6YNEydWKtjNFy18YcSCluEAR2Hn1gU1FElK0ZIokGoY/bPkx41WOk7sxDsE18I1NTwcUMh4HmKrQ3+3Q02xwHOXGFqZy1cumRMX6cfI/vSe2S4kicOtPKeLa6Pdzf6E4G9kfUYRU4G0JI3s4JNuRLgXmxf1MOiY167pWPHk+zYaDIzjL0yXfwu4VXjZn8T6LidUPBNU9fwAd2GhwNgEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/Serial/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "GetAttSerialTableStreamArn": {
+   "Description": "Your DynamoDB table StreamArn.",
+   "Value": {
+    "Fn::GetAtt": [
+     "SerialTable",
+     "TableStreamArn"
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "GetAtt:SerialTable:StreamArn"
+      ]
+     ]
+    }
+   }
+  },
+  "GetAttSerialTableName": {
+   "Description": "Your DynamoDB table name.",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "Serial-",
+      {
+       "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+      },
+      "-NONE"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "GetAtt:SerialTable:Name"
+      ]
+     ]
+    }
+   }
+  },
+  "amplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataSerialSerialDataSourceE0E92B4BName": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SerialDataSource",
+     "Name"
+    ]
+   }
+  },
+  "amplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataSerialSerialTable26892867TableArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "SerialTable",
+     "TableArn"
+    ]
+   }
+  }
+ }
+}

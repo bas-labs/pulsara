@@ -1,0 +1,2366 @@
+{
+ "Parameters": {
+  "DynamoDBModelTableReadIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of read IOPS the table should support."
+  },
+  "DynamoDBModelTableWriteIOPS": {
+   "Type": "Number",
+   "Default": 5,
+   "Description": "The number of write IOPS the table should support."
+  },
+  "DynamoDBBillingMode": {
+   "Type": "String",
+   "Default": "PAY_PER_REQUEST",
+   "AllowedValues": [
+    "PAY_PER_REQUEST",
+    "PROVISIONED"
+   ],
+   "Description": "Configure @model types to create DynamoDB tables with PAY_PER_REQUEST or PROVISIONED billing modes."
+  },
+  "DynamoDBEnablePointInTimeRecovery": {
+   "Type": "String",
+   "Default": "false",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Whether to enable Point in Time Recovery on the table."
+  },
+  "DynamoDBEnableServerSideEncryption": {
+   "Type": "String",
+   "Default": "true",
+   "AllowedValues": [
+    "true",
+    "false"
+   ],
+   "Description": "Enable server side encryption powered by KMS."
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource10EE16A5Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTD8AE9BED": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref": {
+   "Type": "String"
+  }
+ },
+ "Conditions": {
+  "HasEnvironmentParameter": {
+   "Fn::Not": [
+    {
+     "Fn::Equals": [
+      "NONE",
+      "NONE"
+     ]
+    }
+   ]
+  },
+  "ShouldUsePayPerRequestBilling": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBBillingMode"
+    },
+    "PAY_PER_REQUEST"
+   ]
+  },
+  "ShouldUsePointInTimeRecovery": {
+   "Fn::Equals": [
+    {
+     "Ref": "DynamoDBEnablePointInTimeRecovery"
+    },
+    "true"
+   ]
+  },
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "EventDistanceTable": {
+   "Type": "Custom::AmplifyDynamoDBTable",
+   "Properties": {
+    "ServiceToken": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTableManagerNestedStackAmplifyTableManagerNestedStackResource10EE16A5Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataAmplifyTD8AE9BED"
+    },
+    "tableName": {
+     "Fn::Join": [
+      "",
+      [
+       "EventDistance-",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "attributeDefinitions": [
+     {
+      "attributeName": "id",
+      "attributeType": "S"
+     },
+     {
+      "attributeName": "eventId",
+      "attributeType": "S"
+     }
+    ],
+    "keySchema": [
+     {
+      "attributeName": "id",
+      "keyType": "HASH"
+     }
+    ],
+    "globalSecondaryIndexes": [
+     {
+      "indexName": "eventDistancesByEventId",
+      "keySchema": [
+       {
+        "attributeName": "eventId",
+        "keyType": "HASH"
+       }
+      ],
+      "projection": {
+       "projectionType": "ALL"
+      },
+      "provisionedThroughput": {
+       "Fn::If": [
+        "ShouldUsePayPerRequestBilling",
+        {
+         "Ref": "AWS::NoValue"
+        },
+        {
+         "ReadCapacityUnits": {
+          "Ref": "DynamoDBModelTableReadIOPS"
+         },
+         "WriteCapacityUnits": {
+          "Ref": "DynamoDBModelTableWriteIOPS"
+         }
+        }
+       ]
+      }
+     },
+     {
+      "indexName": "gsi-Event.distances",
+      "keySchema": [
+       {
+        "attributeName": "eventId",
+        "keyType": "HASH"
+       }
+      ],
+      "projection": {
+       "projectionType": "ALL"
+      },
+      "provisionedThroughput": {
+       "Fn::If": [
+        "ShouldUsePayPerRequestBilling",
+        {
+         "Ref": "AWS::NoValue"
+        },
+        {
+         "ReadCapacityUnits": {
+          "Ref": "DynamoDBModelTableReadIOPS"
+         },
+         "WriteCapacityUnits": {
+          "Ref": "DynamoDBModelTableWriteIOPS"
+         }
+        }
+       ]
+      }
+     }
+    ],
+    "provisionedThroughput": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      {
+       "Ref": "AWS::NoValue"
+      },
+      {
+       "ReadCapacityUnits": {
+        "Ref": "DynamoDBModelTableReadIOPS"
+       },
+       "WriteCapacityUnits": {
+        "Ref": "DynamoDBModelTableWriteIOPS"
+       }
+      }
+     ]
+    },
+    "sseSpecification": {
+     "sseEnabled": false
+    },
+    "streamSpecification": {
+     "streamViewType": "NEW_AND_OLD_IMAGES"
+    },
+    "deletionProtectionEnabled": false,
+    "allowDestructiveGraphqlSchemaUpdates": true,
+    "replaceTableUponGsiUpdate": true,
+    "pointInTimeRecoverySpecification": {
+     "Fn::If": [
+      "ShouldUsePointInTimeRecovery",
+      {
+       "PointInTimeRecoveryEnabled": true
+      },
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    },
+    "billingMode": {
+     "Fn::If": [
+      "ShouldUsePayPerRequestBilling",
+      "PAY_PER_REQUEST",
+      {
+       "Ref": "AWS::NoValue"
+      }
+     ]
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/EventDistanceTable/Default/Default"
+   }
+  },
+  "EventDistanceIAMRole474AE015": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Policies": [
+     {
+      "PolicyDocument": {
+       "Statement": [
+        {
+         "Action": [
+          "dynamodb:BatchGetItem",
+          "dynamodb:BatchWriteItem",
+          "dynamodb:PutItem",
+          "dynamodb:DeleteItem",
+          "dynamodb:GetItem",
+          "dynamodb:Scan",
+          "dynamodb:Query",
+          "dynamodb:UpdateItem",
+          "dynamodb:ConditionCheckItem",
+          "dynamodb:DescribeTable",
+          "dynamodb:GetRecords",
+          "dynamodb:GetShardIterator"
+         ],
+         "Effect": "Allow",
+         "Resource": [
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "EventDistance-",
+                {
+                 "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          },
+          {
+           "Fn::Sub": [
+            "arn:${AWS::Partition}:dynamodb:${AWS::Region}:${AWS::AccountId}:table/${tablename}/*",
+            {
+             "tablename": {
+              "Fn::Join": [
+               "",
+               [
+                "EventDistance-",
+                {
+                 "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+                },
+                "-NONE"
+               ]
+              ]
+             }
+            }
+           ]
+          }
+         ]
+        }
+       ],
+       "Version": "2012-10-17"
+      },
+      "PolicyName": "DynamoDBAccess"
+     }
+    ],
+    "RoleName": {
+     "Fn::Join": [
+      "",
+      [
+       "EventDistanceIAMRoledc4ae9-",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "-NONE"
+      ]
+     ]
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/EventDistanceIAMRole/Resource"
+   }
+  },
+  "EventDistanceDataSource": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DynamoDBConfig": {
+     "AwsRegion": {
+      "Ref": "AWS::Region"
+     },
+     "TableName": {
+      "Fn::Select": [
+       1,
+       {
+        "Fn::Split": [
+         "/",
+         {
+          "Fn::Select": [
+           5,
+           {
+            "Fn::Split": [
+             ":",
+             {
+              "Fn::GetAtt": [
+               "EventDistanceTable",
+               "TableArn"
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    },
+    "Name": "EventDistanceTable",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "EventDistanceIAMRole474AE015",
+      "Arn"
+     ]
+    },
+    "Type": "AMAZON_DYNAMODB"
+   },
+   "DependsOn": [
+    "EventDistanceIAMRole474AE015"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/EventDistanceDataSource/Resource"
+   }
+  },
+  "QuerygetEventDistanceauth0FunctionQuerygetEventDistanceauth0FunctionAppSyncFunction83888DAB": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerygetEventDistanceauth0Function/QuerygetEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerygetEventDistancepostAuth0FunctionQuerygetEventDistancepostAuth0FunctionAppSyncFunction51A2C3CC": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerygetEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerygetEventDistancepostAuth0Function/QuerygetEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryGetEventDistanceDataResolverFnQueryGetEventDistanceDataResolverFnAppSyncFunction17C97100": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryGetEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/08f4d557693d96c1a4efba0f9dc91330e4b19772fd5477c156468843e3d9cb5e.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4c6a2d29f01c6091bd1d9afe16e5849d456c96f17c3b215938c8067399532719.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QueryGetEventDistanceDataResolverFn/QueryGetEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "GetEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "getEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerygetEventDistanceauth0FunctionQuerygetEventDistanceauth0FunctionAppSyncFunction83888DAB",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerygetEventDistancepostAuth0FunctionQuerygetEventDistancepostAuth0FunctionAppSyncFunction51A2C3CC",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryGetEventDistanceDataResolverFnQueryGetEventDistanceDataResolverFnAppSyncFunction17C97100",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"getEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/queryGetEventDistanceResolver"
+   }
+  },
+  "QuerylistEventDistancesauth0FunctionQuerylistEventDistancesauth0FunctionAppSyncFunctionFDA7877C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistEventDistancesauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerylistEventDistancesauth0Function/QuerylistEventDistancesauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerylistEventDistancespostAuth0FunctionQuerylistEventDistancespostAuth0FunctionAppSyncFunction398FE555": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistEventDistancespostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerylistEventDistancespostAuth0Function/QuerylistEventDistancespostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryListEventDistancesDataResolverFnQueryListEventDistancesDataResolverFnAppSyncFunction2404438B": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryListEventDistancesDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/9fcbe070ecd3023c5bf5b966fa9584757db9762eef123bad0820bd87591b2174.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/cc01911d0269d4080ea57505dc445dfc315ef7ad85d3d9d4ea1357858bff451d.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QueryListEventDistancesDataResolverFn/QueryListEventDistancesDataResolverFn.AppSyncFunction"
+   }
+  },
+  "ListEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "listEventDistances",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerylistEventDistancesauth0FunctionQuerylistEventDistancesauth0FunctionAppSyncFunctionFDA7877C",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerylistEventDistancespostAuth0FunctionQuerylistEventDistancespostAuth0FunctionAppSyncFunction398FE555",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryListEventDistancesDataResolverFnQueryListEventDistancesDataResolverFnAppSyncFunction2404438B",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listEventDistances\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/queryListEventDistancesResolver"
+   }
+  },
+  "MutationcreateEventDistanceinit0FunctionMutationcreateEventDistanceinit0FunctionAppSyncFunctionC6D4AE18": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateEventDistanceinit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a183ddccbd956316c38ef97177b8f088ef0826f62023323f5ae6053d348ccffc.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationcreateEventDistanceinit0Function/MutationcreateEventDistanceinit0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateEventDistanceinit1FunctionMutationcreateEventDistanceinit1FunctionAppSyncFunction0187B6CF": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateEventDistanceinit1Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fce56714d143b27171170e1647ac68010a60f6b09beb3f6d1662c377156ea747.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationcreateEventDistanceinit1Function/MutationcreateEventDistanceinit1Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateEventDistanceauth0FunctionMutationcreateEventDistanceauth0FunctionAppSyncFunction94A39E87": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/5642648523208a2dde09627d555536f9e49e0f014d4cdb80a8e70c5c1a855f02.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationcreateEventDistanceauth0Function/MutationcreateEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationcreateEventDistancepostAuth0FunctionMutationcreateEventDistancepostAuth0FunctionAppSyncFunctionE9EE9AB0": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationcreateEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationcreateEventDistancepostAuth0Function/MutationcreateEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationCreateEventDistanceDataResolverFnMutationCreateEventDistanceDataResolverFnAppSyncFunction9D04B56E": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationCreateEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/6380058a04134b59c449cca8d05dcb6836c0b436ad5ba96251a86b770f4268d3.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationCreateEventDistanceDataResolverFn/MutationCreateEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "CreateEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "createEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationcreateEventDistanceinit0FunctionMutationcreateEventDistanceinit0FunctionAppSyncFunctionC6D4AE18",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateEventDistanceinit1FunctionMutationcreateEventDistanceinit1FunctionAppSyncFunction0187B6CF",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateEventDistanceauth0FunctionMutationcreateEventDistanceauth0FunctionAppSyncFunction94A39E87",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationcreateEventDistancepostAuth0FunctionMutationcreateEventDistancepostAuth0FunctionAppSyncFunctionE9EE9AB0",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationCreateEventDistanceDataResolverFnMutationCreateEventDistanceDataResolverFnAppSyncFunction9D04B56E",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/mutationCreateEventDistanceResolver"
+   }
+  },
+  "MutationupdateEventDistanceinit0FunctionMutationupdateEventDistanceinit0FunctionAppSyncFunctionA86C1411": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateEventDistanceinit0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/06db846fd14e6fc371f22b12b5545ba8e2dbfeda85d8c8d586c71c282166657b.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationupdateEventDistanceinit0Function/MutationupdateEventDistanceinit0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateEventDistanceauth0FunctionMutationupdateEventDistanceauth0FunctionAppSyncFunction36922CF3": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/ef8e42115660323f136afbdfc5130fc9a0d77d680438aef1ae6f646785e930da.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationupdateEventDistanceauth0Function/MutationupdateEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationupdateEventDistancepostAuth0FunctionMutationupdateEventDistancepostAuth0FunctionAppSyncFunctionBC56271E": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationupdateEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationupdateEventDistancepostAuth0Function/MutationupdateEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationUpdateEventDistanceDataResolverFnMutationUpdateEventDistanceDataResolverFnAppSyncFunctionE7C59521": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationUpdateEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/474bf0776ec2164a13191d1a0a9e057154931e4918fea5086f49850d02a5371b.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationUpdateEventDistanceDataResolverFn/MutationUpdateEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "UpdateEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "updateEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationupdateEventDistanceinit0FunctionMutationupdateEventDistanceinit0FunctionAppSyncFunctionA86C1411",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateEventDistanceauth0FunctionMutationupdateEventDistanceauth0FunctionAppSyncFunction36922CF3",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationupdateEventDistancepostAuth0FunctionMutationupdateEventDistancepostAuth0FunctionAppSyncFunctionBC56271E",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationUpdateEventDistanceDataResolverFnMutationUpdateEventDistanceDataResolverFnAppSyncFunctionE7C59521",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"updateEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/mutationUpdateEventDistanceResolver"
+   }
+  },
+  "MutationdeleteEventDistanceauth0FunctionMutationdeleteEventDistanceauth0FunctionAppSyncFunctionE5B388F5": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/1f5fed297da9c32ae3af922bf3a38ccf23b956078887d16891ec06c20c64722c.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3735f2b375241bf7e58fe66a6cd60e5ff2c80ae6b39edb8c495bb496cfbcf2c7.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationdeleteEventDistanceauth0Function/MutationdeleteEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "MutationdeleteEventDistancepostAuth0FunctionMutationdeleteEventDistancepostAuth0FunctionAppSyncFunctionDD43C663": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationdeleteEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationdeleteEventDistancepostAuth0Function/MutationdeleteEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "MutationDeleteEventDistanceDataResolverFnMutationDeleteEventDistanceDataResolverFnAppSyncFunctionEE207AAF": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationDeleteEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/4f7907d1209a2c9953a0c053df402c634e359546d70c7cc5c2e8e21ea734880f.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/f4a52b72209a9dfa197b5e7367a5c378c5bb86de6e29ddd9e48b49a3fe54b249.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/MutationDeleteEventDistanceDataResolverFn/MutationDeleteEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "DeleteEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "deleteEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteEventDistanceauth0FunctionMutationdeleteEventDistanceauth0FunctionAppSyncFunctionE5B388F5",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationdeleteEventDistancepostAuth0FunctionMutationdeleteEventDistancepostAuth0FunctionAppSyncFunctionDD43C663",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "MutationDeleteEventDistanceDataResolverFnMutationDeleteEventDistanceDataResolverFnAppSyncFunctionEE207AAF",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"deleteEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/mutationDeleteEventDistanceResolver"
+   }
+  },
+  "SubscriptiononCreateEventDistanceauth0FunctionSubscriptiononCreateEventDistanceauth0FunctionAppSyncFunctionC0D0521C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononCreateEventDistanceauth0Function/SubscriptiononCreateEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateEventDistancepostAuth0FunctionSubscriptiononCreateEventDistancepostAuth0FunctionAppSyncFunction518D4A5F": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononCreateEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononCreateEventDistancepostAuth0Function/SubscriptiononCreateEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnCreateEventDistanceDataResolverFnSubscriptionOnCreateEventDistanceDataResolverFnAppSyncFunction6447A47C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnCreateEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptionOnCreateEventDistanceDataResolverFn/SubscriptionOnCreateEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononCreateEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onCreateEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateEventDistanceauth0FunctionSubscriptiononCreateEventDistanceauth0FunctionAppSyncFunctionC0D0521C",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononCreateEventDistancepostAuth0FunctionSubscriptiononCreateEventDistancepostAuth0FunctionAppSyncFunction518D4A5F",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnCreateEventDistanceDataResolverFnSubscriptionOnCreateEventDistanceDataResolverFnAppSyncFunction6447A47C",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onCreateEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/subscriptionOnCreateEventDistanceResolver"
+   }
+  },
+  "SubscriptiononUpdateEventDistanceauth0FunctionSubscriptiononUpdateEventDistanceauth0FunctionAppSyncFunctionEFF07F4C": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononUpdateEventDistanceauth0Function/SubscriptiononUpdateEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateEventDistancepostAuth0FunctionSubscriptiononUpdateEventDistancepostAuth0FunctionAppSyncFunction87FB5ECE": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononUpdateEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononUpdateEventDistancepostAuth0Function/SubscriptiononUpdateEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnUpdateEventDistanceDataResolverFnSubscriptionOnUpdateEventDistanceDataResolverFnAppSyncFunction59F629C6": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnUpdateEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptionOnUpdateEventDistanceDataResolverFn/SubscriptionOnUpdateEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononUpdateEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onUpdateEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateEventDistanceauth0FunctionSubscriptiononUpdateEventDistanceauth0FunctionAppSyncFunctionEFF07F4C",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononUpdateEventDistancepostAuth0FunctionSubscriptiononUpdateEventDistancepostAuth0FunctionAppSyncFunction87FB5ECE",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnUpdateEventDistanceDataResolverFnSubscriptionOnUpdateEventDistanceDataResolverFnAppSyncFunction59F629C6",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onUpdateEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/subscriptionOnUpdateEventDistanceResolver"
+   }
+  },
+  "SubscriptiononDeleteEventDistanceauth0FunctionSubscriptiononDeleteEventDistanceauth0FunctionAppSyncFunction741799C6": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteEventDistanceauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/654103e0fb74df3dde0c5e45180cad6a3699aad6cd5be8a0350aacc28448b34d.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononDeleteEventDistanceauth0Function/SubscriptiononDeleteEventDistanceauth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteEventDistancepostAuth0FunctionSubscriptiononDeleteEventDistancepostAuth0FunctionAppSyncFunction9B488250": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptiononDeleteEventDistancepostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptiononDeleteEventDistancepostAuth0Function/SubscriptiononDeleteEventDistancepostAuth0Function.AppSyncFunction"
+   }
+  },
+  "SubscriptionOnDeleteEventDistanceDataResolverFnSubscriptionOnDeleteEventDistanceDataResolverFnAppSyncFunction87543AC1": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "SubscriptionOnDeleteEventDistanceDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/fe3c43ada4b9d681a5e2312663ef7a73386424d73b73e51f8e2e9d4b50f7c502.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/e0cff47fb007f0bbf2a4e43ca256d6aa7ec109821769fd79fa7c5e83f0e7f9fc.vtl"
+    }
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/SubscriptionOnDeleteEventDistanceDataResolverFn/SubscriptionOnDeleteEventDistanceDataResolverFn.AppSyncFunction"
+   }
+  },
+  "SubscriptiononDeleteEventDistanceResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "onDeleteEventDistance",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteEventDistanceauth0FunctionSubscriptiononDeleteEventDistanceauth0FunctionAppSyncFunction741799C6",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptiononDeleteEventDistancepostAuth0FunctionSubscriptiononDeleteEventDistancepostAuth0FunctionAppSyncFunction9B488250",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "SubscriptionOnDeleteEventDistanceDataResolverFnSubscriptionOnDeleteEventDistanceDataResolverFnAppSyncFunction87543AC1",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Subscription\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"onDeleteEventDistance\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"NONE\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Subscription"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/subscriptionOnDeleteEventDistanceResolver"
+   }
+  },
+  "QuerylistEventDistanceByEventIdauth0FunctionQuerylistEventDistanceByEventIdauth0FunctionAppSyncFunctionEDAF4CB0": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistEventDistanceByEventIdauth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/d473b1351ec873e455ff69967111574488624add8fefeb9459923b206fbd9535.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerylistEventDistanceByEventIdauth0Function/QuerylistEventDistanceByEventIdauth0Function.AppSyncFunction"
+   }
+  },
+  "QuerylistEventDistanceByEventIdpostAuth0FunctionQuerylistEventDistanceByEventIdpostAuth0FunctionAppSyncFunction1D522F4E": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QuerylistEventDistanceByEventIdpostAuth0Function",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/c1721bcd774e27c514d3454b5be4f9bdd094c0161b57ddf053d618e3b0086a77.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QuerylistEventDistanceByEventIdpostAuth0Function/QuerylistEventDistanceByEventIdpostAuth0Function.AppSyncFunction"
+   }
+  },
+  "QueryListEventDistanceByEventIdDataResolverFnQueryListEventDistanceByEventIdDataResolverFnAppSyncFunctionBC3A9968": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "EventDistanceDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "QueryListEventDistanceByEventIdDataResolverFn",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a0ac111a175f1549410df31b77159c35622eed9e12163187f73d4ff8bfed5fa4.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/098c998f215c333f57348ca8912f66057ae6b574fe34013033dc54362ee2372c.vtl"
+    }
+   },
+   "DependsOn": [
+    "EventDistanceDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/QueryListEventDistanceByEventIdDataResolverFn/QueryListEventDistanceByEventIdDataResolverFn.AppSyncFunction"
+   }
+  },
+  "QuerylistEventDistanceByEventIdResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "listEventDistanceByEventId",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "QuerylistEventDistanceByEventIdauth0FunctionQuerylistEventDistanceByEventIdauth0FunctionAppSyncFunctionEDAF4CB0",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QuerylistEventDistanceByEventIdpostAuth0FunctionQuerylistEventDistanceByEventIdpostAuth0FunctionAppSyncFunction1D522F4E",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "QueryListEventDistanceByEventIdDataResolverFnQueryListEventDistanceByEventIdDataResolverFnAppSyncFunctionBC3A9968",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "$util.qr($ctx.stash.put(\"typeName\", \"Query\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"listEventDistanceByEventId\"))\n$util.qr($ctx.stash.put(\"conditions\", []))\n$util.qr($ctx.stash.put(\"metadata\", {}))\n$util.qr($ctx.stash.metadata.put(\"dataSourceType\", \"AMAZON_DYNAMODB\"))\n$util.qr($ctx.stash.metadata.put(\"apiId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"connectionAttributes\", {}))\n$util.qr($ctx.stash.put(\"tableName\", \"",
+       {
+        "Fn::Select": [
+         1,
+         {
+          "Fn::Split": [
+           "/",
+           {
+            "Fn::Select": [
+             5,
+             {
+              "Fn::Split": [
+               ":",
+               {
+                "Fn::GetAtt": [
+                 "EventDistanceTable",
+                 "TableArn"
+                ]
+               }
+              ]
+             }
+            ]
+           }
+          ]
+         }
+        ]
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:",
+       {
+        "Ref": "AWS::Partition"
+       },
+       ":sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n$util.toJson({})"
+      ]
+     ]
+    },
+    "ResponseMappingTemplate": "$util.toJson($ctx.prev.result)",
+    "TypeName": "Query"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/queryListEventDistanceByEventIdResolver"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOwW6DMAyGn6X34LV0O+y4gnbcJti9MompUsBBsdOqQrz7BJ067fT7kz/Zfw758w62G7xKZl2X9b6B6YNEydWKtjNFy18YcSCluEAR2Hn1gU1FElK0ZIokGoY/bPkx41WOk7sxDsE18I1NTwcUMh4HmKrQ3+3Q02xwHOXGFqZy1cumRMX6cfI/vSe2S4kicOtPKeLa6Pdzf6E4G9kfUYRU4G0JI3s4JNuRLgXmxf1MOiY167pWPHk+zYaDIzjL0yXfwu4VXjZn8T6LidUPBNU9fwAd2GhwNgEAAA=="
+   },
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/EventDistance/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Outputs": {
+  "GetAttEventDistanceTableStreamArn": {
+   "Description": "Your DynamoDB table StreamArn.",
+   "Value": {
+    "Fn::GetAtt": [
+     "EventDistanceTable",
+     "TableStreamArn"
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "GetAtt:EventDistanceTable:StreamArn"
+      ]
+     ]
+    }
+   }
+  },
+  "GetAttEventDistanceTableName": {
+   "Description": "Your DynamoDB table name.",
+   "Value": {
+    "Fn::Join": [
+     "",
+     [
+      "EventDistance-",
+      {
+       "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+      },
+      "-NONE"
+     ]
+    ]
+   },
+   "Export": {
+    "Name": {
+     "Fn::Join": [
+      ":",
+      [
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+       },
+       "GetAtt:EventDistanceTable:Name"
+      ]
+     ]
+    }
+   }
+  },
+  "amplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataEventDistanceEventDistanceDataSource93BC2D52Name": {
+   "Value": {
+    "Fn::GetAtt": [
+     "EventDistanceDataSource",
+     "Name"
+    ]
+   }
+  },
+  "amplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataEventDistanceEventDistanceTable27010805TableArn": {
+   "Value": {
+    "Fn::GetAtt": [
+     "EventDistanceTable",
+     "TableArn"
+    ]
+   }
+  }
+ }
+}

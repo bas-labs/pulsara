@@ -1,0 +1,811 @@
+{
+ "Description": "An auto-generated nested stack for the @function directive.",
+ "AWSTemplateFormatVersion": "2010-09-09",
+ "Conditions": {
+  "HasEnvironmentParameter": {
+   "Fn::Not": [
+    {
+     "Fn::Equals": [
+      "NONE",
+      "NONE"
+     ]
+    }
+   ]
+  },
+  "CDKMetadataAvailable": {
+   "Fn::Or": [
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "af-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-northeast-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-south-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-3"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ap-southeast-4"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "ca-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "cn-northwest-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-central-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-north-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-south-2"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Or": [
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "eu-west-3"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "il-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-central-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "me-south-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "sa-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-1"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-east-2"
+       ]
+      },
+      {
+       "Fn::Equals": [
+        {
+         "Ref": "AWS::Region"
+        },
+        "us-west-1"
+       ]
+      }
+     ]
+    },
+    {
+     "Fn::Equals": [
+      {
+       "Ref": "AWS::Region"
+      },
+      "us-west-2"
+     ]
+    }
+   ]
+  }
+ },
+ "Resources": {
+  "SwitchToOrganizerLambdaDataSourceServiceRoleA877C6FC": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/SwitchToOrganizerLambdaDataSource/ServiceRole/Resource"
+   }
+  },
+  "SwitchToOrganizerLambdaDataSourceServiceRoleDefaultPolicyCF72E2ED": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::If": [
+          "HasEnvironmentParameter",
+          {
+           "Fn::Sub": [
+            "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer",
+            {}
+           ]
+          },
+          {
+           "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer"
+          }
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::If": [
+             "HasEnvironmentParameter",
+             {
+              "Fn::Sub": [
+               "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer",
+               {}
+              ]
+             },
+             {
+              "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer"
+             }
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "SwitchToOrganizerLambdaDataSourceServiceRoleDefaultPolicyCF72E2ED",
+    "Roles": [
+     {
+      "Ref": "SwitchToOrganizerLambdaDataSourceServiceRoleA877C6FC"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/SwitchToOrganizerLambdaDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "SwitchToOrganizerLambdaDataSource": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::If": [
+       "HasEnvironmentParameter",
+       {
+        "Fn::Sub": [
+         "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer",
+         {}
+        ]
+       },
+       {
+        "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:switchToOrganizer"
+       }
+      ]
+     }
+    },
+    "Name": "SwitchToOrganizerLambdaDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "SwitchToOrganizerLambdaDataSourceServiceRoleA877C6FC",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/SwitchToOrganizerLambdaDataSource/Resource"
+   }
+  },
+  "InvokeSwitchToOrganizerLambdaDataSourceInvokeSwitchToOrganizerLambdaDataSourceAppSyncFunction8C0B432E": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "SwitchToOrganizerLambdaDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "InvokeSwitchToOrganizerLambdaDataSource",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/375caf87d5c7c896df9c732bd4c7a2150be7ddbb9fad41f02a72493f7d2f1abd.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a20e304512b1fde77dc16ed9d5e0ed03817afcab629ce87ef11c99877b7b1e30.vtl"
+    }
+   },
+   "DependsOn": [
+    "SwitchToOrganizerLambdaDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/InvokeSwitchToOrganizerLambdaDataSource/InvokeSwitchToOrganizerLambdaDataSource.AppSyncFunction"
+   }
+  },
+  "MutationswitchToOrganizerResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "switchToOrganizer",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationSwitchToOrganizerAuthFNMutationSwitchToOrganizerAuthFNAppSyncFunction35E39889",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "InvokeSwitchToOrganizerLambdaDataSourceInvokeSwitchToOrganizerLambdaDataSourceAppSyncFunction8C0B432E",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "## [Start] Stash resolver specific context.. **\n$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"switchToOrganizer\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:aws:sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:aws:sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n{}\n## [End] Stash resolver specific context.. **"
+      ]
+     ]
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/387d5992f5fc03d05de27289457dcc374a84c42a889acb504aff1031047dde00.vtl"
+    },
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/mutationSwitchToOrganizerResolver"
+   }
+  },
+  "CreateCheckoutLambdaDataSourceServiceRole5A8D58DD": {
+   "Type": "AWS::IAM::Role",
+   "Properties": {
+    "AssumeRolePolicyDocument": {
+     "Statement": [
+      {
+       "Action": "sts:AssumeRole",
+       "Effect": "Allow",
+       "Principal": {
+        "Service": "appsync.amazonaws.com"
+       }
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "Tags": [
+     {
+      "Key": "amplify:deployment-type",
+      "Value": "sandbox"
+     },
+     {
+      "Key": "amplify:friendly-name",
+      "Value": "amplifyData"
+     },
+     {
+      "Key": "created-by",
+      "Value": "amplify"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/CreateCheckoutLambdaDataSource/ServiceRole/Resource"
+   }
+  },
+  "CreateCheckoutLambdaDataSourceServiceRoleDefaultPolicyA06D6EC3": {
+   "Type": "AWS::IAM::Policy",
+   "Properties": {
+    "PolicyDocument": {
+     "Statement": [
+      {
+       "Action": "lambda:InvokeFunction",
+       "Effect": "Allow",
+       "Resource": [
+        {
+         "Fn::If": [
+          "HasEnvironmentParameter",
+          {
+           "Fn::Sub": [
+            "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout",
+            {}
+           ]
+          },
+          {
+           "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout"
+          }
+         ]
+        },
+        {
+         "Fn::Join": [
+          "",
+          [
+           {
+            "Fn::If": [
+             "HasEnvironmentParameter",
+             {
+              "Fn::Sub": [
+               "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout",
+               {}
+              ]
+             },
+             {
+              "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout"
+             }
+            ]
+           },
+           ":*"
+          ]
+         ]
+        }
+       ]
+      }
+     ],
+     "Version": "2012-10-17"
+    },
+    "PolicyName": "CreateCheckoutLambdaDataSourceServiceRoleDefaultPolicyA06D6EC3",
+    "Roles": [
+     {
+      "Ref": "CreateCheckoutLambdaDataSourceServiceRole5A8D58DD"
+     }
+    ]
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/CreateCheckoutLambdaDataSource/ServiceRole/DefaultPolicy/Resource"
+   }
+  },
+  "CreateCheckoutLambdaDataSource": {
+   "Type": "AWS::AppSync::DataSource",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "LambdaConfig": {
+     "LambdaFunctionArn": {
+      "Fn::If": [
+       "HasEnvironmentParameter",
+       {
+        "Fn::Sub": [
+         "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout",
+         {}
+        ]
+       },
+       {
+        "Fn::Sub": "arn:aws:lambda:${AWS::Region}:${AWS::AccountId}:function:createCheckout"
+       }
+      ]
+     }
+    },
+    "Name": "CreateCheckoutLambdaDataSource",
+    "ServiceRoleArn": {
+     "Fn::GetAtt": [
+      "CreateCheckoutLambdaDataSourceServiceRole5A8D58DD",
+      "Arn"
+     ]
+    },
+    "Type": "AWS_LAMBDA"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/CreateCheckoutLambdaDataSource/Resource"
+   }
+  },
+  "InvokeCreateCheckoutLambdaDataSourceInvokeCreateCheckoutLambdaDataSourceAppSyncFunction4B178CA6": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Fn::GetAtt": [
+      "CreateCheckoutLambdaDataSource",
+      "Name"
+     ]
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "InvokeCreateCheckoutLambdaDataSource",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/7516bee77e258b0b688c67add0e2968c85a5513d5605676bce051afa464f2824.vtl"
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/a20e304512b1fde77dc16ed9d5e0ed03817afcab629ce87ef11c99877b7b1e30.vtl"
+    }
+   },
+   "DependsOn": [
+    "CreateCheckoutLambdaDataSource"
+   ],
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/InvokeCreateCheckoutLambdaDataSource/InvokeCreateCheckoutLambdaDataSource.AppSyncFunction"
+   }
+  },
+  "MutationcreateCheckoutSessionResolver": {
+   "Type": "AWS::AppSync::Resolver",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "FieldName": "createCheckoutSession",
+    "Kind": "PIPELINE",
+    "PipelineConfig": {
+     "Functions": [
+      {
+       "Fn::GetAtt": [
+        "MutationCreateCheckoutSessionAuthFNMutationCreateCheckoutSessionAuthFNAppSyncFunction38226A9B",
+        "FunctionId"
+       ]
+      },
+      {
+       "Fn::GetAtt": [
+        "InvokeCreateCheckoutLambdaDataSourceInvokeCreateCheckoutLambdaDataSourceAppSyncFunction4B178CA6",
+        "FunctionId"
+       ]
+      }
+     ]
+    },
+    "RequestMappingTemplate": {
+     "Fn::Join": [
+      "",
+      [
+       "## [Start] Stash resolver specific context.. **\n$util.qr($ctx.stash.put(\"typeName\", \"Mutation\"))\n$util.qr($ctx.stash.put(\"fieldName\", \"createCheckoutSession\"))\n$util.qr($ctx.stash.put(\"authRole\", \"arn:aws:sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"unauthRole\", \"arn:aws:sts::",
+       {
+        "Ref": "AWS::AccountId"
+       },
+       ":assumed-role/",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref"
+       },
+       "/CognitoIdentityCredentials\"))\n$util.qr($ctx.stash.put(\"identityPoolId\", \"",
+       {
+        "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref"
+       },
+       "\"))\n$util.qr($ctx.stash.put(\"adminRoles\", []))\n{}\n## [End] Stash resolver specific context.. **"
+      ]
+     ]
+    },
+    "ResponseMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/387d5992f5fc03d05de27289457dcc374a84c42a889acb504aff1031047dde00.vtl"
+    },
+    "TypeName": "Mutation"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/mutationCreateCheckoutSessionResolver"
+   }
+  },
+  "MutationSwitchToOrganizerAuthFNMutationSwitchToOrganizerAuthFNAppSyncFunction35E39889": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationSwitchToOrganizerAuthFN",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3d72cc99f51abdee9e8ef0ac8f5f84a36b933ea339e0dabbc93ff98009dbf274.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/MutationSwitchToOrganizerAuthFN/MutationSwitchToOrganizerAuthFN.AppSyncFunction"
+   }
+  },
+  "MutationCreateCheckoutSessionAuthFNMutationCreateCheckoutSessionAuthFNAppSyncFunction38226A9B": {
+   "Type": "AWS::AppSync::FunctionConfiguration",
+   "Properties": {
+    "ApiId": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId"
+    },
+    "DataSourceName": {
+     "Ref": "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name"
+    },
+    "FunctionVersion": "2018-05-29",
+    "Name": "MutationCreateCheckoutSessionAuthFN",
+    "RequestMappingTemplateS3Location": {
+     "Fn::Sub": "s3://cdk-hnb659fds-assets-${AWS::AccountId}-${AWS::Region}/3d72cc99f51abdee9e8ef0ac8f5f84a36b933ea339e0dabbc93ff98009dbf274.vtl"
+    },
+    "ResponseMappingTemplate": "$util.toJson({})"
+   },
+   "UpdateReplacePolicy": "Delete",
+   "DeletionPolicy": "Delete",
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/MutationCreateCheckoutSessionAuthFN/MutationCreateCheckoutSessionAuthFN.AppSyncFunction"
+   }
+  },
+  "CDKMetadata": {
+   "Type": "AWS::CDK::Metadata",
+   "Properties": {
+    "Analytics": "v2:deflate64:H4sIAAAAAAAA/1WOsW7DMAxEvyW7zCZOO3RsHHQqisL+gICRaIOxTAWmlCAw/O+FFHTo9HhH3oE11K872G7wrpV1Y+X5DMs3aSTXRbSjaXppgjiOHMTgXU+Lx+nsED6T2GweUMng9aoPsbB8leURI3YhzZZy/r/6yzVBeh7SjKW56aUlDf5G82oYJ1ja4Mt94U/wbB9ZPqfV6P6EqhQVPjKM7uGQ7Egx/7OaYnYRB5ZhNRIcwUVfbvUWdu/wtrkoczUniTwRtE/+AvKI9WoLAQAA"
+   },
+   "Metadata": {
+    "aws:cdk:path": "amplify-pulsara-sebastianalegrettmorreo-sandbox-0249941309/data/amplifyData/FunctionDirectiveStack/CDKMetadata/Default"
+   },
+   "Condition": "CDKMetadataAvailable"
+  }
+ },
+ "Parameters": {
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPI72107C8CApiId": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthauthenticatedUserRole36F3F53ERef": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthunauthenticatedUserRole6AD329A3Ref": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309authNestedStackauthNestedStackResource74E9DD44Outputsamplifypulsarasebastianalegrettmorreosandbox0249941309authamplifyAuthIdentityPoolEF52D714Ref": {
+   "Type": "String"
+  },
+  "referencetoamplifypulsarasebastianalegrettmorreosandbox0249941309dataamplifyDataGraphQLAPINONEDS82347576Name": {
+   "Type": "String"
+  }
+ }
+}

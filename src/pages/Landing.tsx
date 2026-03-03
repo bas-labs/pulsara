@@ -207,28 +207,35 @@ export default function Landing() {
           style={{ animation: 'hero-blob-4 18s ease-in-out infinite' }}
         />
 
-        {/* Floating sport icons — right side */}
-        <div className="absolute inset-0 pointer-events-none hidden lg:block">
-          <div className="absolute top-[15%] right-[8%] w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm border border-emerald-200/50 shadow-lg shadow-emerald-500/10 flex items-center justify-center" style={{ animation: 'float-1 4s ease-in-out infinite' }}>
-            <Footprints className="w-7 h-7 text-emerald-600" />
+        {/* Floating sport icons */}
+        <div className="absolute inset-0 pointer-events-none">
+          {/* Footprints — top-right on mobile, further left on desktop */}
+          <div className="absolute top-[12%] right-[6%] lg:top-[15%] lg:right-[8%] w-10 h-10 lg:w-14 lg:h-14 rounded-xl lg:rounded-2xl bg-white/80 backdrop-blur-sm border border-emerald-200/50 shadow-lg shadow-emerald-500/10 flex items-center justify-center" style={{ animation: 'float-1 4s ease-in-out infinite' }}>
+            <Footprints className="w-5 h-5 lg:w-7 lg:h-7 text-emerald-600" />
           </div>
-          <div className="absolute top-[50%] right-[20%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-blue-200/50 shadow-lg shadow-blue-500/10 flex items-center justify-center" style={{ animation: 'float-2 5s ease-in-out infinite 0.5s' }}>
-            <Bike className="w-6 h-6 text-blue-500" />
+          {/* Bike — bottom-right area */}
+          <div className="absolute top-[70%] right-[4%] lg:top-[50%] lg:right-[20%] w-9 h-9 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl bg-white/80 backdrop-blur-sm border border-blue-200/50 shadow-lg shadow-blue-500/10 flex items-center justify-center" style={{ animation: 'float-2 5s ease-in-out infinite 0.5s' }}>
+            <Bike className="w-4 h-4 lg:w-6 lg:h-6 text-blue-500" />
           </div>
-          <div className="absolute top-[28%] right-[32%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-cyan-200/50 shadow-lg shadow-cyan-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.5s ease-in-out infinite 1s' }}>
-            <Waves className="w-5 h-5 text-cyan-500" />
+          {/* Waves — upper-right cluster */}
+          <div className="absolute top-[22%] right-[22%] lg:top-[28%] lg:right-[32%] w-9 h-9 lg:w-11 lg:h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-cyan-200/50 shadow-lg shadow-cyan-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.5s ease-in-out infinite 1s' }}>
+            <Waves className="w-4 h-4 lg:w-5 lg:h-5 text-cyan-500" />
           </div>
-          <div className="absolute top-[65%] right-[10%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-200/50 shadow-lg shadow-amber-500/10 flex items-center justify-center" style={{ animation: 'float-4 5.5s ease-in-out infinite 0.3s' }}>
-            <Trophy className="w-6 h-6 text-amber-500" />
+          {/* Trophy — mid-right */}
+          <div className="absolute top-[55%] right-[8%] lg:top-[65%] lg:right-[10%] w-10 h-10 lg:w-12 lg:h-12 rounded-xl lg:rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-200/50 shadow-lg shadow-amber-500/10 flex items-center justify-center" style={{ animation: 'float-4 5.5s ease-in-out infinite 0.3s' }}>
+            <Trophy className="w-5 h-5 lg:w-6 lg:h-6 text-amber-500" />
           </div>
-          <div className="absolute top-[18%] right-[24%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-rose-200/50 shadow-lg shadow-rose-500/10 flex items-center justify-center" style={{ animation: 'float-5 4.8s ease-in-out infinite 0.7s' }}>
-            <Mountain className="w-5 h-5 text-rose-500" />
+          {/* Mountain — hidden on small mobile, visible from sm */}
+          <div className="absolute top-[16%] right-[38%] lg:top-[18%] lg:right-[24%] w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-sm border border-rose-200/50 shadow-lg shadow-rose-500/10 hidden sm:flex items-center justify-center" style={{ animation: 'float-5 4.8s ease-in-out infinite 0.7s' }}>
+            <Mountain className="w-4 h-4 lg:w-5 lg:h-5 text-rose-500" />
           </div>
-          <div className="absolute top-[55%] right-[30%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-violet-200/50 shadow-lg shadow-violet-500/10 flex items-center justify-center" style={{ animation: 'float-1 5.2s ease-in-out infinite 1.2s' }}>
-            <Dumbbell className="w-5 h-5 text-violet-500" />
+          {/* Dumbbell — hidden on small mobile, visible from sm */}
+          <div className="absolute top-[42%] right-[3%] lg:top-[55%] lg:right-[30%] w-9 h-9 lg:w-11 lg:h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-violet-200/50 shadow-lg shadow-violet-500/10 hidden sm:flex items-center justify-center" style={{ animation: 'float-1 5.2s ease-in-out infinite 1.2s' }}>
+            <Dumbbell className="w-4 h-4 lg:w-5 lg:h-5 text-violet-500" />
           </div>
-          <div className="absolute top-[38%] right-[5%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-lg shadow-orange-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.2s ease-in-out infinite 0.9s' }}>
-            <Medal className="w-5 h-5 text-orange-500" />
+          {/* Medal — always visible */}
+          <div className="absolute top-[35%] right-[2%] lg:top-[38%] lg:right-[5%] w-8 h-8 lg:w-10 lg:h-10 rounded-lg lg:rounded-xl bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-lg shadow-orange-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.2s ease-in-out infinite 0.9s' }}>
+            <Medal className="w-4 h-4 lg:w-5 lg:h-5 text-orange-500" />
           </div>
         </div>
 

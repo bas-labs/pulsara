@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { useAuth } from '../context/AuthContext'
@@ -7,6 +8,9 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Calendar, Users, Clock, ArrowLeft, CheckCircle } from 'lucide-react'
+import PageWrapper from '@/components/PageWrapper'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import { fadeUp, stagger, scaleIn, springHover } from '@/lib/animations'
 
 const client = generateClient<Schema>()
 
@@ -60,7 +64,6 @@ export default function EventDetail() {
         registeredAt: new Date().toISOString(),
         waiverSigned: true,
       })
-      // Decrement spots
       if (event.spotsRemaining && event.spotsRemaining > 0) {
         await client.models.Event.update({
           id: event.id,
@@ -78,7 +81,6 @@ export default function EventDetail() {
       }
       setRegistered(true)
 
-      // If paid event, redirect to Stripe checkout
       if (dist && dist.price && dist.price > 0 && regData) {
         try {
           const { data: checkoutUrl } = await client.mutations.createCheckoutSession({
@@ -88,7 +90,7 @@ export default function EventDetail() {
             eventTitle: event.title,
             priceInCentavos: dist.price,
             userId: user!.userId,
-            userEmail: user!.userId, // email from Cognito
+            userEmail: user!.userId,
             registrationId: regData.id,
           })
           if (checkoutUrl) {
@@ -97,7 +99,6 @@ export default function EventDetail() {
           }
         } catch (payErr) {
           console.error('Checkout creation failed:', payErr)
-          // Registration still created, payment can be retried
         }
       }
     } catch (err) {
@@ -107,120 +108,142 @@ export default function EventDetail() {
     }
   }
 
-  if (loading) return <div className="flex items-center justify-center h-64 text-zinc-400">Cargando...</div>
+  if (loading) return <LoadingSpinner />
   if (!event) return <div className="flex items-center justify-center h-64 text-zinc-400">Evento no encontrado</div>
 
   return (
-    <div className="max-w-5xl mx-auto px-6 py-10">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
-        <ArrowLeft className="w-4 h-4" /> Volver
-      </button>
+    <PageWrapper>
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
+          <ArrowLeft className="w-4 h-4" /> Volver
+        </button>
 
-      {/* Hero */}
-      <div className="relative rounded-2xl overflow-hidden mb-8">
-        {event.bannerUrl || event.imageUrl ? (
-          <img src={event.bannerUrl ?? event.imageUrl ?? ''} alt={event.title} className="w-full h-64 md:h-80 object-cover" />
-        ) : (
-          <div className="w-full h-64 md:h-80 bg-gradient-to-br from-emerald-100 to-teal-100" />
-        )}
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <div className="absolute bottom-6 left-6">
-          <Badge className="bg-emerald-600 text-white mb-3">{event.sport}</Badge>
-          <h1 className="text-3xl md:text-4xl font-bold text-white">{event.title}</h1>
-        </div>
-      </div>
+        {/* Hero */}
+        <motion.div
+          className="relative rounded-2xl overflow-hidden mb-8"
+          initial={{ scale: 1.05, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          {event.bannerUrl || event.imageUrl ? (
+            <img src={event.bannerUrl ?? event.imageUrl ?? ''} alt={event.title} className="w-full h-64 md:h-80 object-cover" />
+          ) : (
+            <div className="w-full h-64 md:h-80 bg-gradient-to-br from-emerald-100 to-teal-100" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <div className="absolute bottom-6 left-6">
+            <Badge className="bg-emerald-600 text-white mb-3">{event.sport}</Badge>
+            <h1 className="text-3xl md:text-4xl font-bold text-white">{event.title}</h1>
+          </div>
+        </motion.div>
 
-      <div className="grid md:grid-cols-3 gap-8">
-        {/* Info */}
-        <div className="md:col-span-2 space-y-6">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { icon: Calendar, label: 'Fecha', value: new Date(event.eventDate).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) },
-              { icon: MapPin, label: 'Ubicación', value: `${event.city}${event.state ? ', ' + event.state : ''}` },
-              { icon: Users, label: 'Lugares', value: event.spotsRemaining ? `${event.spotsRemaining} disponibles` : 'Disponible' },
-              { icon: Clock, label: 'Cierre inscripción', value: event.registrationDeadline ? new Date(event.registrationDeadline).toLocaleDateString('es-MX') : 'Abierta' },
-            ].map(item => (
-              <div key={item.label} className="bg-zinc-50 rounded-xl p-4">
-                <item.icon className="w-5 h-5 text-emerald-600 mb-2" />
-                <p className="text-xs text-zinc-400 mb-0.5">{item.label}</p>
-                <p className="text-sm font-semibold text-zinc-900">{item.value}</p>
+        <div className="grid md:grid-cols-3 gap-8">
+          {/* Info */}
+          <div className="md:col-span-2 space-y-6">
+            <motion.div
+              className="grid grid-cols-2 md:grid-cols-4 gap-4"
+              initial="hidden"
+              animate="visible"
+              variants={stagger}
+            >
+              {[
+                { icon: Calendar, label: 'Fecha', value: new Date(event.eventDate).toLocaleDateString('es-MX', { day: 'numeric', month: 'long', year: 'numeric' }) },
+                { icon: MapPin, label: 'Ubicación', value: `${event.city}${event.state ? ', ' + event.state : ''}` },
+                { icon: Users, label: 'Lugares', value: event.spotsRemaining ? `${event.spotsRemaining} disponibles` : 'Disponible' },
+                { icon: Clock, label: 'Cierre inscripción', value: event.registrationDeadline ? new Date(event.registrationDeadline).toLocaleDateString('es-MX') : 'Abierta' },
+              ].map((item, i) => (
+                <motion.div key={item.label} variants={fadeUp} custom={i} className="bg-zinc-50 rounded-xl p-4">
+                  <item.icon className="w-5 h-5 text-emerald-600 mb-2" />
+                  <p className="text-xs text-zinc-400 mb-0.5">{item.label}</p>
+                  <p className="text-sm font-semibold text-zinc-900">{item.value}</p>
+                </motion.div>
+              ))}
+            </motion.div>
+
+            {event.description && (
+              <div>
+                <h2 className="text-xl font-bold text-zinc-900 mb-3">Descripción</h2>
+                <p className="text-zinc-600 leading-relaxed whitespace-pre-wrap">{event.description}</p>
               </div>
-            ))}
+            )}
+
+            {event.venue && (
+              <div>
+                <h2 className="text-xl font-bold text-zinc-900 mb-3">Lugar</h2>
+                <p className="text-zinc-600">{event.venue}</p>
+                {event.address && <p className="text-zinc-500 text-sm mt-1">{event.address}</p>}
+              </div>
+            )}
           </div>
 
-          {event.description && (
-            <div>
-              <h2 className="text-xl font-bold text-zinc-900 mb-3">Descripción</h2>
-              <p className="text-zinc-600 leading-relaxed whitespace-pre-wrap">{event.description}</p>
-            </div>
-          )}
-
-          {event.venue && (
-            <div>
-              <h2 className="text-xl font-bold text-zinc-900 mb-3">Lugar</h2>
-              <p className="text-zinc-600">{event.venue}</p>
-              {event.address && <p className="text-zinc-500 text-sm mt-1">{event.address}</p>}
-            </div>
-          )}
-        </div>
-
-        {/* Registration sidebar */}
-        <div>
-          <Card className="sticky top-24">
-            <CardContent className="p-6">
-              {registered ? (
-                <div className="text-center py-6">
-                  <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                  <h3 className="font-bold text-xl text-zinc-900 mb-1">¡Inscrito!</h3>
-                  <p className="text-zinc-500 text-sm">Te enviamos la confirmación por email.</p>
-                  <Button className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/atleta/mis-eventos')}>
-                    Ver mis eventos
-                  </Button>
-                </div>
-              ) : (
-                <>
-                  <h3 className="font-bold text-lg text-zinc-900 mb-4">Inscripción</h3>
-                  {distances.length > 0 ? (
-                    <div className="space-y-3 mb-6">
-                      {distances.map(dist => (
-                        <label
-                          key={dist.id}
-                          className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${selectedDistance === dist.id ? 'border-emerald-500 bg-emerald-50' : 'border-zinc-200 hover:border-emerald-200'}`}
-                          onClick={() => setSelectedDistance(dist.id)}
-                        >
-                          <div>
-                            <p className="font-semibold text-zinc-900">{dist.name}</p>
-                            {dist.distanceKm && <p className="text-xs text-zinc-500">{dist.distanceKm} km</p>}
-                          </div>
-                          <span className="font-bold text-emerald-600">${(dist.price / 100).toLocaleString('es-MX')}</span>
-                        </label>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-zinc-500 text-sm mb-6">Precio por confirmar</p>
-                  )}
-
-                  {event.status === 'SOLDOUT' ? (
-                    <Button disabled className="w-full">Agotado</Button>
-                  ) : !user ? (
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/login')}>
-                      Inicia sesión para inscribirte
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                      disabled={registering || !selectedDistance}
-                      onClick={handleRegister}
+          {/* Registration sidebar */}
+          <div>
+            <Card className="sticky top-24">
+              <CardContent className="p-6">
+                <AnimatePresence mode="wait">
+                  {registered ? (
+                    <motion.div
+                      key="success"
+                      variants={scaleIn}
+                      initial="hidden"
+                      animate="visible"
+                      className="text-center py-6"
                     >
-                      {registering ? 'Inscribiendo...' : 'Inscribirme'}
-                    </Button>
+                      <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
+                      <h3 className="font-bold text-xl text-zinc-900 mb-1">¡Inscrito!</h3>
+                      <p className="text-zinc-500 text-sm">Te enviamos la confirmación por email.</p>
+                      <Button className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/atleta/mis-eventos')}>
+                        Ver mis eventos
+                      </Button>
+                    </motion.div>
+                  ) : (
+                    <motion.div key="form" initial={{ opacity: 1 }}>
+                      <h3 className="font-bold text-lg text-zinc-900 mb-4">Inscripción</h3>
+                      {distances.length > 0 ? (
+                        <div className="space-y-3 mb-6">
+                          {distances.map(dist => (
+                            <motion.label
+                              key={dist.id}
+                              whileHover={{ scale: 1.01 }}
+                              transition={springHover}
+                              className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${selectedDistance === dist.id ? 'border-emerald-500 bg-emerald-50' : 'border-zinc-200 hover:border-emerald-200'}`}
+                              onClick={() => setSelectedDistance(dist.id)}
+                            >
+                              <div>
+                                <p className="font-semibold text-zinc-900">{dist.name}</p>
+                                {dist.distanceKm && <p className="text-xs text-zinc-500">{dist.distanceKm} km</p>}
+                              </div>
+                              <span className="font-bold text-emerald-600">${(dist.price / 100).toLocaleString('es-MX')}</span>
+                            </motion.label>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-zinc-500 text-sm mb-6">Precio por confirmar</p>
+                      )}
+
+                      {event.status === 'SOLDOUT' ? (
+                        <Button disabled className="w-full">Agotado</Button>
+                      ) : !user ? (
+                        <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/login')}>
+                          Inicia sesión para inscribirte
+                        </Button>
+                      ) : (
+                        <Button
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                          disabled={registering || !selectedDistance}
+                          onClick={handleRegister}
+                        >
+                          {registering ? 'Inscribiendo...' : 'Inscribirme'}
+                        </Button>
+                      )}
+                    </motion.div>
                   )}
-                </>
-              )}
-            </CardContent>
-          </Card>
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
-    </div>
+    </PageWrapper>
   )
 }

@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../../amplify/data/resource'
 import { useAuth } from '../../context/AuthContext'
@@ -7,16 +8,21 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
+import PageWrapper from '@/components/PageWrapper'
+import { fadeUp, stagger } from '@/lib/animations'
 
 const client = generateClient<Schema>()
 
-const sports = [
+const sportsOptions = [
   { value: 'RUNNING', label: 'Running' }, { value: 'CICLISMO', label: 'Ciclismo' },
   { value: 'NATACION', label: 'Natación' }, { value: 'TRAIL', label: 'Trail' },
   { value: 'TRIATLON', label: 'Triatlón' }, { value: 'OCR', label: 'OCR' },
   { value: 'SENDERISMO', label: 'Senderismo' }, { value: 'DOWNHILL', label: 'Downhill' },
   { value: 'OTRO', label: 'Otro' },
 ]
+
+const selectClass = 'w-full h-9 rounded-md border border-input bg-transparent px-3 text-sm shadow-xs transition-shadow duration-200 outline-none focus-visible:border-emerald-400 focus-visible:ring-[3px] focus-visible:ring-emerald-500/20 md:text-sm'
+const textareaClass = 'w-full rounded-md border border-input bg-transparent p-3 text-sm shadow-xs min-h-[100px] transition-shadow duration-200 outline-none focus-visible:border-emerald-400 focus-visible:ring-[3px] focus-visible:ring-emerald-500/20'
 
 interface DistanceForm { name: string; distanceKm: string; price: string; spots: string }
 
@@ -101,108 +107,132 @@ export default function OrgCreateEvent() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-10">
-      <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
-        <ArrowLeft className="w-4 h-4" /> Volver
-      </button>
+    <PageWrapper>
+      <div className="max-w-3xl mx-auto px-6 py-10">
+        <button onClick={() => navigate(-1)} className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
+          <ArrowLeft className="w-4 h-4" /> Volver
+        </button>
 
-      <h1 className="text-3xl font-bold text-zinc-900 mb-8">Crear Evento</h1>
+        <h1 className="text-3xl font-bold text-zinc-900 mb-8">Crear Evento</h1>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        <Card>
-          <CardContent className="p-6 space-y-5">
-            <h2 className="font-bold text-lg text-zinc-900">Información General</h2>
-            <div>
-              <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nombre del evento *</label>
-              <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Maratón Ciudad de México 2026" required />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Descripción</label>
-              <textarea
-                value={description}
-                onChange={e => setDescription(e.target.value)}
-                placeholder="Describe tu evento..."
-                className="w-full rounded-md border border-zinc-200 p-3 text-sm min-h-[100px] focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 outline-none"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Deporte *</label>
-                <select
-                  value={sport}
-                  onChange={e => setSport(e.target.value)}
-                  className="w-full rounded-md border border-zinc-200 p-2.5 text-sm focus:ring-2 focus:ring-emerald-500 outline-none"
-                >
-                  {sports.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
-                </select>
-              </div>
-              <div>
-                <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Fecha *</label>
-                <Input type="datetime-local" value={eventDate} onChange={e => setEventDate(e.target.value)} required />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6 space-y-5">
-            <h2 className="font-bold text-lg text-zinc-900">Ubicación</h2>
-            <div>
-              <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Lugar / Venue</label>
-              <Input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Bosque de Chapultepec" />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Ciudad *</label>
-                <Input value={city} onChange={e => setCity(e.target.value)} placeholder="CDMX" required />
-              </div>
-              <div>
-                <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Estado</label>
-                <Input value={state} onChange={e => setState(e.target.value)} placeholder="Ciudad de México" />
-              </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardContent className="p-6 space-y-5">
-            <div className="flex items-center justify-between">
-              <h2 className="font-bold text-lg text-zinc-900">Distancias / Categorías</h2>
-              <Button type="button" variant="outline" size="sm" onClick={addDistance}>
-                <Plus className="w-3 h-3 mr-1" /> Agregar
-              </Button>
-            </div>
-            {distances.map((dist, i) => (
-              <div key={i} className="grid grid-cols-5 gap-3 items-end">
+        <motion.form
+          onSubmit={handleSubmit}
+          className="space-y-6"
+          initial="hidden"
+          animate="visible"
+          variants={stagger}
+        >
+          <motion.div variants={fadeUp} custom={0}>
+            <Card>
+              <CardContent className="p-6 space-y-5">
+                <h2 className="font-bold text-lg text-zinc-900">Información General</h2>
                 <div>
-                  <label className="text-xs text-zinc-500 mb-1 block">Nombre</label>
-                  <Input value={dist.name} onChange={e => updateDistance(i, 'name', e.target.value)} placeholder="10K" />
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nombre del evento *</label>
+                  <Input value={title} onChange={e => setTitle(e.target.value)} placeholder="Maratón Ciudad de México 2026" required />
                 </div>
                 <div>
-                  <label className="text-xs text-zinc-500 mb-1 block">Km</label>
-                  <Input type="number" value={dist.distanceKm} onChange={e => updateDistance(i, 'distanceKm', e.target.value)} placeholder="10" />
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Descripción</label>
+                  <textarea
+                    value={description}
+                    onChange={e => setDescription(e.target.value)}
+                    placeholder="Describe tu evento..."
+                    className={textareaClass}
+                  />
                 </div>
-                <div>
-                  <label className="text-xs text-zinc-500 mb-1 block">Precio (MXN)</label>
-                  <Input type="number" value={dist.price} onChange={e => updateDistance(i, 'price', e.target.value)} placeholder="395" />
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Deporte *</label>
+                    <select
+                      value={sport}
+                      onChange={e => setSport(e.target.value)}
+                      className={selectClass}
+                    >
+                      {sportsOptions.map(s => <option key={s.value} value={s.value}>{s.label}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Fecha *</label>
+                    <Input type="datetime-local" value={eventDate} onChange={e => setEventDate(e.target.value)} required />
+                  </div>
                 </div>
-                <div>
-                  <label className="text-xs text-zinc-500 mb-1 block">Lugares</label>
-                  <Input type="number" value={dist.spots} onChange={e => updateDistance(i, 'spots', e.target.value)} placeholder="500" />
-                </div>
-                <Button type="button" variant="ghost" size="sm" onClick={() => removeDistance(i)} disabled={distances.length <= 1}>
-                  <Trash2 className="w-4 h-4 text-zinc-400" />
-                </Button>
-              </div>
-            ))}
-          </CardContent>
-        </Card>
+              </CardContent>
+            </Card>
+          </motion.div>
 
-        <Button type="submit" size="lg" disabled={loading || !title || !eventDate || !city}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
-          {loading ? 'Creando...' : 'Crear Evento'}
-        </Button>
-      </form>
-    </div>
+          <motion.div variants={fadeUp} custom={1}>
+            <Card>
+              <CardContent className="p-6 space-y-5">
+                <h2 className="font-bold text-lg text-zinc-900">Ubicación</h2>
+                <div>
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Lugar / Venue</label>
+                  <Input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Bosque de Chapultepec" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Ciudad *</label>
+                    <Input value={city} onChange={e => setCity(e.target.value)} placeholder="CDMX" required />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Estado</label>
+                    <Input value={state} onChange={e => setState(e.target.value)} placeholder="Ciudad de México" />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={fadeUp} custom={2}>
+            <Card>
+              <CardContent className="p-6 space-y-5">
+                <div className="flex items-center justify-between">
+                  <h2 className="font-bold text-lg text-zinc-900">Distancias / Categorías</h2>
+                  <Button type="button" variant="outline" size="sm" onClick={addDistance}>
+                    <Plus className="w-3 h-3 mr-1" /> Agregar
+                  </Button>
+                </div>
+                <AnimatePresence initial={false}>
+                  {distances.map((dist, i) => (
+                    <motion.div
+                      key={i}
+                      initial={{ opacity: 0, height: 0 }}
+                      animate={{ opacity: 1, height: 'auto' }}
+                      exit={{ opacity: 0, height: 0 }}
+                      className="grid grid-cols-5 gap-3 items-end"
+                    >
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Nombre</label>
+                        <Input value={dist.name} onChange={e => updateDistance(i, 'name', e.target.value)} placeholder="10K" />
+                      </div>
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Km</label>
+                        <Input type="number" value={dist.distanceKm} onChange={e => updateDistance(i, 'distanceKm', e.target.value)} placeholder="10" />
+                      </div>
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Precio (MXN)</label>
+                        <Input type="number" value={dist.price} onChange={e => updateDistance(i, 'price', e.target.value)} placeholder="395" />
+                      </div>
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Lugares</label>
+                        <Input type="number" value={dist.spots} onChange={e => updateDistance(i, 'spots', e.target.value)} placeholder="500" />
+                      </div>
+                      <Button type="button" variant="ghost" size="sm" onClick={() => removeDistance(i)} disabled={distances.length <= 1}>
+                        <Trash2 className="w-4 h-4 text-zinc-400" />
+                      </Button>
+                    </motion.div>
+                  ))}
+                </AnimatePresence>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={fadeUp} custom={3}>
+            <Button type="submit" size="lg" disabled={loading || !title || !eventDate || !city}
+              className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
+              {loading ? 'Creando...' : 'Crear Evento'}
+            </Button>
+          </motion.div>
+        </motion.form>
+      </div>
+    </PageWrapper>
   )
 }

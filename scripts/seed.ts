@@ -1,15 +1,22 @@
 /**
  * Seed script — run with: npx tsx scripts/seed.ts
  * Seeds 118 real Mexican sports events + serials + blog articles
- * Requires amplify_outputs.json (run after first deploy)
+ * Uses DynamoDB directly (bypasses AppSync auth)
  */
-import { Amplify } from 'aws-amplify'
-import { generateClient } from 'aws-amplify/data'
-import outputs from '../amplify_outputs.json'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb'
+import { randomUUID } from 'crypto'
 import seedEvents from '../infra/seed-events-full.json'
 
-Amplify.configure(outputs as any)
-const client = generateClient<any>()
+const REGION = 'us-east-1'
+const SUFFIX = 'tcnflzpturdtratjqzwrhjyu3a-NONE'
+
+const EVENT_TABLE = `Event-${SUFFIX}`
+const DISTANCE_TABLE = `EventDistance-${SUFFIX}`
+const SERIAL_TABLE = `Serial-${SUFFIX}`
+const ARTICLE_TABLE = `Article-${SUFFIX}`
+
+const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({ region: REGION }))
 
 // Price ranges by sport (centavos MXN)
 const PRICES: Record<string, [number, number]> = {
@@ -32,6 +39,8 @@ function randSpots(): number {
   return [200, 300, 500, 750, 1000, 1500, 2000, 3000][Math.floor(Math.random() * 8)]
 }
 
+const now = new Date().toISOString()
+
 async function seed() {
   console.log(`🌱 Seeding ${seedEvents.length} events...\n`)
   let ok = 0, fail = 0
@@ -39,30 +48,38 @@ async function seed() {
   for (const ev of seedEvents) {
     const price = randPrice(ev.sport)
     const spots = randSpots()
+    const id = randomUUID()
     try {
-      const { data } = await client.models.Event.create({
-        slug: ev.slug,
-        title: ev.title,
-        sport: ev.sport,
-        eventDate: ev.eventDate,
-        city: ev.city,
-        state: ev.state,
-        country: 'MX',
-        status: 'PUBLISHED',
-        organizerId: 'system',
-        organizerName: 'Pulsara',
-        featured: Math.random() < 0.1,
-        tags: [],
-        priceMin: price,
-        priceMax: Math.round(price * 1.5),
-        spotsTotal: spots,
-        spotsRemaining: spots,
-      })
+      await ddb.send(new PutCommand({
+        TableName: EVENT_TABLE,
+        Item: {
+          id,
+          slug: ev.slug,
+          title: ev.title,
+          sport: ev.sport,
+          eventDate: ev.eventDate,
+          city: ev.city,
+          state: ev.state,
+          country: 'MX',
+          status: 'PUBLISHED',
+          organizerId: 'system',
+          organizerName: 'Pulsara',
+          featured: Math.random() < 0.1,
+          tags: [],
+          priceMin: price,
+          priceMax: Math.round(price * 1.5),
+          totalSpots: spots,
+          spotsRemaining: spots,
+          __typename: 'Event',
+          createdAt: now,
+          updatedAt: now,
+        },
+      }))
       ok++
       process.stdout.write(`\r  ✅ ${ok}/${seedEvents.length}`)
 
       // Auto-create distances for running events
-      if (data && ['RUNNING', 'TRAIL'].includes(ev.sport)) {
+      if (['RUNNING', 'TRAIL'].includes(ev.sport)) {
         const distances = ev.sport === 'TRAIL'
           ? [{name:'21K',km:21},{name:'12K',km:12},{name:'5K',km:5}]
           : ev.title.toLowerCase().includes('maratón') || ev.title.toLowerCase().includes('maraton')
@@ -73,15 +90,23 @@ async function seed() {
 
         for (const d of distances) {
           const dp = randPrice(ev.sport)
-          await client.models.EventDistance.create({
-            eventId: data.id,
-            name: d.name,
-            distanceKm: d.km,
-            price: dp,
-            category: 'GENERAL',
-            spotsTotal: Math.round(spots / distances.length),
-            spotsRemaining: Math.round(spots / distances.length),
-          })
+          await ddb.send(new PutCommand({
+            TableName: DISTANCE_TABLE,
+            Item: {
+              id: randomUUID(),
+              eventId: id,
+              name: d.name,
+              distanceKm: d.km,
+              price: dp,
+              currency: 'MXN',
+              category: 'GENERAL',
+              spotsTotal: Math.round(spots / distances.length),
+              spotsRemaining: Math.round(spots / distances.length),
+              __typename: 'EventDistance',
+              createdAt: now,
+              updatedAt: now,
+            },
+          }))
         }
       }
     } catch (err) {
@@ -103,9 +128,22 @@ async function seed() {
     { slug: 'aguas-abiertas-nacional-2026', name: 'Circuito Nacional de Aguas Abiertas 2026', color: '#0EA5E9', year: 2026, cities: ['Acapulco', 'Cozumel', 'Isla Mujeres', 'Ensenada'], sports: ['natacion'], totalEvents: 6, status: 'ACTIVE' },
   ]
   for (const s of serials) {
-    await client.models.Serial.create({ ...s, organizerId: 'system' })
-      .then(() => console.log(`  ✅ ${s.name}`))
-      .catch((e: any) => console.error(`  ❌ ${s.name}:`, e.message))
+    try {
+      await ddb.send(new PutCommand({
+        TableName: SERIAL_TABLE,
+        Item: {
+          id: randomUUID(),
+          ...s,
+          organizerId: 'system',
+          __typename: 'Serial',
+          createdAt: now,
+          updatedAt: now,
+        },
+      }))
+      console.log(`  ✅ ${s.name}`)
+    } catch (e: any) {
+      console.error(`  ❌ ${s.name}:`, e.message)
+    }
   }
 
   // Blog articles
@@ -119,9 +157,24 @@ async function seed() {
     { slug: 'prevenir-lesiones-running', title: '5 lesiones más comunes en running y cómo prevenirlas', excerpt: 'Fascitis plantar, rodilla del corredor, periostitis... Aprende a identificarlas y evitarlas.', category: 'RUNNING', readTimeMinutes: 6, imageUrl: '/images/marathon.jpg' },
   ]
   for (const a of articles) {
-    await client.models.Article.create({ ...a, authorName: 'Pulsara', status: 'PUBLISHED', publishedAt: new Date().toISOString() })
-      .then(() => console.log(`  ✅ ${a.title}`))
-      .catch((e: any) => console.error(`  ❌ ${a.title}:`, e.message))
+    try {
+      await ddb.send(new PutCommand({
+        TableName: ARTICLE_TABLE,
+        Item: {
+          id: randomUUID(),
+          ...a,
+          authorName: 'Pulsara',
+          status: 'PUBLISHED',
+          publishedAt: now,
+          __typename: 'Article',
+          createdAt: now,
+          updatedAt: now,
+        },
+      }))
+      console.log(`  ✅ ${a.title}`)
+    } catch (e: any) {
+      console.error(`  ❌ ${a.title}:`, e.message)
+    }
   }
 
   console.log('\n✅ Seed complete!')

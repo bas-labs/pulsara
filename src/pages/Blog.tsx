@@ -1,9 +1,14 @@
 import { useEffect, useState } from 'react'
+import { motion } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Clock, BookOpen } from 'lucide-react'
+import PageWrapper from '@/components/PageWrapper'
+import LoadingSpinner from '@/components/LoadingSpinner'
+import EmptyState from '@/components/EmptyState'
+import { fadeUp, stagger } from '@/lib/animations'
 
 const client = generateClient<Schema>()
 
@@ -30,67 +35,69 @@ export default function Blog() {
   }
 
   return (
-    <div className="max-w-6xl mx-auto px-6 py-10">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-zinc-900 mb-2">Blog</h1>
-        <p className="text-zinc-500">Consejos, guías y noticias del mundo deportivo</p>
-      </div>
+    <PageWrapper>
+      <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold text-zinc-900 mb-2">Blog</h1>
+          <p className="text-zinc-500">Consejos, guías y noticias del mundo deportivo</p>
+        </div>
 
-      {loading ? (
-        <div className="flex justify-center py-20">
-          <div className="w-8 h-8 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin" />
-        </div>
-      ) : articles.length === 0 ? (
-        <Card>
-          <CardContent className="p-16 text-center">
-            <BookOpen className="w-12 h-12 text-zinc-300 mx-auto mb-4" />
-            <p className="text-zinc-400 text-lg">Próximamente — artículos y guías</p>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {articles.map(article => (
-            <Card key={article.id} className="overflow-hidden hover:shadow-lg transition-shadow cursor-pointer group">
-              {article.imageUrl && (
-                <div className="aspect-[16/9] overflow-hidden bg-zinc-100">
-                  <img
-                    src={article.imageUrl}
-                    alt={article.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
-              )}
-              <CardContent className="p-5">
-                <div className="flex items-center gap-2 mb-3">
-                  <Badge variant="outline" className="text-xs">
-                    {CATEGORY_LABELS[article.category ?? 'OTRO'] ?? article.category}
-                  </Badge>
-                  {article.readTimeMinutes && (
-                    <span className="text-xs text-zinc-400 flex items-center gap-1">
-                      <Clock className="w-3 h-3" /> {article.readTimeMinutes} min
-                    </span>
+        {loading ? (
+          <LoadingSpinner />
+        ) : articles.length === 0 ? (
+          <EmptyState icon={BookOpen} title="Próximamente" description="Artículos y guías deportivas" />
+        ) : (
+          <motion.div
+            className="grid md:grid-cols-2 lg:grid-cols-3 gap-6"
+            initial="hidden"
+            animate="visible"
+            variants={stagger}
+          >
+            {articles.map((article, i) => (
+              <motion.div key={article.id} variants={fadeUp} custom={i}>
+                <Card className="overflow-hidden hover:shadow-lg hover:shadow-emerald-500/5 hover:border-emerald-200/60 transition-all duration-300 cursor-pointer group">
+                  {article.imageUrl && (
+                    <div className="aspect-[16/9] overflow-hidden bg-zinc-100">
+                      <img
+                        src={article.imageUrl}
+                        alt={article.title}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      />
+                    </div>
                   )}
-                </div>
-                <h3 className="font-bold text-zinc-900 group-hover:text-emerald-600 transition-colors mb-2">
-                  {article.title}
-                </h3>
-                {article.excerpt && (
-                  <p className="text-sm text-zinc-500 line-clamp-2">{article.excerpt}</p>
-                )}
-                <div className="flex items-center gap-2 mt-4 text-xs text-zinc-400">
-                  <span>{article.authorName}</span>
-                  {article.publishedAt && (
-                    <>
-                      <span>·</span>
-                      <span>{new Date(article.publishedAt).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
-                    </>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
+                  <CardContent className="p-5">
+                    <div className="flex items-center gap-2 mb-3">
+                      <Badge variant="outline" className="text-xs">
+                        {CATEGORY_LABELS[article.category ?? 'OTRO'] ?? article.category}
+                      </Badge>
+                      {article.readTimeMinutes && (
+                        <span className="text-xs text-zinc-400 flex items-center gap-1">
+                          <Clock className="w-3 h-3" /> {article.readTimeMinutes} min
+                        </span>
+                      )}
+                    </div>
+                    <h3 className="font-bold text-zinc-900 group-hover:text-emerald-600 transition-colors mb-2">
+                      {article.title}
+                    </h3>
+                    {article.excerpt && (
+                      <p className="text-sm text-zinc-500 line-clamp-2">{article.excerpt}</p>
+                    )}
+                    <div className="flex items-center gap-2 mt-4 text-xs text-zinc-400">
+                      <span>{article.authorName}</span>
+                      {article.publishedAt && (
+                        <>
+                          <span>·</span>
+                          <span>{new Date(article.publishedAt).toLocaleDateString('es-MX', { day: 'numeric', month: 'short', year: 'numeric' })}</span>
+                        </>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
+      </div>
+    </PageWrapper>
   )
 }
