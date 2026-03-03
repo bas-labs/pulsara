@@ -98,7 +98,7 @@ function Navbar() {
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-xl border-b border-zinc-100">
       <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
         <a href="/" className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center">
+          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <span className="font-bold text-xl text-zinc-900 tracking-tight">Pulsara</span>
@@ -114,7 +114,7 @@ function Navbar() {
 
         <div className="hidden md:flex items-center gap-3">
           <Button variant="ghost" className="text-zinc-700">Iniciar Sesión</Button>
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white font-semibold rounded-xl">
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl">
             Crear Cuenta
           </Button>
         </div>
@@ -136,7 +136,7 @@ function Navbar() {
               {['Eventos', 'Seriales', 'Resultados', 'Blog'].map(link => (
                 <a key={link} href="#" className="block text-sm font-medium text-zinc-600 py-2">{link}</a>
               ))}
-              <Button className="w-full bg-orange-500 hover:bg-orange-600 text-white mt-3">Crear Cuenta</Button>
+              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mt-3">Crear Cuenta</Button>
             </div>
           </motion.div>
         )}
@@ -148,7 +148,7 @@ function Navbar() {
 function EventCard({ event, index }: { event: typeof featuredEvents[0]; index: number }) {
   return (
     <motion.div variants={fadeUp} custom={index}>
-      <Card className="group overflow-hidden border-zinc-200/60 hover:border-orange-200 hover:shadow-xl hover:shadow-orange-500/5 transition-all duration-300 h-full">
+      <Card className="group overflow-hidden border-zinc-200/60 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 h-full">
         <div className="relative overflow-hidden">
           <div className="w-full h-52 bg-gradient-to-br from-zinc-200 via-zinc-100 to-zinc-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
             <div className="text-center">
@@ -161,7 +161,7 @@ function EventCard({ event, index }: { event: typeof featuredEvents[0]; index: n
               {event.sport}
             </Badge>
             {event.featured && (
-              <Badge className="bg-orange-500 text-white text-xs font-semibold">
+              <Badge className="bg-emerald-600 text-white text-xs font-semibold">
                 Destacado
               </Badge>
             )}
@@ -173,16 +173,16 @@ function EventCard({ event, index }: { event: typeof featuredEvents[0]; index: n
           </div>
         </div>
         <CardContent className="p-5">
-          <h3 className="font-semibold text-zinc-900 text-lg leading-tight mb-3 group-hover:text-orange-600 transition-colors">
+          <h3 className="font-semibold text-zinc-900 text-lg leading-tight mb-3 group-hover:text-emerald-700 transition-colors">
             {event.title}
           </h3>
           <div className="space-y-2 mb-4">
             <div className="flex items-center gap-2 text-sm text-zinc-500">
-              <Calendar className="w-4 h-4 text-orange-500" />
+              <Calendar className="w-4 h-4 text-emerald-600" />
               {event.date}
             </div>
             <div className="flex items-center gap-2 text-sm text-zinc-500">
-              <MapPin className="w-4 h-4 text-orange-500" />
+              <MapPin className="w-4 h-4 text-emerald-600" />
               {event.location}
             </div>
           </div>
@@ -195,7 +195,7 @@ function EventCard({ event, index }: { event: typeof featuredEvents[0]; index: n
           </div>
           <div className="flex items-center justify-between pt-3 border-t border-zinc-100">
             <span className="font-semibold text-zinc-900">{event.price}</span>
-            <Button size="sm" className="bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-xs h-8">
+            <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs h-8">
               Inscribirme <ArrowRight className="w-3 h-3 ml-1" />
             </Button>
           </div>
@@ -231,8 +231,8 @@ export default function Landing() {
             className="max-w-3xl"
           >
             <motion.div variants={fadeUp} custom={0}>
-              <Badge variant="outline" className="mb-6 text-orange-600 border-orange-200 bg-orange-50 font-medium px-4 py-1.5">
-                <Play className="w-3 h-3 mr-1.5 fill-orange-500 text-orange-500" />
+              <Badge variant="outline" className="mb-6 text-emerald-700 border-emerald-200 bg-emerald-50 font-medium px-4 py-1.5">
+                <Play className="w-3 h-3 mr-1.5 fill-emerald-500 text-emerald-600" />
                 La plataforma deportiva de México
               </Badge>
             </motion.div>
@@ -243,7 +243,7 @@ export default function Landing() {
               className="text-5xl md:text-7xl font-bold text-zinc-900 leading-[1.05] tracking-tight mb-6"
             >
               Tu próximo{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-rose-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
                 reto
               </span>
               {' '}te espera
@@ -266,7 +266,7 @@ export default function Landing() {
                   className="border-0 shadow-none focus-visible:ring-0 text-base placeholder:text-zinc-400"
                 />
               </div>
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-semibold px-8 rounded-xl shrink-0">
+              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold px-8 rounded-xl shrink-0">
                 Buscar
               </Button>
             </motion.div>
@@ -276,7 +276,7 @@ export default function Landing() {
               {['CDMX', 'Monterrey', 'Guadalajara', 'Este mes', '5K - 10K'].map(tag => (
                 <button
                   key={tag}
-                  className="px-3 py-1.5 bg-white border border-zinc-200 rounded-full text-sm text-zinc-600 hover:border-orange-300 hover:text-orange-600 transition-colors"
+                  className="px-3 py-1.5 bg-white border border-zinc-200 rounded-full text-sm text-zinc-600 hover:border-emerald-300 hover:text-emerald-700 transition-colors"
                 >
                   {tag}
                 </button>
@@ -301,10 +301,10 @@ export default function Landing() {
                 key={sport.label}
                 variants={fadeUp}
                 custom={i}
-                className="group flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-orange-50 transition-colors"
+                className="group flex flex-col items-center gap-3 p-4 rounded-2xl hover:bg-emerald-50 transition-colors"
               >
-                <div className="w-14 h-14 rounded-2xl bg-zinc-100 group-hover:bg-orange-100 flex items-center justify-center transition-colors">
-                  <sport.icon className="w-6 h-6 text-zinc-500 group-hover:text-orange-600 transition-colors" />
+                <div className="w-14 h-14 rounded-2xl bg-zinc-100 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
+                  <sport.icon className="w-6 h-6 text-zinc-500 group-hover:text-emerald-700 transition-colors" />
                 </div>
                 <div className="text-center">
                   <p className="text-sm font-semibold text-zinc-800">{sport.label}</p>
@@ -327,7 +327,7 @@ export default function Landing() {
             variants={stagger}
           >
             <div>
-              <motion.span variants={fadeUp} custom={0} className="text-orange-500 font-semibold text-sm uppercase tracking-wider">
+              <motion.span variants={fadeUp} custom={0} className="text-emerald-600 font-semibold text-sm uppercase tracking-wider">
                 Próximos eventos
               </motion.span>
               <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-bold text-zinc-900 mt-2">
@@ -335,7 +335,7 @@ export default function Landing() {
               </motion.h2>
             </div>
             <motion.div variants={fadeUp} custom={2}>
-              <Button variant="ghost" className="text-orange-500 hover:text-orange-600 font-semibold hidden md:flex">
+              <Button variant="ghost" className="text-emerald-600 hover:text-emerald-700 font-semibold hidden md:flex">
                 Ver todos <ArrowRight className="w-4 h-4 ml-1" />
               </Button>
             </motion.div>
@@ -354,7 +354,7 @@ export default function Landing() {
           </motion.div>
 
           <div className="md:hidden mt-8 text-center">
-            <Button variant="outline" className="border-orange-200 text-orange-600">
+            <Button variant="outline" className="border-emerald-200 text-emerald-700">
               Ver todos los eventos <ArrowRight className="w-4 h-4 ml-1" />
             </Button>
           </div>
@@ -394,9 +394,9 @@ export default function Landing() {
               <motion.div key={item.step} variants={fadeUp} custom={i} className="text-center">
                 <div className="relative inline-block mb-6">
                   <div className="w-16 h-16 rounded-2xl bg-white border border-zinc-200 flex items-center justify-center shadow-sm">
-                    <item.icon className="w-7 h-7 text-orange-500" />
+                    <item.icon className="w-7 h-7 text-emerald-600" />
                   </div>
-                  <span className="absolute -top-2 -right-2 w-7 h-7 bg-orange-500 text-white text-xs font-bold rounded-full flex items-center justify-center">
+                  <span className="absolute -top-2 -right-2 w-7 h-7 bg-emerald-600 text-white text-xs font-bold rounded-full flex items-center justify-center">
                     {item.step}
                   </span>
                 </div>
@@ -418,7 +418,7 @@ export default function Landing() {
             viewport={{ once: true }}
             variants={stagger}
           >
-            <motion.span variants={fadeUp} custom={0} className="text-orange-500 font-semibold text-sm uppercase tracking-wider">
+            <motion.span variants={fadeUp} custom={0} className="text-emerald-600 font-semibold text-sm uppercase tracking-wider">
               Seriales
             </motion.span>
             <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-bold text-zinc-900 mt-2">
@@ -453,7 +453,7 @@ export default function Landing() {
                         <MapPin className="w-3.5 h-3.5" />
                         {serial.cities}
                       </p>
-                      <Button variant="ghost" size="sm" className="mt-4 text-orange-500 hover:text-orange-600 p-0 h-auto font-semibold">
+                      <Button variant="ghost" size="sm" className="mt-4 text-emerald-600 hover:text-emerald-700 p-0 h-auto font-semibold">
                         Ver serie <ArrowRight className="w-3.5 h-3.5 ml-1" />
                       </Button>
                     </div>
@@ -489,7 +489,7 @@ export default function Landing() {
       <section className="py-20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
-            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-orange-500 to-rose-500 p-10 md:p-16"
+            className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-500 p-10 md:p-16"
             initial={{ opacity: 0, y: 40 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -525,7 +525,7 @@ export default function Landing() {
                 <span className="text-4xl font-bold text-white">$99</span>
                 <span className="text-white/60">MXN/mes</span>
               </div>
-              <Button size="lg" className="bg-white text-orange-600 hover:bg-white/90 font-bold px-10 rounded-xl text-base shadow-xl">
+              <Button size="lg" className="bg-white text-emerald-700 hover:bg-white/90 font-bold px-10 rounded-xl text-base shadow-xl">
                 Suscribirme a PLUS <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
             </div>
@@ -544,7 +544,7 @@ export default function Landing() {
             variants={stagger}
           >
             <div>
-              <motion.span variants={fadeUp} custom={0} className="text-orange-500 font-semibold text-sm uppercase tracking-wider">
+              <motion.span variants={fadeUp} custom={0} className="text-emerald-600 font-semibold text-sm uppercase tracking-wider">
                 Blog
               </motion.span>
               <motion.h2 variants={fadeUp} custom={1} className="text-3xl md:text-4xl font-bold text-zinc-900 mt-2">
@@ -583,13 +583,13 @@ export default function Landing() {
               <motion.div key={article.title} variants={fadeUp} custom={i}>
                 <Card className="group overflow-hidden border-zinc-200/60 hover:shadow-lg transition-all h-full cursor-pointer">
                   <div className="relative overflow-hidden">
-                    <div className="w-full h-48 bg-gradient-to-br from-orange-100 via-orange-50 to-rose-100 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                      <Heart className="w-8 h-8 text-orange-300" />
+                    <div className="w-full h-48 bg-gradient-to-br from-teal-100 via-emerald-50 to-cyan-100 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
+                      <Heart className="w-8 h-8 text-teal-300" />
                     </div>
                     <Badge className="absolute top-3 left-3 bg-white/90 text-zinc-700 text-xs">{article.category}</Badge>
                   </div>
                   <CardContent className="p-5">
-                    <h3 className="font-semibold text-zinc-900 leading-snug mb-3 group-hover:text-orange-600 transition-colors">
+                    <h3 className="font-semibold text-zinc-900 leading-snug mb-3 group-hover:text-emerald-700 transition-colors">
                       {article.title}
                     </h3>
                     <div className="flex items-center gap-1.5 text-xs text-zinc-400">
@@ -615,7 +615,7 @@ export default function Landing() {
           >
             <motion.h2 variants={fadeUp} custom={0} className="text-4xl md:text-5xl font-bold text-zinc-900 leading-tight mb-6">
               ¿Listo para cruzar{' '}
-              <span className="bg-gradient-to-r from-orange-500 to-rose-500 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-emerald-500 to-teal-500 bg-clip-text text-transparent">
                 la meta
               </span>
               ?
@@ -624,7 +624,7 @@ export default function Landing() {
               Crea tu cuenta gratis y encuentra tu próximo evento.
             </motion.p>
             <motion.div variants={fadeUp} custom={2} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg" className="bg-orange-500 hover:bg-orange-600 text-white font-bold px-10 rounded-xl text-base shadow-lg shadow-orange-500/25">
+              <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-10 rounded-xl text-base shadow-lg shadow-emerald-500/25">
                 Crear Cuenta Gratis <ArrowRight className="w-5 h-5 ml-2" />
               </Button>
               <Button size="lg" variant="outline" className="border-zinc-300 text-zinc-700 font-semibold px-10 rounded-xl text-base">
@@ -641,7 +641,7 @@ export default function Landing() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 flex items-center justify-center">
+                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
                   <Zap className="w-4 h-4 text-white" />
                 </div>
                 <span className="font-bold text-xl text-white">Pulsara</span>
