@@ -291,6 +291,22 @@ const schema = a.schema({
     .returns(a.boolean())
     .authorization((allow) => [allow.authenticated()])
     .handler(a.handler.function('switchToOrganizer')),
+
+  createCheckoutSession: a
+    .mutation()
+    .arguments({
+      eventId: a.string().required(),
+      distanceId: a.string().required(),
+      distanceName: a.string().required(),
+      eventTitle: a.string().required(),
+      priceInCentavos: a.integer().required(),
+      userId: a.string().required(),
+      userEmail: a.string().required(),
+      registrationId: a.string().required(),
+    })
+    .returns(a.string())
+    .authorization((allow) => [allow.authenticated()])
+    .handler(a.handler.function('createCheckout')),
 })
 
 export type Schema = ClientSchema<typeof schema>

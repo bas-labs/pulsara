@@ -47,7 +47,7 @@ export default function EventDetail() {
     setRegistering(true)
     try {
       const dist = distances.find(d => d.id === selectedDistance)
-      await client.models.Registration.create({
+      const { data: regData } = await client.models.Registration.create({
         userId: user.userId,
         eventId: event.id,
         distanceId: selectedDistance,
@@ -77,6 +77,29 @@ export default function EventDetail() {
         }
       }
       setRegistered(true)
+
+      // If paid event, redirect to Stripe checkout
+      if (dist && dist.price && dist.price > 0 && regData) {
+        try {
+          const { data: checkoutUrl } = await client.mutations.createCheckoutSession({
+            eventId: event.id,
+            distanceId: dist.id,
+            distanceName: dist.name,
+            eventTitle: event.title,
+            priceInCentavos: dist.price,
+            userId: user!.userId,
+            userEmail: user!.userId, // email from Cognito
+            registrationId: regData.id,
+          })
+          if (checkoutUrl) {
+            window.location.href = checkoutUrl
+            return
+          }
+        } catch (payErr) {
+          console.error('Checkout creation failed:', payErr)
+          // Registration still created, payment can be retried
+        }
+      }
     } catch (err) {
       console.error('Registration failed:', err)
     } finally {
