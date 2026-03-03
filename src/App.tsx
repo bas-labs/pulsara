@@ -21,6 +21,7 @@ const SerialsBrowser = lazy(() => import('./pages/SerialsBrowser'))
 const Blog = lazy(() => import('./pages/Blog'))
 const OrgUploadResults = lazy(() => import('./pages/organizador/UploadResults'))
 const Profile = lazy(() => import('./pages/Profile'))
+const NotFound = lazy(() => import('./pages/NotFound'))
 
 function Loading() {
   return (
@@ -64,6 +65,7 @@ function AppRoutes() {
         <Route path="/atleta" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaDashboard /></Layout></ProtectedRoute>} />
         <Route path="/atleta/mis-eventos" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaMyEvents /></Layout></ProtectedRoute>} />
         <Route path="/atleta/resultados" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaResults /></Layout></ProtectedRoute>} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Suspense>
   )
