@@ -6,6 +6,7 @@ import { postConfirmation } from './functions/post-confirmation/resource'
 import { switchToOrganizer } from './functions/switch-to-organizer/resource'
 import { createCheckout } from './functions/create-checkout/resource'
 import { stripeWebhook } from './functions/stripe-webhook/resource'
+import { Aws } from 'aws-cdk-lib'
 import { Policy, PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam'
 
 const backend = defineBackend({
@@ -18,12 +19,17 @@ const backend = defineBackend({
   stripeWebhook,
 })
 
+// Use Aws pseudo-parameters to construct ARN without direct UserPool reference.
+// Referencing backend.auth.resources.userPool.userPoolArn directly creates a
+// CloudFormation circular dependency within the auth stack (UserPool <-> Lambda trigger).
+const cognitoPoolArn = `arn:aws:cognito-idp:${Aws.REGION}:${Aws.ACCOUNT_ID}:userpool/*`
+
 // Grant postConfirmation Lambda permission to add users to groups
 backend.postConfirmation.resources.lambda.addToRolePolicy(
   new PolicyStatement({
     effect: Effect.ALLOW,
     actions: ['cognito-idp:AdminAddUserToGroup'],
-    resources: [backend.auth.resources.userPool.userPoolArn],
+    resources: [cognitoPoolArn],
   })
 )
 
@@ -38,7 +44,7 @@ backend.switchToOrganizer.resources.lambda.addToRolePolicy(
       'cognito-idp:AdminAddUserToGroup',
       'cognito-idp:AdminRemoveUserFromGroup',
     ],
-    resources: [backend.auth.resources.userPool.userPoolArn],
+    resources: [cognitoPoolArn],
   })
 )
 
