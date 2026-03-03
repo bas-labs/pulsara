@@ -36,7 +36,7 @@ const featuredEvents = [
     date: '24 Ago 2026',
     location: 'Zócalo, CDMX',
     sport: 'Running',
-    image: '',
+    image: '/images/marathon.jpg',
     distances: ['42K', '21K', '10K'],
     price: 'Desde $890',
     spots: 847,
@@ -47,7 +47,7 @@ const featuredEvents = [
     date: '15 Mar 2026',
     location: 'Oaxaca',
     sport: 'Ciclismo',
-    image: '',
+    image: '/images/cycling.jpg',
     distances: ['120K', '80K'],
     price: 'Desde $1,200',
     spots: 234,
@@ -58,7 +58,7 @@ const featuredEvents = [
     date: '05 Abr 2026',
     location: 'Cozumel, Q.Roo',
     sport: 'Triatlón',
-    image: '',
+    image: '/images/triathlon.jpg',
     distances: ['Sprint', 'Olímpico'],
     price: 'Desde $1,650',
     spots: 156,
@@ -69,7 +69,7 @@ const featuredEvents = [
     date: '22 May 2026',
     location: 'Ajusco, CDMX',
     sport: 'OCR',
-    image: '',
+    image: '/images/ocr.jpg',
     distances: ['Beast', 'Super', 'Sprint'],
     price: 'Desde $1,400',
     spots: 312,
@@ -150,12 +150,11 @@ function EventCard({ event, index }: { event: typeof featuredEvents[0]; index: n
     <motion.div variants={fadeUp} custom={index}>
       <Card className="group overflow-hidden border-zinc-200/60 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 h-full">
         <div className="relative overflow-hidden">
-          <div className="w-full h-52 bg-gradient-to-br from-zinc-200 via-zinc-100 to-zinc-200 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-            <div className="text-center">
-              <Trophy className="w-8 h-8 text-zinc-400 mx-auto mb-2" />
-              <span className="text-xs text-zinc-400 font-medium">{event.sport}</span>
-            </div>
-          </div>
+          <img
+            src={event.image}
+            alt={event.title}
+            className="w-full h-52 object-cover group-hover:scale-105 transition-transform duration-500"
+          />
           <div className="absolute top-3 left-3 flex gap-2">
             <Badge className="bg-white/90 text-zinc-800 backdrop-blur-sm text-xs font-semibold">
               {event.sport}
@@ -564,28 +563,30 @@ export default function Landing() {
               {
                 title: 'Plan de entrenamiento: tu primer 21K',
                 category: 'Running',
-                image: '',
+                image: '/images/blog-running.jpg',
                 time: '8 min',
               },
               {
                 title: 'Nutrición para triatlón: qué comer antes y después',
                 category: 'Nutrición',
-                image: '',
+                image: '/images/blog-nutrition.jpg',
                 time: '5 min',
               },
               {
                 title: 'Cómo elegir tu primera bici de ruta',
                 category: 'Ciclismo',
-                image: '',
+                image: '/images/blog-cycling.jpg',
                 time: '6 min',
               },
             ].map((article, i) => (
               <motion.div key={article.title} variants={fadeUp} custom={i}>
                 <Card className="group overflow-hidden border-zinc-200/60 hover:shadow-lg transition-all h-full cursor-pointer">
                   <div className="relative overflow-hidden">
-                    <div className="w-full h-48 bg-gradient-to-br from-teal-100 via-emerald-50 to-cyan-100 group-hover:scale-105 transition-transform duration-500 flex items-center justify-center">
-                      <Heart className="w-8 h-8 text-teal-300" />
-                    </div>
+                    <img
+                      src={article.image}
+                      alt={article.title}
+                      className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-500"
+                    />
                     <Badge className="absolute top-3 left-3 bg-white/90 text-zinc-700 text-xs">{article.category}</Badge>
                   </div>
                   <CardContent className="p-5">
