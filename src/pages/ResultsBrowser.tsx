@@ -21,7 +21,7 @@ export default function ResultsBrowser() {
 
   async function loadResults() {
     try {
-      const { data } = await client.models.Result.list({ limit: 100, authMode: 'iam' })
+      const { data } = await client.models.Result.list({ limit: 100, authMode: 'identityPool' })
       setResults(data.sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ))

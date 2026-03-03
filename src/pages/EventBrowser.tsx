@@ -35,7 +35,7 @@ export default function EventBrowser() {
     try {
       const filter: Record<string, { eq: string }> = { status: { eq: 'PUBLISHED' } }
       if (sportFilter) filter.sport = { eq: sportFilter }
-      const { data } = await client.models.Event.list({ filter, authMode: 'iam' })
+      const { data } = await client.models.Event.list({ filter, authMode: 'identityPool' })
       setEvents(data.sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()))
     } catch (err) {
       console.error('Failed to load events:', err)
