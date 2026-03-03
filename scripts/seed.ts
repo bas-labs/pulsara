@@ -9,7 +9,7 @@ import { randomUUID } from 'crypto'
 import seedEvents from '../infra/seed-events-full.json'
 
 const REGION = 'us-east-1'
-const SUFFIX = 'tcnflzpturdtratjqzwrhjyu3a-NONE'
+const SUFFIX = process.env.SEED_SUFFIX ?? 'tcnflzpturdtratjqzwrhjyu3a-NONE'
 
 const EVENT_TABLE = `Event-${SUFFIX}`
 const DISTANCE_TABLE = `EventDistance-${SUFFIX}`

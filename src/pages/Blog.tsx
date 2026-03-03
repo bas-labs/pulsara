@@ -26,7 +26,7 @@ export default function Blog() {
 
   async function load() {
     try {
-      const { data } = await client.models.Article.list()
+      const { data } = await client.models.Article.list({ authMode: 'iam' })
       setArticles(data.filter(a => a.status === 'PUBLISHED').sort((a, b) =>
         new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime()
       ))

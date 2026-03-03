@@ -20,7 +20,7 @@ export default function SerialsBrowser() {
 
   async function load() {
     try {
-      const { data } = await client.models.Serial.list()
+      const { data } = await client.models.Serial.list({ authMode: 'iam' })
       setSerials(data)
     } catch (err) { console.error(err) }
     finally { setLoading(false) }

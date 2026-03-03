@@ -31,11 +31,11 @@ export default function EventDetail() {
 
   async function loadEvent() {
     try {
-      const { data } = await client.models.Event.listEventBySlug({ slug: slug! })
+      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { authMode: 'iam' })
       if (data.length > 0) {
         const ev = data[0]
         setEvent(ev)
-        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id })
+        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { authMode: 'iam' })
         setDistances(dists)
         if (dists.length > 0) setSelectedDistance(dists[0].id)
       }
