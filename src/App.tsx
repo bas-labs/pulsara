@@ -20,6 +20,7 @@ const ResultsBrowser = lazy(() => import('./pages/ResultsBrowser'))
 const SerialsBrowser = lazy(() => import('./pages/SerialsBrowser'))
 const Blog = lazy(() => import('./pages/Blog'))
 const OrgUploadResults = lazy(() => import('./pages/organizador/UploadResults'))
+const Profile = lazy(() => import('./pages/Profile'))
 
 function Loading() {
   return (
@@ -59,6 +60,7 @@ function AppRoutes() {
         <Route path="/org/crear-evento" element={<ProtectedRoute requiredGroup="organizadores"><Layout><OrgCreateEvent /></Layout></ProtectedRoute>} />
         <Route path="/org/evento/:eventId" element={<ProtectedRoute requiredGroup="organizadores"><Layout><OrgEventManage /></Layout></ProtectedRoute>} />
         <Route path="/org/evento/:eventId/resultados" element={<ProtectedRoute requiredGroup="organizadores"><Layout><OrgUploadResults /></Layout></ProtectedRoute>} />
+        <Route path="/perfil" element={<ProtectedRoute><Layout><Profile /></Layout></ProtectedRoute>} />
         <Route path="/atleta" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaDashboard /></Layout></ProtectedRoute>} />
         <Route path="/atleta/mis-eventos" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaMyEvents /></Layout></ProtectedRoute>} />
         <Route path="/atleta/resultados" element={<ProtectedRoute requiredGroup="atletas"><Layout><AtletaResults /></Layout></ProtectedRoute>} />
