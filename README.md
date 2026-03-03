@@ -1,73 +1,128 @@
-# React + TypeScript + Vite
+# Pulsara 🏃⚡
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Sports event discovery & registration platform for Mexico. Built with React + TypeScript + Vite + Tailwind CSS + shadcn/ui + AWS Amplify Gen 2.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+### For Athletes (Atletas)
+- Browse events by sport, city, date
+- Register for events with distance selection
+- View race results (times, ranks, pace)
+- Track personal stats (events, distance, podiums)
+- PLUS subscription for premium features
 
-## React Compiler
+### For Organizers (Organizadores)
+- Create and manage events
+- Set multiple distances with pricing
+- View and manage registrations
+- Publish/unpublish events
+- Upload results post-event
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Tech Stack
 
-## Expanding the ESLint configuration
+| Layer | Technology |
+|-------|-----------|
+| Frontend | React 19 + TypeScript + Vite |
+| Styling | Tailwind CSS v4 + shadcn/ui |
+| Animation | Framer Motion |
+| Icons | Lucide React |
+| Auth | AWS Cognito (2 groups: organizadores, atletas) |
+| API | AWS AppSync (GraphQL) via Amplify Data |
+| Database | DynamoDB (8 tables, 16+ GSIs) |
+| Storage | S3 (event images, avatars, race photos) |
+| Hosting | AWS Amplify Hosting |
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+## Getting Started
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+### Prerequisites
+- Node.js 18+
+- AWS account
+- Amplify CLI: `npm install -g @aws-amplify/backend-cli`
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+### Setup
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+# Clone
+git clone https://github.com/bas-labs/pulsara.git
+cd pulsara
+
+# Install deps
+npm install
+
+# Start Amplify sandbox (creates cloud resources)
+npx ampx sandbox
+
+# In another terminal, start dev server
+npm run dev
+
+# Seed database with events
+npx tsx scripts/seed.ts
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Deploy to Production
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+```bash
+# Connect to Amplify Hosting in AWS Console:
+# 1. Go to AWS Amplify Console
+# 2. "Host web app" → Connect to GitHub → select bas-labs/pulsara
+# 3. Amplify auto-detects the build settings
+# 4. Deploy
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+# Or via CLI:
+npx ampx pipeline-deploy --branch main --app-id <your-app-id>
 ```
+
+## Data Models
+
+- **UserProfile** — Athletes & organizers with stats + PLUS subscription
+- **Event** — Sports events with location, dates, pricing, status
+- **EventDistance** — Distance options per event (10K, 21K, etc.)
+- **Registration** — User ↔ Event registrations with payment status
+- **Result** — Race results with chip time, ranks, pace
+- **Serial** — Race series (multi-event competitions)
+- **Order** — Payment records (Stripe integration ready)
+- **Article** — Blog content by category
+
+## Project Structure
+
+```
+pulsara/
+├── amplify/
+│   ├── auth/resource.ts          # Cognito config
+│   ├── data/resource.ts          # 8 data models + GSIs
+│   ├── storage/resource.ts       # S3 buckets
+│   └── backend.ts                # Entry point
+├── src/
+│   ├── components/
+│   │   ├── ui/                   # shadcn components
+│   │   └── Layout.tsx            # Nav + role-aware routing
+│   ├── context/
+│   │   └── AuthContext.tsx        # Auth state + group detection
+│   ├── pages/
+│   │   ├── Landing.tsx           # Public landing page
+│   │   ├── Onboarding.tsx        # Role selection + profile
+│   │   ├── EventBrowser.tsx      # Event search + filters
+│   │   ├── EventDetail.tsx       # Event info + registration
+│   │   ├── atleta/
+│   │   │   ├── Dashboard.tsx     # Athlete stats + upcoming
+│   │   │   ├── MyEvents.tsx      # Registration history
+│   │   │   └── Results.tsx       # Race results
+│   │   └── organizador/
+│   │       ├── Dashboard.tsx     # Org stats + event list
+│   │       ├── CreateEvent.tsx   # Event creation form
+│   │       └── ManageEvent.tsx   # Registrations + publish
+│   ├── App.tsx                   # Routes + lazy loading
+│   └── main.tsx                  # Amplify config + entry
+├── infra/
+│   ├── dynamodb-schema.md        # Full schema documentation
+│   ├── create-tables.sh          # Standalone DynamoDB creation
+│   └── seed-events.json          # 25 scraped events
+├── scripts/
+│   └── seed.ts                   # Database seeder
+└── public/
+    └── images/                   # DALL-E generated images
+```
+
+## License
+
+MIT
