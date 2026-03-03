@@ -4,14 +4,14 @@ import { motion } from 'framer-motion'
 import {
   Search, MapPin, Calendar, ArrowRight, Timer, Trophy,
   Mountain, Bike, Waves, Footprints, Star,
-  Zap, Shield, Heart, Play, Clock, Dumbbell, Medal,
+  Zap, Shield, Heart, Clock, Dumbbell, Medal,
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import Navbar from '@/components/Navbar'
-import { fadeUp, stagger, scaleIn, useCountUp, springHover } from '@/lib/animations'
+import { fadeUp, stagger, useCountUp, springHover } from '@/lib/animations'
 
 /* ─── Data ─── */
 const sports = [

@@ -1,5 +1,6 @@
 import { useState, useRef } from 'react'
 import { useParams, Link } from 'react-router-dom'
+import { motion, AnimatePresence } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../../amplify/data/resource'
 import { Card, CardContent } from '@/components/ui/card'
@@ -8,6 +9,7 @@ import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { ArrowLeft, Upload, FileSpreadsheet, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
+import PageWrapper from '@/components/PageWrapper'
 
 const client = generateClient<Schema>()
 
@@ -107,119 +109,128 @@ export default function UploadResults() {
   }
 
   return (
-    <div className="max-w-4xl mx-auto px-6 py-10">
-      <Link to={`/org/evento/${eventId}`} className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
-        <ArrowLeft className="w-4 h-4" /> Volver al evento
-      </Link>
+    <PageWrapper>
+      <div className="max-w-4xl mx-auto px-6 py-10">
+        <Link to={`/org/evento/${eventId}`} className="inline-flex items-center gap-2 text-sm text-zinc-500 hover:text-zinc-900 mb-6">
+          <ArrowLeft className="w-4 h-4" /> Volver al evento
+        </Link>
 
-      <h1 className="text-3xl font-bold text-zinc-900 mb-2">Subir Resultados</h1>
-      <p className="text-zinc-500 mb-8">Sube un archivo CSV con los resultados de la competencia</p>
+        <h1 className="text-3xl font-bold text-zinc-900 mb-2">Subir Resultados</h1>
+        <p className="text-zinc-500 mb-8">Sube un archivo CSV con los resultados de la competencia</p>
 
-      <Card className="mb-6">
-        <CardContent className="p-6">
-          <div className="flex items-center gap-4 mb-4">
-            <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
-            <div>
-              <h3 className="font-semibold text-zinc-900">Formato CSV</h3>
-              <p className="text-sm text-zinc-500">Columnas: bib, nombre, distancia, chip_time, pos, genero, categoria, ritmo</p>
-            </div>
-          </div>
-
-          <Input
-            ref={fileRef}
-            type="file"
-            accept=".csv"
-            onChange={handleFile}
-            className="cursor-pointer"
-          />
-          {fileName && <p className="text-sm text-zinc-500 mt-2">Archivo: {fileName}</p>}
-        </CardContent>
-      </Card>
-
-      {parsed.length > 0 && (
-        <>
-          <Card className="mb-6">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="font-semibold text-zinc-900">Vista previa ({parsed.length} resultados)</h3>
-                <Badge className="bg-emerald-100 text-emerald-700">{parsed.length} filas</Badge>
+        <Card className="mb-6">
+          <CardContent className="p-6">
+            <div className="flex items-center gap-4 mb-4">
+              <FileSpreadsheet className="w-8 h-8 text-emerald-600" />
+              <div>
+                <h3 className="font-semibold text-zinc-900">Formato CSV</h3>
+                <p className="text-sm text-zinc-500">Columnas: bib, nombre, distancia, chip_time, pos, genero, categoria, ritmo</p>
               </div>
-              <div className="overflow-x-auto max-h-64">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b text-left text-zinc-500">
-                      <th className="pb-2">Dorsal</th>
-                      <th className="pb-2">Nombre</th>
-                      <th className="pb-2">Distancia</th>
-                      <th className="pb-2">Chip Time</th>
-                      <th className="pb-2">Pos</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {parsed.slice(0, 10).map((r, i) => (
-                      <tr key={i} className="border-b border-zinc-100">
-                        <td className="py-2">{r.bibNumber}</td>
-                        <td className="py-2 font-medium">{r.athleteName}</td>
-                        <td className="py-2">{r.distanceName}</td>
-                        <td className="py-2 font-mono">{r.chipTime}</td>
-                        <td className="py-2">#{r.overallRank}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-                {parsed.length > 10 && (
-                  <p className="text-xs text-zinc-400 mt-2">... y {parsed.length - 10} más</p>
+            </div>
+
+            <Input
+              ref={fileRef}
+              type="file"
+              accept=".csv"
+              onChange={handleFile}
+              className="cursor-pointer"
+            />
+            {fileName && <p className="text-sm text-zinc-500 mt-2">Archivo: {fileName}</p>}
+          </CardContent>
+        </Card>
+
+        <AnimatePresence>
+          {parsed.length > 0 && (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Card className="mb-6">
+                <CardContent className="p-6">
+                  <div className="flex items-center justify-between mb-4">
+                    <h3 className="font-semibold text-zinc-900">Vista previa ({parsed.length} resultados)</h3>
+                    <Badge className="bg-emerald-100 text-emerald-700">{parsed.length} filas</Badge>
+                  </div>
+                  <div className="overflow-x-auto max-h-64">
+                    <table className="w-full text-sm">
+                      <thead>
+                        <tr className="border-b text-left text-zinc-500">
+                          <th className="pb-2">Dorsal</th>
+                          <th className="pb-2">Nombre</th>
+                          <th className="pb-2">Distancia</th>
+                          <th className="pb-2">Chip Time</th>
+                          <th className="pb-2">Pos</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {parsed.slice(0, 10).map((r, i) => (
+                          <tr key={i} className="border-b border-zinc-100">
+                            <td className="py-2">{r.bibNumber}</td>
+                            <td className="py-2 font-medium">{r.athleteName}</td>
+                            <td className="py-2">{r.distanceName}</td>
+                            <td className="py-2 font-mono">{r.chipTime}</td>
+                            <td className="py-2">#{r.overallRank}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                    {parsed.length > 10 && (
+                      <p className="text-xs text-zinc-400 mt-2">... y {parsed.length - 10} más</p>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <div className="flex items-center gap-4">
+                <Button
+                  onClick={handleUpload}
+                  disabled={uploading}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                >
+                  {uploading ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Subiendo {uploaded}/{parsed.length}
+                    </>
+                  ) : (
+                    <>
+                      <Upload className="w-4 h-4 mr-2" />
+                      Subir {parsed.length} resultados
+                    </>
+                  )}
+                </Button>
+                {uploading && (
+                  <div className="flex items-center gap-2">
+                    <div className="w-48 bg-zinc-200 rounded-full h-2">
+                      <div
+                        className="bg-emerald-600 h-2 rounded-full transition-all"
+                        style={{ width: `${(uploaded / parsed.length) * 100}%` }}
+                      />
+                    </div>
+                    <span className="text-sm text-zinc-500">{Math.round((uploaded / parsed.length) * 100)}%</span>
+                  </div>
                 )}
               </div>
-            </CardContent>
-          </Card>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
-          <div className="flex items-center gap-4">
-            <Button
-              onClick={handleUpload}
-              disabled={uploading}
-              className="bg-emerald-600 hover:bg-emerald-700"
-            >
-              {uploading ? (
-                <>
-                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
-                  Subiendo {uploaded}/{parsed.length}
-                </>
-              ) : (
-                <>
-                  <Upload className="w-4 h-4 mr-2" />
-                  Subir {parsed.length} resultados
-                </>
-              )}
-            </Button>
-            {uploading && (
-              <div className="flex items-center gap-2">
-                <div className="w-48 bg-zinc-200 rounded-full h-2">
-                  <div
-                    className="bg-emerald-600 h-2 rounded-full transition-all"
-                    style={{ width: `${(uploaded / parsed.length) * 100}%` }}
-                  />
-                </div>
-                <span className="text-sm text-zinc-500">{Math.round((uploaded / parsed.length) * 100)}%</span>
-              </div>
-            )}
-          </div>
-        </>
-      )}
-
-      <Card className="mt-8 border-amber-200 bg-amber-50">
-        <CardContent className="p-4 flex items-start gap-3">
-          <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
-          <div className="text-sm text-amber-800">
-            <p className="font-medium">Formato esperado del CSV</p>
-            <code className="block mt-1 text-xs bg-amber-100 p-2 rounded">
-              bib,nombre,distancia,chip_time,pos,genero,categoria,ritmo<br/>
-              101,Juan Pérez,10K,00:42:15,1,M,20-29,4:13<br/>
-              102,María López,10K,00:45:30,2,F,30-39,4:33
-            </code>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+        <Card className="mt-8 border-amber-200 bg-amber-50">
+          <CardContent className="p-4 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+            <div className="text-sm text-amber-800">
+              <p className="font-medium">Formato esperado del CSV</p>
+              <code className="block mt-1 text-xs bg-amber-100 p-2 rounded">
+                bib,nombre,distancia,chip_time,pos,genero,categoria,ritmo<br/>
+                101,Juan Pérez,10K,00:42:15,1,M,20-29,4:13<br/>
+                102,María López,10K,00:45:30,2,F,30-39,4:33
+              </code>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    </PageWrapper>
   )
 }
