@@ -2,7 +2,7 @@ import { type ReactNode } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { Button } from './ui/button'
-import { Zap, LogOut, LayoutDashboard } from 'lucide-react'
+import { Zap, LogOut, LayoutDashboard, User } from 'lucide-react'
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { user, isOrganizador, isAtleta, logout } = useAuth()
@@ -26,6 +26,9 @@ export default function Layout({ children }: { children: ReactNode }) {
 
           <div className="hidden md:flex items-center gap-6">
             <Link to="/eventos" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Eventos</Link>
+            <Link to="/seriales" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Seriales</Link>
+            <Link to="/resultados" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Resultados</Link>
+            <Link to="/blog" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors">Blog</Link>
             {isOrganizador && (
               <Link to="/org" className="text-sm font-medium text-zinc-500 hover:text-zinc-900 transition-colors flex items-center gap-1">
                 <LayoutDashboard className="w-3.5 h-3.5" /> Mi Panel
@@ -46,6 +49,11 @@ export default function Layout({ children }: { children: ReactNode }) {
                 <span className="text-sm text-zinc-500 hidden md:block">
                   {isOrganizador ? '🏢 Organizador' : '🏃 Atleta'}
                 </span>
+                <Link to="/perfil">
+                  <Button variant="ghost" size="sm" className="text-zinc-500">
+                    <User className="w-4 h-4" />
+                  </Button>
+                </Link>
                 <Button variant="ghost" size="sm" onClick={handleLogout} className="text-zinc-500">
                   <LogOut className="w-4 h-4" />
                 </Button>
