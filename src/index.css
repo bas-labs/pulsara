@@ -123,6 +123,16 @@
     }
 }
 
+/* ─── Scroll Snap ─── */
+.snap-landing {
+  scroll-snap-type: y proximity;
+  overflow-y: auto;
+  height: 100vh;
+}
+.snap-section {
+  scroll-snap-align: start;
+}
+
 /* ─── Glow Utilities ─── */
 .glow-emerald {
   box-shadow: 0 0 0 3px oklch(0.696 0.17 162.48 / 0.2), 0 4px 16px oklch(0.696 0.17 162.48 / 0.1);

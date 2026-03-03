@@ -181,11 +181,11 @@ export default function Landing() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="snap-landing bg-white">
       <Navbar />
 
       {/* ─── HERO ─── */}
-      <section className="relative pt-32 pb-24 overflow-hidden">
+      <section className="snap-section relative min-h-screen flex flex-col justify-center overflow-hidden">
         {/* Base fade to white at bottom */}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-white" />
 
@@ -209,25 +209,25 @@ export default function Landing() {
 
         {/* Floating sport icons — right side */}
         <div className="absolute inset-0 pointer-events-none hidden lg:block">
-          <div className="absolute top-28 right-[8%] w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm border border-emerald-200/50 shadow-lg shadow-emerald-500/10 flex items-center justify-center" style={{ animation: 'float-1 4s ease-in-out infinite' }}>
+          <div className="absolute top-[15%] right-[8%] w-14 h-14 rounded-2xl bg-white/80 backdrop-blur-sm border border-emerald-200/50 shadow-lg shadow-emerald-500/10 flex items-center justify-center" style={{ animation: 'float-1 4s ease-in-out infinite' }}>
             <Footprints className="w-7 h-7 text-emerald-600" />
           </div>
-          <div className="absolute top-52 right-[22%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-blue-200/50 shadow-lg shadow-blue-500/10 flex items-center justify-center" style={{ animation: 'float-2 5s ease-in-out infinite 0.5s' }}>
+          <div className="absolute top-[50%] right-[20%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-blue-200/50 shadow-lg shadow-blue-500/10 flex items-center justify-center" style={{ animation: 'float-2 5s ease-in-out infinite 0.5s' }}>
             <Bike className="w-6 h-6 text-blue-500" />
           </div>
-          <div className="absolute top-36 right-[35%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-cyan-200/50 shadow-lg shadow-cyan-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.5s ease-in-out infinite 1s' }}>
+          <div className="absolute top-[28%] right-[32%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-cyan-200/50 shadow-lg shadow-cyan-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.5s ease-in-out infinite 1s' }}>
             <Waves className="w-5 h-5 text-cyan-500" />
           </div>
-          <div className="absolute top-72 right-[12%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-200/50 shadow-lg shadow-amber-500/10 flex items-center justify-center" style={{ animation: 'float-4 5.5s ease-in-out infinite 0.3s' }}>
+          <div className="absolute top-[65%] right-[10%] w-12 h-12 rounded-2xl bg-white/80 backdrop-blur-sm border border-amber-200/50 shadow-lg shadow-amber-500/10 flex items-center justify-center" style={{ animation: 'float-4 5.5s ease-in-out infinite 0.3s' }}>
             <Trophy className="w-6 h-6 text-amber-500" />
           </div>
-          <div className="absolute top-20 right-[28%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-rose-200/50 shadow-lg shadow-rose-500/10 flex items-center justify-center" style={{ animation: 'float-5 4.8s ease-in-out infinite 0.7s' }}>
+          <div className="absolute top-[18%] right-[24%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-rose-200/50 shadow-lg shadow-rose-500/10 flex items-center justify-center" style={{ animation: 'float-5 4.8s ease-in-out infinite 0.7s' }}>
             <Mountain className="w-5 h-5 text-rose-500" />
           </div>
-          <div className="absolute top-64 right-[32%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-violet-200/50 shadow-lg shadow-violet-500/10 flex items-center justify-center" style={{ animation: 'float-1 5.2s ease-in-out infinite 1.2s' }}>
+          <div className="absolute top-[55%] right-[30%] w-11 h-11 rounded-xl bg-white/80 backdrop-blur-sm border border-violet-200/50 shadow-lg shadow-violet-500/10 flex items-center justify-center" style={{ animation: 'float-1 5.2s ease-in-out infinite 1.2s' }}>
             <Dumbbell className="w-5 h-5 text-violet-500" />
           </div>
-          <div className="absolute top-44 right-[5%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-lg shadow-orange-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.2s ease-in-out infinite 0.9s' }}>
+          <div className="absolute top-[38%] right-[5%] w-10 h-10 rounded-xl bg-white/80 backdrop-blur-sm border border-orange-200/50 shadow-lg shadow-orange-500/10 flex items-center justify-center" style={{ animation: 'float-3 4.2s ease-in-out infinite 0.9s' }}>
             <Medal className="w-5 h-5 text-orange-500" />
           </div>
         </div>
@@ -238,7 +238,7 @@ export default function Landing() {
           backgroundSize: '32px 32px',
         }} />
 
-        <div className="max-w-7xl mx-auto px-6 relative z-10">
+        <div className="max-w-7xl mx-auto px-6 relative z-10 pt-20">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -309,7 +309,7 @@ export default function Landing() {
       </section>
 
       {/* ─── SPORT CATEGORIES ─── */}
-      <section className="py-20 border-y border-zinc-100">
+      <section className="snap-section min-h-screen flex flex-col justify-center py-20 border-y border-zinc-100">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="text-center mb-12"
@@ -361,7 +361,7 @@ export default function Landing() {
       </section>
 
       {/* ─── FEATURED EVENTS ─── */}
-      <section id="eventos" className="py-20">
+      <section id="eventos" className="snap-section min-h-screen flex flex-col justify-center py-20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="flex items-end justify-between mb-12"
@@ -410,7 +410,7 @@ export default function Landing() {
       </section>
 
       {/* ─── HOW IT WORKS ─── */}
-      <section className="py-20 bg-zinc-50">
+      <section className="snap-section min-h-screen flex flex-col justify-center py-20 bg-zinc-50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="text-center mb-16"
@@ -463,7 +463,7 @@ export default function Landing() {
       </section>
 
       {/* ─── SERIALS ─── */}
-      <section id="seriales" className="py-20">
+      <section id="seriales" className="snap-section min-h-screen flex flex-col justify-center py-20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="mb-12"
@@ -520,7 +520,7 @@ export default function Landing() {
       </section>
 
       {/* ─── STATS ─── */}
-      <section className="py-20 bg-zinc-900">
+      <section className="snap-section py-20 bg-zinc-900">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="grid grid-cols-2 md:grid-cols-4 gap-8"
@@ -539,7 +539,7 @@ export default function Landing() {
       </section>
 
       {/* ─── PLUS SUBSCRIPTION ─── */}
-      <section className="py-20">
+      <section className="snap-section min-h-screen flex flex-col justify-center py-20">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-500 to-teal-500 p-10 md:p-16"
@@ -610,7 +610,7 @@ export default function Landing() {
       </section>
 
       {/* ─── ARTICLES ─── */}
-      <section className="py-20 bg-zinc-50">
+      <section className="snap-section min-h-screen flex flex-col justify-center py-20 bg-zinc-50">
         <div className="max-w-7xl mx-auto px-6">
           <motion.div
             className="flex items-end justify-between mb-12"
@@ -685,7 +685,7 @@ export default function Landing() {
       </section>
 
       {/* ─── CTA ─── */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="snap-section min-h-screen flex flex-col justify-center py-24 relative overflow-hidden">
         {/* Subtle background sport icons */}
         <div className="absolute inset-0 pointer-events-none opacity-[0.04]">
           <Footprints className="absolute top-12 left-[10%] w-20 h-20 text-zinc-900 rotate-12" />
@@ -728,7 +728,7 @@ export default function Landing() {
       </section>
 
       {/* ─── FOOTER ─── */}
-      <footer className="bg-zinc-900 py-16">
+      <footer className="snap-section bg-zinc-900 py-16">
         <div className="max-w-7xl mx-auto px-6">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12">
             <div className="col-span-2 md:col-span-1">
