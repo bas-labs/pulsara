@@ -48,15 +48,30 @@ fi
 
 echo "    Found: $FUNCTION_NAME"
 
-# 2. Get the function URL
+# 2. Get or create the function URL
 echo "==> Getting function URL..."
 WEBHOOK_URL=$(aws lambda get-function-url-config \
   --function-name "$FUNCTION_NAME" \
   --query 'FunctionUrl' --output text 2>/dev/null || echo "")
 
 if [[ -z "$WEBHOOK_URL" || "$WEBHOOK_URL" == "None" ]]; then
-  echo "ERROR: Lambda function '$FUNCTION_NAME' has no Function URL configured."
-  echo "  This should have been created by backend.ts. Redeploy and try again."
+  echo "    No Function URL found. Creating one..."
+  WEBHOOK_URL=$(aws lambda create-function-url-config \
+    --function-name "$FUNCTION_NAME" \
+    --auth-type NONE \
+    --query 'FunctionUrl' --output text)
+
+  # Allow public invocation via the function URL
+  aws lambda add-permission \
+    --function-name "$FUNCTION_NAME" \
+    --statement-id FunctionURLAllowPublicAccess \
+    --action lambda:InvokeFunctionUrl \
+    --principal "*" \
+    --function-url-auth-type NONE 2>/dev/null || true
+fi
+
+if [[ -z "$WEBHOOK_URL" || "$WEBHOOK_URL" == "None" ]]; then
+  echo "ERROR: Failed to get or create Function URL for '$FUNCTION_NAME'."
   exit 1
 fi
 

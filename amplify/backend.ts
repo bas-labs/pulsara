@@ -7,9 +7,8 @@ import { switchToOrganizer } from './functions/switch-to-organizer/resource'
 import { createCheckout } from './functions/create-checkout/resource'
 import { createGuestCheckout } from './functions/create-guest-checkout/resource'
 import { stripeWebhook } from './functions/stripe-webhook/resource'
-import { Aws, CfnOutput } from 'aws-cdk-lib'
+import { Aws } from 'aws-cdk-lib'
 import { Policy, PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam'
-import { FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda'
 
 const backend = defineBackend({
   auth,
@@ -69,13 +68,3 @@ if (guestRegistrationTable) {
   backend.stripeWebhook.resources.lambda.addEnvironment('GUEST_REGISTRATION_TABLE', guestRegistrationTable.tableName)
   guestRegistrationTable.grantReadWriteData(backend.stripeWebhook.resources.lambda)
 }
-
-// Create a public Function URL for the Stripe webhook so Stripe can POST to it
-const webhookFnUrl = backend.stripeWebhook.resources.lambda.addFunctionUrl({
-  authType: FunctionUrlAuthType.NONE,
-})
-
-new CfnOutput(backend.stripeWebhook.resources.lambda.stack, 'StripeWebhookUrl', {
-  value: webhookFnUrl.url,
-  description: 'Stripe webhook endpoint URL',
-})
