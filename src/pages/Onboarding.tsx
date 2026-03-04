@@ -23,7 +23,7 @@ export default function Onboarding() {
   const { user, refreshAuth, isOrganizador, isAtleta } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState<'role' | 'profile'>('role')
-  const [role, setRole] = useState<'ATLETA' | 'ORGANIZADOR' | null>('ATLETA')
+  const [role] = useState<'ATLETA' | 'ORGANIZADOR' | null>('ATLETA')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [city, setCity] = useState('')
