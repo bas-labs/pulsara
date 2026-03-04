@@ -10,6 +10,7 @@ import { stripeWebhook } from './functions/stripe-webhook/resource'
 import { Aws, CfnOutput } from 'aws-cdk-lib'
 import { Policy, PolicyStatement, Effect } from 'aws-cdk-lib/aws-iam'
 import { FunctionUrlAuthType } from 'aws-cdk-lib/aws-lambda'
+import { CfnUserPool } from 'aws-cdk-lib/aws-cognito'
 
 const backend = defineBackend({
   auth,
@@ -103,8 +104,23 @@ if (eventDistanceTable) {
   eventDistanceTable.grantReadData(backend.createGuestCheckout.resources.lambda)
 }
 
+// ─── EMAIL CONFIGURATION ───
+// Domain used for all outbound emails (Cognito auth + registration confirmations).
+// Must be verified in SES with DKIM before deploying to production.
+const emailDomain = process.env.SES_DOMAIN || 'alfallo.mx'
+const senderEmail = process.env.SENDER_EMAIL || `no-reply@${emailDomain}`
+
+// Configure Cognito to send emails via SES instead of default (50/day limit).
+// Requires the domain to be verified in SES first.
+const cfnUserPool = backend.auth.resources.userPool.node.defaultChild as CfnUserPool
+cfnUserPool.emailConfiguration = {
+  emailSendingAccount: 'DEVELOPER',
+  sourceArn: `arn:aws:ses:${Aws.REGION}:${Aws.ACCOUNT_ID}:identity/${emailDomain}`,
+  from: `Pulsara <${senderEmail}>`,
+  replyToEmailAddress: senderEmail,
+}
+
 // Wire SENDER_EMAIL for registration confirmation emails
-const senderEmail = process.env.SENDER_EMAIL || 'no-reply@alfallo.mx'
 backend.stripeWebhook.resources.lambda.addEnvironment('SENDER_EMAIL', senderEmail)
 
 // Grant SES permissions for sending registration confirmation emails
