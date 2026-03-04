@@ -28,7 +28,7 @@ const SHIRT_SIZES_DAMA = ['XCH Dama', 'CH Dama', 'M Dama', 'G Dama', 'XG Dama', 
 const SHIRT_SIZES_CABALLERO = ['XCH Caballero', 'CH Caballero', 'M Caballero', 'G Caballero', 'XG Caballero', '2XG Caballero', '3XG Caballero']
 const SHIRT_SIZES_NINO = ['2 Niño', '4 Niño', '6 Niño', '8 Niño', '10 Niño', '12 Niño', '14 Niño']
 
-const TOTAL_STEPS = 11 // 0-10
+const TOTAL_STEPS = 5 // 0-4
 
 // ─── T&C Text ───
 const TERMS_TEXT = `TÉRMINOS Y CONDICIONES DE INSCRIPCIÓN
@@ -175,12 +175,11 @@ export default function GuestRegistration() {
           loadedRef.current = true
           return
         }
-        // Don't restore emailConfirm — force user to re-type email confirmation
-        // to prevent bypassing the confirmation step with pre-filled values.
-        // Clamp the restored step to max 7 so the user isn't placed past the
-        // email confirmation step with an empty emailConfirm field.
+        // Don't restore emailConfirm — force user to re-type email confirmation.
+        // Clamp the restored step to max 2 (contact step) so the user isn't
+        // placed past the email confirmation with an empty emailConfirm field.
         const restoredStep = s.step ?? 0
-        setStep(restoredStep > 7 ? 7 : restoredStep)
+        setStep(restoredStep > 2 ? 2 : restoredStep)
         setSelectedDistanceId(s.selectedDistanceId ?? null)
         setParticipants(s.participants ?? [])
         setFirstName(s.firstName ?? '')
@@ -295,37 +294,27 @@ export default function GuestRegistration() {
   function canAdvance(): boolean {
     switch (step) {
       case 0: return !!selectedDistanceId
-      case 1: return firstName.trim().length > 0
-      case 2: return lastName.trim().length > 0
-      case 3: return isValidDate(dobDay, dobMonth, dobYear)
-      case 4: return !!gender
-      case 5: {
+      case 1: return firstName.trim().length > 0 && lastName.trim().length > 0 && isValidDate(dobDay, dobMonth, dobYear) && !!gender
+      case 2: {
         const digits = phone.replace(/\D/g, '')
-        return digits.length >= 7
+        return digits.length >= 7 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) && emailConfirm === email && email.length > 0
       }
-      case 6: return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-      case 7: return emailConfirm === email && email.length > 0
-      case 8: return !!shirtSize
-      case 9: return acceptTerms && acceptExoneration
-      case 10: return true
+      case 3: return !!shirtSize && acceptTerms && acceptExoneration
+      case 4: return true
       default: return false
     }
   }
 
   function validationMessage(): string | null {
     switch (step) {
-      case 3:
+      case 1:
         if (dobDay && dobMonth && dobYear && !isValidDate(dobDay, dobMonth, dobYear))
           return 'Fecha inválida'
         return null
-      case 5:
+      case 2:
         if (phone && phone.replace(/\D/g, '').length < 7 && phone.trim().length > 0)
           return 'Ingresa al menos 7 dígitos numéricos'
-        return null
-      case 6:
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Correo inválido'
-        return null
-      case 7:
         if (emailConfirm && emailConfirm !== email) return 'Los correos no coinciden'
         return null
       default: return null
@@ -337,25 +326,13 @@ export default function GuestRegistration() {
     if (!canAdvance()) return
     setError(null)
     setDirection(1)
-    let next = step + 1
-    // Auto-skip T&C if already accepted (for 2nd+ participant)
-    if (next === 9 && acceptTerms && acceptExoneration) {
-      next = 10
-    }
-    setStep(Math.min(next, TOTAL_STEPS - 1))
+    setStep(s => Math.min(s + 1, TOTAL_STEPS - 1))
   }
 
   function goBack() {
     setError(null)
     setDirection(-1)
-    setStep(s => {
-      let prev = s - 1
-      // Auto-skip T&C going back if already accepted
-      if (prev === 9 && acceptTerms && acceptExoneration) {
-        prev = 8
-      }
-      return Math.max(prev, 0)
-    })
+    setStep(s => Math.max(s - 1, 0))
   }
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
@@ -660,7 +637,7 @@ export default function GuestRegistration() {
           <span className="font-bold text-zinc-900 text-sm">{event.title}</span>
         </div>
         <div className="flex items-center gap-2">
-          {participants.length > 0 && step >= 1 && step <= 8 && (
+          {participants.length > 0 && step >= 1 && step <= 3 && (
             <span className="text-xs text-emerald-600 font-medium">
               Participante {participants.length + 1}
             </span>
@@ -721,250 +698,227 @@ export default function GuestRegistration() {
               </motion.div>
             )}
 
-            {/* Step 1: First name */}
+            {/* Step 1: Personal info — name, last name, DOB, gender */}
             {step === 1 && (
               <motion.div key="step1" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">¿Cuál es tu nombre?</h2>
-                <p className="text-zinc-500 mb-8">Nombre(s) como aparecerá en tu inscripción.</p>
-                <Input
-                  ref={inputRef}
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  placeholder="Ej. María José"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
+                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Datos personales</h2>
+                <p className="text-zinc-500 mb-6">Información del participante.</p>
+                <div className="space-y-5">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nombre(s)</label>
+                    <Input
+                      ref={inputRef}
+                      value={firstName}
+                      onChange={e => setFirstName(e.target.value)}
+                      placeholder="Ej. María José"
+                      className="text-lg py-5 border-2 border-zinc-200 focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Apellido(s)</label>
+                    <Input
+                      value={lastName}
+                      onChange={e => setLastName(e.target.value)}
+                      placeholder="Ej. González López"
+                      className="text-lg py-5 border-2 border-zinc-200 focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Fecha de nacimiento</label>
+                    <div className="grid grid-cols-3 gap-3">
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Día</label>
+                        <select
+                          value={dobDay}
+                          onChange={e => setDobDay(e.target.value)}
+                          className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-base outline-none"
+                        >
+                          <option value="">--</option>
+                          {Array.from({ length: 31 }, (_, i) => (
+                            <option key={i + 1} value={String(i + 1)}>{i + 1}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Mes</label>
+                        <select
+                          value={dobMonth}
+                          onChange={e => setDobMonth(e.target.value)}
+                          className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-base outline-none"
+                        >
+                          <option value="">--</option>
+                          {MONTHS.map((m, i) => (
+                            <option key={m} value={String(i + 1)}>{m}</option>
+                          ))}
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-xs text-zinc-500 mb-1 block">Año</label>
+                        <select
+                          value={dobYear}
+                          onChange={e => setDobYear(e.target.value)}
+                          className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-base outline-none"
+                        >
+                          <option value="">--</option>
+                          {Array.from({ length: 80 }, (_, i) => {
+                            const y = new Date().getFullYear() - 5 - i
+                            return <option key={y} value={String(y)}>{y}</option>
+                          })}
+                        </select>
+                      </div>
+                    </div>
+                    {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Rama</label>
+                    <div className="grid grid-cols-2 gap-3">
+                      {([['F', 'Femenil'], ['M', 'Varonil']] as const).map(([val, label]) => (
+                        <motion.button
+                          key={val}
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.98 }}
+                          onClick={() => setGender(val)}
+                          className={`py-4 rounded-xl border-2 text-center transition-all ${
+                            gender === val
+                              ? 'border-emerald-500 bg-emerald-50 shadow-sm'
+                              : 'border-zinc-200 hover:border-emerald-200 bg-white'
+                          }`}
+                        >
+                          <p className="text-lg font-bold text-zinc-900">{label}</p>
+                        </motion.button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </motion.div>
             )}
 
-            {/* Step 2: Last name */}
+            {/* Step 2: Contact — phone, email, confirm email */}
             {step === 2 && (
               <motion.div key="step2" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">¿Cuáles son tus apellidos?</h2>
-                <p className="text-zinc-500 mb-8">Apellido(s) completos.</p>
-                <Input
-                  ref={inputRef}
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  placeholder="Ej. González López"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
+                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Contacto</h2>
+                <p className="text-zinc-500 mb-6">Para enviarte confirmación y contactarte el día del evento.</p>
+                <div className="space-y-5">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Número de celular</label>
+                    <Input
+                      ref={inputRef}
+                      type="tel"
+                      value={phone}
+                      onChange={e => setPhone(e.target.value)}
+                      placeholder="Ej. 55 1234 5678"
+                      className="text-lg py-5 border-2 border-zinc-200 focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Correo electrónico</label>
+                    <Input
+                      type="email"
+                      value={email}
+                      onChange={e => setEmail(e.target.value)}
+                      placeholder="correo@ejemplo.com"
+                      className="text-lg py-5 border-2 border-zinc-200 focus:border-emerald-500"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Confirma tu correo</label>
+                    <Input
+                      type="email"
+                      value={emailConfirm}
+                      onChange={e => setEmailConfirm(e.target.value)}
+                      placeholder="correo@ejemplo.com"
+                      className="text-lg py-5 border-2 border-zinc-200 focus:border-emerald-500"
+                    />
+                  </div>
+                </div>
+                {valMsg && <p className="text-sm text-red-500 mt-3">{valMsg}</p>}
               </motion.div>
             )}
 
-            {/* Step 3: Date of birth */}
+            {/* Step 3: Shirt size + Terms & Conditions */}
             {step === 3 && (
               <motion.div key="step3" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Fecha de nacimiento</h2>
-                <p className="text-zinc-500 mb-8">Necesaria para asignarte categoría de edad.</p>
-                <div className="grid grid-cols-3 gap-3">
+                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Playera y términos</h2>
+                <p className="text-zinc-500 mb-6">Selecciona tu talla y acepta los documentos.</p>
+                <div className="space-y-6">
                   <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Día</label>
-                    <select
-                      value={dobDay}
-                      onChange={e => setDobDay(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {Array.from({ length: 31 }, (_, i) => (
-                        <option key={i + 1} value={String(i + 1)}>{i + 1}</option>
+                    <label className="text-sm font-medium text-zinc-700 mb-2 block">Talla de playera {sizeLabel}</label>
+                    <div className="grid grid-cols-3 gap-2.5">
+                      {shirtSizes.map(size => (
+                        <motion.button
+                          key={size}
+                          whileHover={{ scale: 1.03 }}
+                          whileTap={{ scale: 0.97 }}
+                          onClick={() => setShirtSize(size)}
+                          className={`py-3 rounded-xl border-2 font-semibold transition-all text-sm ${
+                            shirtSize === size
+                              ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
+                              : 'border-zinc-200 hover:border-emerald-200 bg-white text-zinc-700'
+                          }`}
+                        >
+                          {size}
+                        </motion.button>
                       ))}
-                    </select>
+                    </div>
                   </div>
-                  <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Mes</label>
-                    <select
-                      value={dobMonth}
-                      onChange={e => setDobMonth(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {MONTHS.map((m, i) => (
-                        <option key={m} value={String(i + 1)}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Año</label>
-                    <select
-                      value={dobYear}
-                      onChange={e => setDobYear(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {Array.from({ length: 80 }, (_, i) => {
-                        const y = new Date().getFullYear() - 5 - i
-                        return <option key={y} value={String(y)}>{y}</option>
-                      })}
-                    </select>
+
+                  <div className="space-y-3">
+                    {/* Terms checkbox */}
+                    <div className={`rounded-xl border-2 transition-all ${acceptTerms ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
+                      <label className="flex items-center gap-3 p-4 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={acceptTerms}
+                          onChange={() => setAcceptTerms(!acceptTerms)}
+                          className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
+                        />
+                        <span className="text-sm text-zinc-800 font-medium">Acepto Términos y Condiciones</span>
+                      </label>
+                      <button
+                        onClick={() => setShowTermsDetail(!showTermsDetail)}
+                        className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                      >
+                        <FileText className="w-3.5 h-3.5" />
+                        {showTermsDetail ? 'Ocultar' : 'Ver términos y condiciones'}
+                      </button>
+                      {showTermsDetail && (
+                        <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-36 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
+                          {TERMS_TEXT}
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Exoneration checkbox */}
+                    <div className={`rounded-xl border-2 transition-all ${acceptExoneration ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
+                      <label className="flex items-center gap-3 p-4 cursor-pointer">
+                        <input
+                          type="checkbox"
+                          checked={acceptExoneration}
+                          onChange={() => setAcceptExoneration(!acceptExoneration)}
+                          className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
+                        />
+                        <span className="text-sm text-zinc-800 font-medium">Acepto Exoneración de Responsabilidad</span>
+                      </label>
+                      <button
+                        onClick={() => setShowExonerationDetail(!showExonerationDetail)}
+                        className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
+                      >
+                        <Shield className="w-3.5 h-3.5" />
+                        {showExonerationDetail ? 'Ocultar' : 'Ver exoneración de responsabilidad'}
+                      </button>
+                      {showExonerationDetail && (
+                        <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-36 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
+                          {EXONERATION_TEXT}
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </div>
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
               </motion.div>
             )}
 
-            {/* Step 4: Gender */}
+            {/* Step 4: Summary */}
             {step === 4 && (
-              <motion.div key="step4" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Rama</h2>
-                <p className="text-zinc-500 mb-8">Selecciona tu categoría.</p>
-                <div className="grid grid-cols-2 gap-4">
-                  {([['F', 'Femenil'], ['M', 'Varonil']] as const).map(([val, label]) => (
-                    <motion.button
-                      key={val}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setGender(val)}
-                      className={`p-6 rounded-xl border-2 text-center transition-all ${
-                        gender === val
-                          ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                          : 'border-zinc-200 hover:border-emerald-200 bg-white'
-                      }`}
-                    >
-                      <p className="text-xl font-bold text-zinc-900">{label}</p>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 5: Phone */}
-            {step === 5 && (
-              <motion.div key="step5" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Número de celular</h2>
-                <p className="text-zinc-500 mb-8">Para contactarte el día del evento.</p>
-                <Input
-                  ref={inputRef}
-                  type="tel"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  placeholder="Ej. 55 1234 5678"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 6: Email */}
-            {step === 6 && (
-              <motion.div key="step6" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Correo electrónico</h2>
-                <p className="text-zinc-500 mb-8">Te enviaremos la confirmación aquí.</p>
-                <Input
-                  ref={inputRef}
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 7: Confirm email */}
-            {step === 7 && (
-              <motion.div key="step7" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Confirma tu correo</h2>
-                <p className="text-zinc-500 mb-8">Escríbelo de nuevo para verificar.</p>
-                <Input
-                  ref={inputRef}
-                  type="email"
-                  value={emailConfirm}
-                  onChange={e => setEmailConfirm(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 8: Shirt size */}
-            {step === 8 && (
-              <motion.div key="step8" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Talla de playera</h2>
-                <p className="text-zinc-500 mb-8">Selecciona tu talla {sizeLabel}.</p>
-                <div className="grid grid-cols-3 gap-3">
-                  {shirtSizes.map(size => (
-                    <motion.button
-                      key={size}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => setShirtSize(size)}
-                      className={`py-4 rounded-xl border-2 font-semibold transition-all text-sm ${
-                        shirtSize === size
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                          : 'border-zinc-200 hover:border-emerald-200 bg-white text-zinc-700'
-                      }`}
-                    >
-                      {size}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 9: Terms & Conditions + Exoneration */}
-            {step === 9 && (
-              <motion.div key="step9" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Términos y Exoneración</h2>
-                <p className="text-zinc-500 mb-6">Lee y acepta los siguientes documentos para continuar.</p>
-
-                <div className="space-y-4">
-                  {/* Terms checkbox */}
-                  <div className={`rounded-xl border-2 transition-all ${acceptTerms ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
-                    <label className="flex items-center gap-3 p-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={acceptTerms}
-                        onChange={() => setAcceptTerms(!acceptTerms)}
-                        className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
-                      />
-                      <span className="text-sm text-zinc-800 font-medium">Acepto Términos y Condiciones</span>
-                    </label>
-                    <button
-                      onClick={() => setShowTermsDetail(!showTermsDetail)}
-                      className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      {showTermsDetail ? 'Ocultar' : 'Ver términos y condiciones'}
-                    </button>
-                    {showTermsDetail && (
-                      <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
-                        {TERMS_TEXT}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Exoneration checkbox */}
-                  <div className={`rounded-xl border-2 transition-all ${acceptExoneration ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
-                    <label className="flex items-center gap-3 p-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={acceptExoneration}
-                        onChange={() => setAcceptExoneration(!acceptExoneration)}
-                        className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
-                      />
-                      <span className="text-sm text-zinc-800 font-medium">Acepto Exoneración de Responsabilidad</span>
-                    </label>
-                    <button
-                      onClick={() => setShowExonerationDetail(!showExonerationDetail)}
-                      className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
-                    >
-                      <Shield className="w-3.5 h-3.5" />
-                      {showExonerationDetail ? 'Ocultar' : 'Ver exoneración de responsabilidad'}
-                    </button>
-                    {showExonerationDetail && (
-                      <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
-                        {EXONERATION_TEXT}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 10: Summary */}
-            {step === 10 && (
               <motion.div key="step10" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
                 <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Confirma tu inscripción</h2>
                 <p className="text-zinc-500 mb-6">
