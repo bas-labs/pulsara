@@ -51,6 +51,7 @@ export default function EventDetail() {
     setRegistering(true)
     try {
       const dist = distances.find(d => d.id === selectedDistance)
+      const isFree = !dist?.price || dist.price === 0
       const { data: regData } = await client.models.Registration.create({
         userId: user.userId,
         eventId: event.id,
@@ -58,28 +59,16 @@ export default function EventDetail() {
         distanceName: dist?.name ?? '',
         distanceKm: dist?.distanceKm,
         category: dist?.category ?? 'GENERAL',
-        status: 'CONFIRMED',
-        paymentStatus: 'PENDING',
+        status: isFree ? 'CONFIRMED' : 'PENDING',
+        paymentStatus: isFree ? 'PAID' : 'PENDING',
         amountPaid: dist?.price ?? 0,
         registeredAt: new Date().toISOString(),
         waiverSigned: true,
       })
-      if (event.spotsRemaining && event.spotsRemaining > 0) {
-        await client.models.Event.update({
-          id: event.id,
-          spotsRemaining: event.spotsRemaining - 1,
-        })
+
+      if (isFree) {
+        setRegistered(true)
       }
-      if (dist) {
-        const currentSpots = dist.spotsRemaining ?? dist.spotsTotal ?? 0
-        if (currentSpots > 0) {
-          await client.models.EventDistance.update({
-            id: dist.id,
-            spotsRemaining: currentSpots - 1,
-          })
-        }
-      }
-      setRegistered(true)
 
       if (dist && dist.price && dist.price > 0 && regData) {
         try {
@@ -90,7 +79,7 @@ export default function EventDetail() {
             eventTitle: event.title,
             priceInCentavos: dist.price,
             userId: user!.userId,
-            userEmail: user!.userId,
+            userEmail: user!.signInDetails?.loginId ?? '',
             registrationId: regData.id,
           })
           if (checkoutUrl) {
@@ -213,7 +202,7 @@ export default function EventDetail() {
                                 <p className="font-semibold text-zinc-900">{dist.name}</p>
                                 {dist.distanceKm && <p className="text-xs text-zinc-500">{dist.distanceKm} km</p>}
                               </div>
-                              <span className="font-bold text-emerald-600">${(dist.price / 100).toLocaleString('es-MX')}</span>
+                              <span className="font-bold text-emerald-600">${((dist.price ?? 0) / 100).toLocaleString('es-MX')}</span>
                             </motion.label>
                           ))}
                         </div>

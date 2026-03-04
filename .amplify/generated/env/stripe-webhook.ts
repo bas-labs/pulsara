@@ -86,4 +86,5 @@ type AmplifyBackendEnvVars = {
   STRIPE_WEBHOOK_SECRET: string;
   REGISTRATION_TABLE: string;
   ORDER_TABLE: string;
+  GUEST_REGISTRATION_TABLE: string;
 };

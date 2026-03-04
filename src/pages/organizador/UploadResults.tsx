@@ -27,12 +27,32 @@ interface ParsedResult {
   gender?: string
 }
 
+function parseCSVLine(line: string): string[] {
+  const result: string[] = []
+  let current = ''
+  let inQuotes = false
+  for (let i = 0; i < line.length; i++) {
+    const ch = line[i]
+    if (ch === '"') {
+      if (inQuotes && line[i + 1] === '"') { current += '"'; i++ }
+      else inQuotes = !inQuotes
+    } else if (ch === ',' && !inQuotes) {
+      result.push(current.trim())
+      current = ''
+    } else {
+      current += ch
+    }
+  }
+  result.push(current.trim())
+  return result
+}
+
 function parseCSV(text: string): ParsedResult[] {
   const lines = text.trim().split('\n')
   if (lines.length < 2) return []
-  const headers = lines[0].split(',').map(h => h.trim().toLowerCase())
+  const headers = parseCSVLine(lines[0]).map(h => h.toLowerCase())
   return lines.slice(1).map(line => {
-    const cols = line.split(',').map(c => c.trim())
+    const cols = parseCSVLine(line)
     const get = (key: string) => cols[headers.indexOf(key)] ?? ''
     return {
       bibNumber: get('bib') || get('dorsal') || get('numero'),
@@ -57,6 +77,16 @@ export default function UploadResults() {
   const [uploaded, setUploaded] = useState(0)
   const [fileName, setFileName] = useState('')
 
+  function validateCSVColumns(headers: string[]): string[] {
+    const lower = headers.map(h => h.trim().toLowerCase())
+    const missing: string[] = []
+    const nameAliases = ['name', 'nombre', 'athlete', 'atleta']
+    const timeAliases = ['chip', 'chip_time', 'tiempo_chip']
+    if (!nameAliases.some(a => lower.includes(a))) missing.push('nombre (name/nombre/athlete/atleta)')
+    if (!timeAliases.some(a => lower.includes(a))) missing.push('tiempo (chip/chip_time/tiempo_chip)')
+    return missing
+  }
+
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0]
     if (!file) return
@@ -64,6 +94,19 @@ export default function UploadResults() {
     const reader = new FileReader()
     reader.onload = (ev) => {
       const text = ev.target?.result as string
+      const lines = text.trim().split('\n')
+      if (lines.length < 2) {
+        toast.error('El archivo CSV está vacío o no tiene datos')
+        setParsed([])
+        return
+      }
+      const headers = parseCSVLine(lines[0])
+      const missingCols = validateCSVColumns(headers)
+      if (missingCols.length > 0) {
+        toast.error(`Columnas requeridas faltantes: ${missingCols.join(', ')}`)
+        setParsed([])
+        return
+      }
       const results = parseCSV(text)
       setParsed(results)
       if (results.length === 0) {

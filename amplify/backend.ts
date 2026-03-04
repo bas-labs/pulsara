@@ -62,9 +62,29 @@ if (orderTable) {
   orderTable.grantReadWriteData(backend.stripeWebhook.resources.lambda)
 }
 
-// Wire GuestRegistration table for stripe webhook
+// Wire GuestRegistration table for stripe webhook and create-guest-checkout
 const guestRegistrationTable = backend.data.resources.tables['GuestRegistration']
 if (guestRegistrationTable) {
   backend.stripeWebhook.resources.lambda.addEnvironment('GUEST_REGISTRATION_TABLE', guestRegistrationTable.tableName)
   guestRegistrationTable.grantReadWriteData(backend.stripeWebhook.resources.lambda)
+
+  // Wire for create-guest-checkout (duplicate registration check)
+  backend.createGuestCheckout.resources.lambda.addEnvironment('GUEST_REGISTRATION_TABLE', guestRegistrationTable.tableName)
+  guestRegistrationTable.grantReadData(backend.createGuestCheckout.resources.lambda)
+}
+
+// Wire Event and EventDistance tables for create-checkout (event/capacity validation)
+const eventTable = backend.data.resources.tables['Event']
+const eventDistanceTable = backend.data.resources.tables['EventDistance']
+if (eventTable) {
+  backend.createCheckout.resources.lambda.addEnvironment('EVENT_TABLE', eventTable.tableName)
+  eventTable.grantReadData(backend.createCheckout.resources.lambda)
+  backend.createGuestCheckout.resources.lambda.addEnvironment('EVENT_TABLE', eventTable.tableName)
+  eventTable.grantReadData(backend.createGuestCheckout.resources.lambda)
+}
+if (eventDistanceTable) {
+  backend.createCheckout.resources.lambda.addEnvironment('EVENT_DISTANCE_TABLE', eventDistanceTable.tableName)
+  eventDistanceTable.grantReadData(backend.createCheckout.resources.lambda)
+  backend.createGuestCheckout.resources.lambda.addEnvironment('EVENT_DISTANCE_TABLE', eventDistanceTable.tableName)
+  eventDistanceTable.grantReadData(backend.createGuestCheckout.resources.lambda)
 }

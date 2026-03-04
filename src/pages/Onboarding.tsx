@@ -9,6 +9,7 @@ import { Trophy, Building, ArrowRight, Zap } from 'lucide-react'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { smooth } from '@/lib/animations'
+import { toast } from 'sonner'
 
 const client = generateClient<Schema>()
 
@@ -77,7 +78,14 @@ export default function Onboarding() {
         country: 'MX',
       })
       if (role === 'ORGANIZADOR') {
-        await client.mutations.switchToOrganizer({})
+        try {
+          await client.mutations.switchToOrganizer({})
+        } catch (switchErr) {
+          console.error('Error switching to organizer:', switchErr)
+          toast.error('Error al activar el rol de organizador. Intenta de nuevo.')
+          setLoading(false)
+          return
+        }
         // Force-refresh tokens so the new group is reflected
         await refreshAuth()
       }

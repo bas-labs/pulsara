@@ -107,11 +107,8 @@ const schema = a.schema({
     ])
     .authorization((allow) => [
       allow.authenticated().to(['read']),
-      allow.owner().to(['create', 'update', 'delete']),
-      allow.group('organizadores').to(['create', 'update']),
-      allow.group('atletas').to(['read']),
+      allow.group('organizadores').to(['create', 'update', 'delete']),
       allow.guest().to(['read']),
-
     ]),
 
   // ─── EVENT DISTANCES ───

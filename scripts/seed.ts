@@ -9,7 +9,8 @@ import { randomUUID } from 'crypto'
 import seedEvents from '../infra/seed-events-full.json'
 
 const REGION = 'us-east-1'
-const SUFFIX = process.env.SEED_SUFFIX ?? 'tcnflzpturdtratjqzwrhjyu3a-NONE'
+const SUFFIX = process.env.SEED_SUFFIX
+if (!SUFFIX) throw new Error('SEED_SUFFIX env var is required')
 
 const EVENT_TABLE = `Event-${SUFFIX}`
 const DISTANCE_TABLE = `EventDistance-${SUFFIX}`
@@ -153,7 +154,7 @@ async function seed() {
     { slug: 'nutricion-dia-carrera', title: 'Qué comer antes, durante y después de una carrera', excerpt: 'La nutrición correcta puede ser la diferencia entre tu mejor marca y un DNF. Aprende a fuelearte como profesional.', category: 'NUTRICION', readTimeMinutes: 8, imageUrl: '/images/blog-nutrition.jpg' },
     { slug: 'elegir-bici-ruta', title: 'Guía definitiva: cómo elegir tu primera bici de ruta', excerpt: 'Aluminio vs carbono, groupset, geometría — todo lo que necesitas saber antes de invertir.', category: 'CICLISMO', readTimeMinutes: 10, imageUrl: '/images/blog-cycling.jpg' },
     { slug: 'transicion-triatlon', title: 'Domina las transiciones en triatlón', excerpt: 'Las transiciones T1 y T2 pueden ahorrarte (o costarte) minutos valiosos. Tips de los pros.', category: 'TRIATLON', readTimeMinutes: 7, imageUrl: '/images/triathlon.jpg' },
-    { slug: 'trail-running-principiantes', title: 'Trail running: de la calle a la montaña', excerpt: 'Todo lo que un corredor de asfalto necesita saber antes de lanzarse al trail.', category: 'TRAIL', readTimeMinutes: 9, imageUrl: '/images/ocr.jpg' },
+    { slug: 'trail-running-principiantes', title: 'Trail running: de la calle a la montaña', excerpt: 'Todo lo que un corredor de asfalto necesita saber antes de lanzarse al trail.', category: 'RUNNING', readTimeMinutes: 9, imageUrl: '/images/ocr.jpg' },
     { slug: 'prevenir-lesiones-running', title: '5 lesiones más comunes en running y cómo prevenirlas', excerpt: 'Fascitis plantar, rodilla del corredor, periostitis... Aprende a identificarlas y evitarlas.', category: 'RUNNING', readTimeMinutes: 6, imageUrl: '/images/marathon.jpg' },
   ]
   for (const a of articles) {

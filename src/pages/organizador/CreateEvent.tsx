@@ -7,9 +7,14 @@ import { useAuth } from '../../context/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { ArrowLeft, Plus, Trash2 } from 'lucide-react'
+import { ArrowLeft, Plus, Trash2, ImagePlus } from 'lucide-react'
+import { toast } from 'sonner'
+import { uploadData } from 'aws-amplify/storage'
 import PageWrapper from '@/components/PageWrapper'
 import { fadeUp, stagger } from '@/lib/animations'
+
+const ALLOWED_IMAGE_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_IMAGE_SIZE = 5 * 1024 * 1024 // 5MB
 
 const client = generateClient<Schema>()
 
@@ -38,6 +43,8 @@ export default function OrgCreateEvent() {
   const [city, setCity] = useState('')
   const [state, setState] = useState('')
   const [venue, setVenue] = useState('')
+  const [bannerFile, setBannerFile] = useState<File | null>(null)
+  const [bannerPreview, setBannerPreview] = useState<string | null>(null)
   const [distances, setDistances] = useState<DistanceForm[]>([
     { name: '10K', distanceKm: '10', price: '395', spots: '500' },
   ])
@@ -56,13 +63,37 @@ export default function OrgCreateEvent() {
     setDistances(updated)
   }
 
+  function handleBannerSelect(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    if (!ALLOWED_IMAGE_TYPES.includes(file.type)) {
+      toast.error('Formato no permitido. Usa JPEG, PNG o WebP.')
+      e.target.value = ''
+      return
+    }
+    if (file.size > MAX_IMAGE_SIZE) {
+      toast.error('La imagen es muy grande. El máximo es 5 MB.')
+      e.target.value = ''
+      return
+    }
+    setBannerFile(file)
+    setBannerPreview(URL.createObjectURL(file))
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!user) return
     setLoading(true)
 
     try {
-      const slug = title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+      let slug = title.normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '')
+
+      // Check for slug collision and append random suffix if needed
+      const { data: existingSlugs } = await client.models.Event.listEventBySlug({ slug })
+      if (existingSlugs && existingSlugs.length > 0) {
+        slug = `${slug}-${Math.random().toString(36).slice(2, 6)}`
+      }
+
       const totalSpots = distances.reduce((sum, d) => sum + (parseInt(d.spots) || 0), 0)
       const prices = distances.map(d => parseInt(d.price) || 0).filter(p => p > 0)
 
@@ -83,6 +114,13 @@ export default function OrgCreateEvent() {
         priceMax: prices.length ? Math.max(...prices) * 100 : undefined,
         status: 'DRAFT',
       })
+
+      if (event && bannerFile) {
+        const ext = bannerFile.name.split('.').pop()
+        const path = `events/${event.id}/banner.${ext}`
+        await uploadData({ path, data: bannerFile, options: { contentType: bannerFile.type } })
+        await client.models.Event.update({ id: event.id, bannerUrl: path })
+      }
 
       if (event) {
         for (const dist of distances) {
@@ -162,7 +200,27 @@ export default function OrgCreateEvent() {
           <motion.div variants={fadeUp} custom={1}>
             <Card>
               <CardContent className="p-6 space-y-5">
+                <h2 className="font-bold text-lg text-zinc-900">Imagen del evento</h2>
+                <div>
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Banner (JPEG, PNG o WebP, máx. 5 MB)</label>
+                  {bannerPreview && (
+                    <img src={bannerPreview} alt="Preview" className="w-full h-40 object-cover rounded-lg mb-3" />
+                  )}
+                  <label className="flex items-center gap-2 cursor-pointer text-sm text-emerald-600 hover:text-emerald-700">
+                    <ImagePlus className="w-4 h-4" />
+                    {bannerFile ? bannerFile.name : 'Seleccionar imagen'}
+                    <input type="file" accept="image/jpeg,image/png,image/webp" onChange={handleBannerSelect} className="hidden" />
+                  </label>
+                </div>
+              </CardContent>
+            </Card>
+          </motion.div>
+
+          <motion.div variants={fadeUp} custom={2}>
+            <Card>
+              <CardContent className="p-6 space-y-5">
                 <h2 className="font-bold text-lg text-zinc-900">Ubicación</h2>
+
                 <div>
                   <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Lugar / Venue</label>
                   <Input value={venue} onChange={e => setVenue(e.target.value)} placeholder="Bosque de Chapultepec" />
@@ -181,7 +239,7 @@ export default function OrgCreateEvent() {
             </Card>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={2}>
+          <motion.div variants={fadeUp} custom={3}>
             <Card>
               <CardContent className="p-6 space-y-5">
                 <div className="flex items-center justify-between">
@@ -225,7 +283,7 @@ export default function OrgCreateEvent() {
             </Card>
           </motion.div>
 
-          <motion.div variants={fadeUp} custom={3}>
+          <motion.div variants={fadeUp} custom={4}>
             <Button type="submit" size="lg" disabled={loading || !title || !eventDate || !city}
               className="w-full bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl">
               {loading ? 'Creando...' : 'Crear Evento'}

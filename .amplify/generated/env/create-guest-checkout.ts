@@ -84,6 +84,4 @@ type LambdaProvidedEnvVars = {
 type AmplifyBackendEnvVars = {
   STRIPE_SECRET_KEY: string;
   APP_URL: string;
-  EVENT_TABLE: string;
-  EVENT_DISTANCE_TABLE: string;
 };

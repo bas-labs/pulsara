@@ -139,10 +139,10 @@ else
   if [[ "$ENV" == "sandbox" ]]; then
     npx ampx sandbox secret set STRIPE_WEBHOOK_SECRET <<< "$WEBHOOK_SECRET"
   else
-    # For production, use the Amplify app-level secret
-    npx ampx sandbox secret set STRIPE_WEBHOOK_SECRET <<< "$WEBHOOK_SECRET"
-    echo "    NOTE: For production, also set the secret in the Amplify console"
-    echo "    under your app > Hosting > Environment variables / Secrets."
+    # WARNING: For production, set STRIPE_WEBHOOK_SECRET via AWS SSM Parameter Store or Amplify console, not via sandbox command
+    echo "WARNING: For production, set STRIPE_WEBHOOK_SECRET via AWS SSM Parameter Store or Amplify console, not via sandbox command"
+    echo "    Webhook signing secret: $WEBHOOK_SECRET"
+    echo "    Set this value in the Amplify console under your app > Hosting > Environment variables / Secrets."
   fi
 fi
 

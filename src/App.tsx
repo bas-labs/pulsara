@@ -1,7 +1,8 @@
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState, useEffect, useCallback } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Authenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css'
+import { Toaster } from 'sonner'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Layout from './components/Layout'
 import LoadingSpinner from './components/LoadingSpinner'
@@ -31,15 +32,28 @@ function Loading() {
 }
 
 function ProtectedRoute({ children, requiredGroup }: { children: React.ReactNode; requiredGroup?: string }) {
-  const { user, groups, loading } = useAuth()
-  if (loading) return <Loading />
+  const { user, groups, loading, refreshAuth } = useAuth()
+  const [refreshDone, setRefreshDone] = useState(false)
+
+  const needsGroupRefresh = !loading && !!user && !!requiredGroup && !groups.includes(requiredGroup) && !refreshDone
+
+  const doRefresh = useCallback(() => {
+    refreshAuth().finally(() => setRefreshDone(true))
+  }, [refreshAuth])
+
+  useEffect(() => {
+    if (needsGroupRefresh) doRefresh()
+  }, [needsGroupRefresh, doRefresh])
+
+  if (loading || needsGroupRefresh) return <Loading />
   if (!user) return <Navigate to="/login" />
   if (requiredGroup && !groups.includes(requiredGroup)) return <Navigate to="/" />
   return <>{children}</>
 }
 
 function PostLoginRedirect() {
-  const { isOrganizador, isAtleta } = useAuth()
+  const { isOrganizador, isAtleta, loading } = useAuth()
+  if (loading) return <Loading />
   // Returning users go straight to their dashboard; new users go to onboarding
   if (isOrganizador) return <Navigate to="/org" replace />
   if (isAtleta) return <Navigate to="/atleta" replace />
@@ -98,6 +112,7 @@ export default function App() {
     <BrowserRouter>
       <AuthProvider>
         <AppRoutes />
+        <Toaster richColors position="top-right" />
         <PWAInstallPrompt />
       </AuthProvider>
     </BrowserRouter>

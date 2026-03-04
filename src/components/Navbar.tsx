@@ -110,9 +110,11 @@ export default function Navbar() {
         <div className="hidden md:flex items-center gap-3">
           {user ? (
             <>
-              <Badge variant="secondary" className="text-xs">
-                {isOrganizador ? 'Organizador' : 'Atleta'}
-              </Badge>
+              {(isOrganizador || isAtleta) && (
+                <Badge variant="secondary" className="text-xs">
+                  {isOrganizador ? 'Organizador' : 'Atleta'}
+                </Badge>
+              )}
               <Link to="/perfil">
                 <Button variant="ghost" size="sm" className="text-zinc-500">
                   <User className="w-4 h-4" />

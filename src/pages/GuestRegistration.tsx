@@ -6,6 +6,7 @@ import type { Schema } from '../../amplify/data/resource'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { ArrowLeft, ArrowRight, Check, Zap, CheckCircle } from 'lucide-react'
+import { toast } from 'sonner'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { smooth } from '@/lib/animations'
 
@@ -153,6 +154,16 @@ export default function GuestRegistration() {
 
   async function handleSubmit() {
     if (!event || !selectedDistance) return
+
+    // Client-side validation
+    if (!firstName.trim()) { toast.error('El nombre es obligatorio.'); return }
+    if (!lastName.trim()) { toast.error('El apellido es obligatorio.'); return }
+    if (!phone.trim()) { toast.error('El número de celular es obligatorio.'); return }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error('Ingresa un correo electrónico válido.')
+      return
+    }
+
     setSubmitting(true)
     setError(null)
 

@@ -6,7 +6,7 @@ import type { Schema } from '../../../amplify/data/resource'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, CheckCircle, Eye } from 'lucide-react'
+import { ArrowLeft, CheckCircle, Eye, XCircle } from 'lucide-react'
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
@@ -58,19 +58,19 @@ export default function OrgEventManage() {
       id: r.id,
       type: 'registered' as const,
       name: r.userId ?? '—',
-      distanceName: r.distanceName,
-      status: r.status,
-      paymentStatus: r.paymentStatus,
-      registeredAt: r.registeredAt,
+      distanceName: r.distanceName ?? null,
+      status: r.status ?? null,
+      paymentStatus: r.paymentStatus ?? null,
+      registeredAt: r.registeredAt ?? null,
     })),
     ...guestRegistrations.map(r => ({
       id: r.id,
       type: 'guest' as const,
       name: `${r.firstName} ${r.lastName}`,
-      distanceName: r.distanceName,
-      status: r.status,
-      paymentStatus: r.paymentStatus,
-      registeredAt: r.registeredAt,
+      distanceName: r.distanceName ?? null,
+      status: r.status ?? null,
+      paymentStatus: r.paymentStatus ?? null,
+      registeredAt: r.registeredAt ?? null,
     })),
   ].sort((a, b) => {
     if (!a.registeredAt) return 1
@@ -82,6 +82,19 @@ export default function OrgEventManage() {
     if (!event) return
     await client.models.Event.update({ id: event.id, status: 'PUBLISHED' })
     setEvent({ ...event, status: 'PUBLISHED' })
+  }
+
+  async function updateRegistrationStatus(regId: string, type: 'registered' | 'guest', newStatus: 'CONFIRMED' | 'CANCELLED') {
+    try {
+      if (type === 'guest') {
+        await client.models.GuestRegistration.update({ id: regId, status: newStatus })
+      } else {
+        await client.models.Registration.update({ id: regId, status: newStatus })
+      }
+      await loadData()
+    } catch (err) {
+      console.error('Error updating registration:', err)
+    }
   }
 
   if (loading) return <LoadingSpinner />
@@ -152,6 +165,7 @@ export default function OrgEventManage() {
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Estado</th>
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Pago</th>
                     <th className="text-left text-xs text-zinc-500 font-medium p-4">Fecha</th>
+                    <th className="text-left text-xs text-zinc-500 font-medium p-4">Acciones</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -173,6 +187,18 @@ export default function OrgEventManage() {
                       <td className="p-4 text-sm text-zinc-600">{reg.paymentStatus}</td>
                       <td className="p-4 text-sm text-zinc-500">
                         {reg.registeredAt ? new Date(reg.registeredAt).toLocaleDateString('es-MX') : '—'}
+                      </td>
+                      <td className="p-4">
+                        {reg.status !== 'CONFIRMED' && reg.status !== 'CANCELLED' && (
+                          <div className="flex gap-1">
+                            <Button size="sm" variant="ghost" className="h-7 px-2 text-emerald-600 hover:text-emerald-700" onClick={() => updateRegistrationStatus(reg.id, reg.type, 'CONFIRMED')}>
+                              <CheckCircle className="w-3.5 h-3.5" />
+                            </Button>
+                            <Button size="sm" variant="ghost" className="h-7 px-2 text-red-500 hover:text-red-600" onClick={() => updateRegistrationStatus(reg.id, reg.type, 'CANCELLED')}>
+                              <XCircle className="w-3.5 h-3.5" />
+                            </Button>
+                          </div>
+                        )}
                       </td>
                     </motion.tr>
                   ))}

@@ -52,6 +52,9 @@ export default defineConfig({
               cacheName: 'appsync-api',
               networkTimeoutSeconds: 10,
               expiration: { maxAgeSeconds: 300 },
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
             },
           },
           {
