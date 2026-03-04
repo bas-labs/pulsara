@@ -104,17 +104,30 @@ export const handler: AppSyncResolverHandler<CreateCheckoutArgs, string> = async
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',
     customer_email: args.userEmail,
-    line_items: [{
-      price_data: {
-        currency: 'mxn',
-        unit_amount: verifiedPrice,
-        product_data: {
-          name: `${args.eventTitle} — ${args.distanceName}`,
-          description: `Inscripción a ${args.distanceName}`,
+    line_items: [
+      {
+        price_data: {
+          currency: 'mxn',
+          unit_amount: verifiedPrice,
+          product_data: {
+            name: `${args.eventTitle} — ${args.distanceName}`,
+            description: `Inscripción a ${args.distanceName}`,
+          },
         },
+        quantity: 1,
       },
-      quantity: 1,
-    }],
+      {
+        price_data: {
+          currency: 'mxn',
+          unit_amount: 2000,
+          product_data: {
+            name: 'Tarifa de Registro Al Fallo',
+            description: 'Al Fallo Registration Fee',
+          },
+        },
+        quantity: 1,
+      },
+    ],
     metadata: {
       eventId: args.eventId,
       distanceId: args.distanceId,
