@@ -3,6 +3,8 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { Authenticator } from '@aws-amplify/ui-react'
 import '@aws-amplify/ui-react/styles.css'
 import { Toaster } from 'sonner'
+import { generateClient } from 'aws-amplify/data'
+import type { Schema } from '../amplify/data/resource'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import Layout from './components/Layout'
 import LoadingSpinner from './components/LoadingSpinner'
@@ -52,12 +54,25 @@ function ProtectedRoute({ children, requiredGroup }: { children: React.ReactNode
 }
 
 function PostLoginRedirect() {
-  const { isOrganizador, isAtleta, loading } = useAuth()
-  if (loading) return <Loading />
-  // Returning users go straight to their dashboard; new users go to onboarding
+  const { user, isOrganizador, isAtleta, loading } = useAuth()
+  const [checking, setChecking] = useState(true)
+  const [hasProfile, setHasProfile] = useState(false)
+
+  useEffect(() => {
+    if (!user || loading) return
+    const client = generateClient<Schema>()
+    client.models.UserProfile.get({ id: user.userId })
+      .then(({ data }) => {
+        setHasProfile(!!data)
+        setChecking(false)
+      })
+      .catch(() => setChecking(false))
+  }, [user, loading])
+
+  if (loading || checking) return <Loading />
+  if (!hasProfile) return <Navigate to="/onboarding" replace />
   if (isOrganizador) return <Navigate to="/org" replace />
   if (isAtleta) return <Navigate to="/atleta" replace />
-  // New user (no group yet, or group just assigned by post-confirmation) → onboarding
   return <Navigate to="/onboarding" replace />
 }
 

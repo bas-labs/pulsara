@@ -43,7 +43,7 @@ async function sendConfirmationEmail(
     })
 
     await ses.send(new SendEmailCommand({
-      Source: SENDER_EMAIL,
+      Source: `Al Fallo <${SENDER_EMAIL}>`,
       Destination: { ToAddresses: [recipientEmail] },
       Message: {
         Subject: { Data: subject, Charset: 'UTF-8' },

@@ -31,11 +31,11 @@ export default function EventDetail() {
 
   async function loadEvent() {
     try {
-      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { authMode: 'identityPool' })
+      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { ...(user ? {} : { authMode: 'identityPool' as const }) })
       if (data.length > 0) {
         const ev = data[0]
         setEvent(ev)
-        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { authMode: 'identityPool' })
+        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { ...(user ? {} : { authMode: 'identityPool' as const }) })
         setDistances(dists)
         const firstAvailable = dists.find(d => d.spotsRemaining === null || d.spotsRemaining === undefined || d.spotsRemaining > 0)
         if (firstAvailable) setSelectedDistance(firstAvailable.id)

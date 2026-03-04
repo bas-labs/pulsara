@@ -87,4 +87,6 @@ type AmplifyBackendEnvVars = {
   REGISTRATION_TABLE: string;
   ORDER_TABLE: string;
   GUEST_REGISTRATION_TABLE: string;
+  EVENT_TABLE: string;
+  SENDER_EMAIL: string;
 };

@@ -4,11 +4,12 @@ import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { useAuth } from '../context/AuthContext'
 import { uploadData, getUrl } from 'aws-amplify/storage'
+import { updatePassword } from 'aws-amplify/auth'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
-import { User, Camera, Save, MapPin, Trophy, Zap } from 'lucide-react'
+import { User, Camera, Save, MapPin, Trophy, Zap, Lock, Mail, Shield } from 'lucide-react'
 import { toast } from 'sonner'
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
@@ -25,6 +26,8 @@ export default function Profile() {
   const [saving, setSaving] = useState(false)
   const [avatarUrl, setAvatarUrl] = useState<string | null>(null)
   const [form, setForm] = useState({
+    firstName: '',
+    lastName: '',
     displayName: '',
     city: '',
     state: '',
@@ -37,6 +40,9 @@ export default function Profile() {
     shirtSize: '',
   })
 
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' })
+  const [changingPassword, setChangingPassword] = useState(false)
+
   useEffect(() => {
     if (user) loadProfile()
   }, [user])
@@ -47,6 +53,8 @@ export default function Profile() {
       if (data) {
         setProfile(data)
         setForm({
+          firstName: data.firstName ?? '',
+          lastName: data.lastName ?? '',
           displayName: data.displayName ?? '',
           city: data.city ?? '',
           state: data.state ?? '',
@@ -91,6 +99,8 @@ export default function Profile() {
     try {
       await client.models.UserProfile.update({
         id: user.userId,
+        firstName: form.firstName,
+        lastName: form.lastName,
         displayName: form.displayName,
         city: form.city,
         state: form.state,
@@ -107,6 +117,32 @@ export default function Profile() {
       console.error(err)
       toast.error('Error al guardar')
     } finally { setSaving(false) }
+  }
+
+  async function handlePasswordChange() {
+    if (passwordForm.newPassword !== passwordForm.confirmPassword) {
+      toast.error('Las contraseñas no coinciden')
+      return
+    }
+    if (passwordForm.newPassword.length < 8) {
+      toast.error('La contraseña debe tener al menos 8 caracteres')
+      return
+    }
+    setChangingPassword(true)
+    try {
+      await updatePassword({ oldPassword: passwordForm.currentPassword, newPassword: passwordForm.newPassword })
+      toast.success('Contraseña actualizada')
+      setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' })
+    } catch (err: any) {
+      if (err.name === 'NotAuthorizedException') {
+        toast.error('Contraseña actual incorrecta')
+      } else {
+        toast.error('Error al cambiar contraseña')
+      }
+      console.error(err)
+    } finally {
+      setChangingPassword(false)
+    }
   }
 
   if (loading) return <LoadingSpinner />
@@ -165,14 +201,93 @@ export default function Profile() {
           </Card>
         </motion.div>
 
-        {/* Form */}
+        {/* Account Info */}
         <motion.div variants={fadeUp} custom={2}>
+          <Card className="mb-6">
+            <CardContent className="p-6 space-y-5">
+              <h3 className="font-semibold text-zinc-900 text-lg flex items-center gap-2">
+                <Shield className="w-5 h-5 text-emerald-600" />
+                Información de cuenta
+              </h3>
+
+              {/* Email (read-only) */}
+              <div>
+                <label className="text-sm font-medium text-zinc-700 mb-1.5 flex items-center gap-1.5">
+                  <Mail className="w-3.5 h-3.5" />
+                  Correo electrónico
+                </label>
+                <Input
+                  value={user?.signInDetails?.loginId ?? ''}
+                  readOnly
+                  className="bg-zinc-50 text-zinc-500 cursor-not-allowed"
+                />
+              </div>
+
+              {/* Password change */}
+              <div className="border-t pt-5 space-y-4">
+                <h4 className="text-sm font-semibold text-zinc-800 flex items-center gap-1.5">
+                  <Lock className="w-3.5 h-3.5" />
+                  Cambiar contraseña
+                </h4>
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Contraseña actual</label>
+                    <Input
+                      type="password"
+                      value={passwordForm.currentPassword}
+                      onChange={e => setPasswordForm({...passwordForm, currentPassword: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nueva contraseña</label>
+                    <Input
+                      type="password"
+                      value={passwordForm.newPassword}
+                      onChange={e => setPasswordForm({...passwordForm, newPassword: e.target.value})}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Confirmar contraseña</label>
+                    <Input
+                      type="password"
+                      value={passwordForm.confirmPassword}
+                      onChange={e => setPasswordForm({...passwordForm, confirmPassword: e.target.value})}
+                    />
+                  </div>
+                </div>
+                <Button
+                  onClick={handlePasswordChange}
+                  disabled={changingPassword || !passwordForm.currentPassword || !passwordForm.newPassword || !passwordForm.confirmPassword}
+                  className="bg-emerald-600 hover:bg-emerald-700"
+                >
+                  {changingPassword ? (
+                    <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                  ) : (
+                    <Lock className="w-4 h-4 mr-2" />
+                  )}
+                  {changingPassword ? 'Cambiando...' : 'Cambiar Contraseña'}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        </motion.div>
+
+        {/* Personal Info */}
+        <motion.div variants={fadeUp} custom={3}>
           <Card className="mb-6">
             <CardContent className="p-6 space-y-5">
               <h3 className="font-semibold text-zinc-900 text-lg">Información personal</h3>
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nombre</label>
+                  <Input value={form.firstName} onChange={e => setForm({...form, firstName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Apellido</label>
+                  <Input value={form.lastName} onChange={e => setForm({...form, lastName: e.target.value})} />
+                </div>
+                <div>
+                  <label className="text-sm font-medium text-zinc-700 mb-1.5 block">Nombre para mostrar</label>
                   <Input value={form.displayName} onChange={e => setForm({...form, displayName: e.target.value})} />
                 </div>
                 <div>
@@ -211,7 +326,7 @@ export default function Profile() {
         </motion.div>
 
         {/* Emergency / race info */}
-        <motion.div variants={fadeUp} custom={3}>
+        <motion.div variants={fadeUp} custom={4}>
           <Card className="mb-6">
             <CardContent className="p-6 space-y-5">
               <h3 className="font-semibold text-zinc-900 text-lg">Información de carrera</h3>
@@ -255,7 +370,7 @@ export default function Profile() {
           </Card>
         </motion.div>
 
-        <motion.div variants={fadeUp} custom={4}>
+        <motion.div variants={fadeUp} custom={5}>
           <Button onClick={handleSave} disabled={saving} className="bg-emerald-600 hover:bg-emerald-700">
             {saving ? (
               <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />

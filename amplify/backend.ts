@@ -116,7 +116,7 @@ const cfnUserPool = backend.auth.resources.userPool.node.defaultChild as CfnUser
 cfnUserPool.emailConfiguration = {
   emailSendingAccount: 'DEVELOPER',
   sourceArn: `arn:aws:ses:${Aws.REGION}:${Aws.ACCOUNT_ID}:identity/${emailDomain}`,
-  from: `Pulsara <${senderEmail}>`,
+  from: `Al Fallo <${senderEmail}>`,
   replyToEmailAddress: senderEmail,
 }
 
