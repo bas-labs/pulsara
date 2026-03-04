@@ -14,7 +14,8 @@ interface CreateGuestCheckoutArgs {
   eventTitle: string
   priceInCentavos: number
   guestEmail: string
-  guestRegistrationId: string
+  guestRegistrationIds: string
+  quantity: number
 }
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -22,7 +23,7 @@ const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = async (event) => {
   const args = event.arguments
 
-  // --- Bug 3: Input validation ---
+  // --- Input validation ---
   if (!args.eventId || typeof args.eventId !== 'string') {
     throw new Error('eventId is required and must be a string')
   }
@@ -47,25 +48,38 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
   if (!EMAIL_REGEX.test(args.guestEmail)) {
     throw new Error('guestEmail must be a valid email address')
   }
-  if (!args.guestRegistrationId || typeof args.guestRegistrationId !== 'string') {
-    throw new Error('guestRegistrationId is required and must be a string')
+  if (!args.guestRegistrationIds || typeof args.guestRegistrationIds !== 'string') {
+    throw new Error('guestRegistrationIds is required and must be a string')
+  }
+  if (typeof args.quantity !== 'number' || args.quantity < 1) {
+    throw new Error('quantity is required and must be at least 1')
+  }
+  if (args.quantity > 10) {
+    throw new Error('Maximum 10 participants per transaction')
   }
 
-  // Check for duplicate guest registration (same email + eventId), excluding the current registration
+  const registrationIds = args.guestRegistrationIds.split(',').filter(Boolean)
+  if (registrationIds.length !== args.quantity) {
+    throw new Error('Number of registration IDs must match quantity')
+  }
+
+  // Check for duplicate guest registration (same email + eventId), excluding current batch
   if (process.env.GUEST_REGISTRATION_TABLE) {
     const existing = await ddb.send(new ScanCommand({
       TableName: process.env.GUEST_REGISTRATION_TABLE,
-      FilterExpression: 'email = :email AND eventId = :eventId AND #s <> :cancelled AND id <> :currentId',
+      FilterExpression: 'email = :email AND eventId = :eventId AND #s <> :cancelled',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: {
         ':email': args.guestEmail,
         ':eventId': args.eventId,
         ':cancelled': 'CANCELLED',
-        ':currentId': args.guestRegistrationId,
       },
     }))
 
-    if (existing.Items && existing.Items.length > 0) {
+    const batchIds = new Set(registrationIds)
+    const duplicates = (existing.Items || []).filter(item => !batchIds.has(item.id))
+
+    if (duplicates.length > 0) {
       throw new Error('DUPLICATE_REGISTRATION: A registration for this email and event already exists')
     }
   }
@@ -100,12 +114,14 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
     throw new Error('Distance not found')
   }
 
+  // Check enough spots for all participants
   if (
     distanceResult.Item.spotsRemaining !== undefined &&
-    distanceResult.Item.spotsRemaining !== null &&
-    distanceResult.Item.spotsRemaining <= 0
+    distanceResult.Item.spotsRemaining !== null
   ) {
-    throw new Error('No spots remaining for this distance')
+    if (distanceResult.Item.spotsRemaining < args.quantity) {
+      throw new Error('No hay suficientes lugares disponibles para esta distancia')
+    }
   }
 
   // Use server-side price instead of client-provided value
@@ -126,16 +142,18 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
         unit_amount: verifiedPrice,
         product_data: {
           name: `${args.eventTitle} — ${args.distanceName}`,
-          description: `Inscripción a ${args.distanceName}`,
+          description: args.quantity > 1
+            ? `Inscripción a ${args.distanceName} (${args.quantity} participantes)`
+            : `Inscripción a ${args.distanceName}`,
         },
       },
-      quantity: 1,
+      quantity: args.quantity,
     }],
     metadata: {
       type: 'guest',
       eventId: args.eventId,
       distanceId: args.distanceId,
-      guestRegistrationId: args.guestRegistrationId,
+      guestRegistrationIds: args.guestRegistrationIds,
     },
     success_url: successUrl,
     cancel_url: cancelUrl,

@@ -26,7 +26,7 @@ export const handler = async (event: any) => {
     return { statusCode: 400, body: 'Webhook Error' }
   }
 
-  // --- Bug 5: Idempotency check (in-memory) ---
+  // --- Idempotency check (in-memory) ---
   if (processedEvents.has(stripeEvent.id)) {
     console.log(`Skipping already-processed event: ${stripeEvent.id}`)
     return { statusCode: 200, body: 'Already processed' }
@@ -41,38 +41,53 @@ export const handler = async (event: any) => {
     const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
     if (metadata.type === 'guest') {
-      // Guest registration payment
-      const { guestRegistrationId } = metadata
-      console.log(`Guest payment completed: guestRegistration=${guestRegistrationId}, amount=${session.amount_total}`)
+      // Guest registration payment — supports multiple registration IDs
+      const registrationIds = metadata.guestRegistrationIds
+        ? metadata.guestRegistrationIds.split(',').filter(Boolean)
+        : metadata.guestRegistrationId
+          ? [metadata.guestRegistrationId]
+          : []
 
-      // Check if already processed in DynamoDB
-      const existing = await ddb.send(new GetCommand({
-        TableName: process.env.GUEST_REGISTRATION_TABLE!,
-        Key: { id: guestRegistrationId },
-        ProjectionExpression: 'paymentStatus',
-      }))
-      if (existing.Item?.paymentStatus === 'PAID') {
-        console.log(`Guest registration ${guestRegistrationId} already paid, skipping`)
-        processedEvents.add(stripeEvent.id)
-        return { statusCode: 200, body: 'Already processed' }
+      console.log(`Guest payment completed: registrations=${registrationIds.join(',')}, amount=${session.amount_total}`)
+
+      const total = session.amount_total ?? 0
+      const perPerson = Math.floor(total / registrationIds.length)
+      const remainder = total - perPerson * registrationIds.length
+
+      for (let idx = 0; idx < registrationIds.length; idx++) {
+        const guestRegistrationId = registrationIds[idx]
+
+        // Check if already processed in DynamoDB
+        const existing = await ddb.send(new GetCommand({
+          TableName: process.env.GUEST_REGISTRATION_TABLE!,
+          Key: { id: guestRegistrationId },
+          ProjectionExpression: 'paymentStatus',
+        }))
+        if (existing.Item?.paymentStatus === 'PAID') {
+          console.log(`Guest registration ${guestRegistrationId} already paid, skipping`)
+          continue
+        }
+
+        // First participant absorbs any rounding remainder
+        const amount = idx === 0 ? perPerson + remainder : perPerson
+
+        await ddb.send(new UpdateCommand({
+          TableName: process.env.GUEST_REGISTRATION_TABLE!,
+          Key: { id: guestRegistrationId },
+          UpdateExpression: 'SET #s = :s, paymentStatus = :ps, amountPaid = :ap, stripePaymentIntentId = :spi, registeredAt = :ra',
+          ExpressionAttributeNames: { '#s': 'status' },
+          ExpressionAttributeValues: {
+            ':s': 'CONFIRMED',
+            ':ps': 'PAID',
+            ':ap': amount,
+            ':spi': session.payment_intent as string,
+            ':ra': new Date().toISOString(),
+          },
+        }))
+
+        console.log(`Guest registration ${guestRegistrationId} confirmed with payment`)
       }
-
-      await ddb.send(new UpdateCommand({
-        TableName: process.env.GUEST_REGISTRATION_TABLE!,
-        Key: { id: guestRegistrationId },
-        UpdateExpression: 'SET #s = :s, paymentStatus = :ps, amountPaid = :ap, stripePaymentIntentId = :spi, registeredAt = :ra',
-        ExpressionAttributeNames: { '#s': 'status' },
-        ExpressionAttributeValues: {
-          ':s': 'CONFIRMED',
-          ':ps': 'PAID',
-          ':ap': session.amount_total,
-          ':spi': session.payment_intent as string,
-          ':ra': new Date().toISOString(),
-        },
-      }))
-
-      console.log(`Guest registration ${guestRegistrationId} confirmed with payment`)
-    } else {
+    } else if (metadata.type === 'registration' || (metadata.userId && metadata.registrationId)) {
       // Authenticated user registration payment
       const { userId, registrationId } = metadata
       console.log(`Payment completed: registration=${registrationId}, amount=${session.amount_total}`)

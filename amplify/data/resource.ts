@@ -161,7 +161,7 @@ const schema = a.schema({
       waiverSigned: a.boolean().default(false),
       teamName: a.string(),
       promoCode: a.string(),
-      shirtSize: a.enum(['XS', 'S', 'M', 'L', 'XL', 'XXL']),
+      shirtSize: a.string(),
     })
     .secondaryIndexes((idx) => [
       idx('userId').sortKeys(['eventId']),
@@ -360,7 +360,8 @@ const schema = a.schema({
       eventTitle: a.string().required(),
       priceInCentavos: a.integer().required(),
       guestEmail: a.string().required(),
-      guestRegistrationId: a.string().required(),
+      guestRegistrationIds: a.string().required(),
+      quantity: a.integer().required(),
     })
     .returns(a.string())
     .authorization((allow) => [allow.guest()])
