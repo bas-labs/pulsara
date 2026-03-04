@@ -1,36 +1,24 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { useParams, useNavigate, useSearchParams } from 'react-router-dom'
-import { motion, AnimatePresence } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ArrowLeft, ArrowRight, Check, Zap, CheckCircle, Plus, Trash2, FileText, Shield, Pencil } from 'lucide-react'
+import { Shield, FileText, CheckCircle, Plus, Trash2, Zap, ArrowLeft, ChevronDown, ChevronUp, Loader2, AlertCircle } from 'lucide-react'
 import { toast } from 'sonner'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { smooth } from '@/lib/animations'
+import monteverdeLogoUrl from '@/assets/logos/monteverde-logo.svg'
 
 const client = generateClient<Schema>()
 
-const stepVariants = {
-  enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 60 : -60 }),
-  center: { opacity: 1, x: 0, transition: { duration: 0.4, ease: smooth } },
-  exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -60 : 60 }),
-}
+// ─── Constants ──────────────────────────────────────────────────────────────
+const MONTHS = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+const SHIRT_SIZES_DAMA      = ['XCH Dama','CH Dama','M Dama','G Dama','XG Dama','2XG Dama','3XG Dama']
+const SHIRT_SIZES_CABALLERO = ['XCH Caballero','CH Caballero','M Caballero','G Caballero','XG Caballero','2XG Caballero','3XG Caballero']
+const SHIRT_SIZES_NINO      = ['2 Niño','4 Niño','6 Niño','8 Niño','10 Niño','12 Niño','14 Niño']
 
-const MONTHS = [
-  'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
-  'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre',
-]
+const PLATFORM_FEE_CENTAVOS = 2000  // 20 MXN
 
-// ─── Shirt sizes: Dama, Caballero, Niño ───
-const SHIRT_SIZES_DAMA = ['XCH Dama', 'CH Dama', 'M Dama', 'G Dama', 'XG Dama', '2XG Dama', '3XG Dama']
-const SHIRT_SIZES_CABALLERO = ['XCH Caballero', 'CH Caballero', 'M Caballero', 'G Caballero', 'XG Caballero', '2XG Caballero', '3XG Caballero']
-const SHIRT_SIZES_NINO = ['2 Niño', '4 Niño', '6 Niño', '8 Niño', '10 Niño', '12 Niño', '14 Niño']
-
-const TOTAL_STEPS = 11 // 0-10
-
-// ─── T&C Text ───
 const TERMS_TEXT = `TÉRMINOS Y CONDICIONES DE INSCRIPCIÓN
 
 1. Inscripción y Pago
@@ -54,29 +42,24 @@ La participación en el evento es bajo la entera responsabilidad del inscrito. E
 7. Reglamento Deportivo
 El participante se compromete a respetar el reglamento del evento, las indicaciones del personal organizador, jueces, paramédicos y autoridades competentes. El incumplimiento del reglamento podrá resultar en descalificación sin derecho a reembolso.
 
-8. Kit de Participación
-El kit de participación (playera, número de competidor y accesorios) deberá ser recogido en las fechas y horarios establecidos por el comité organizador. No se realizarán envíos ni entregas fuera de los puntos designados.
-
-9. Modificaciones al Evento
-El comité organizador se reserva el derecho de modificar la fecha, horario, ruta o cualquier aspecto del evento por razones de seguridad o fuerza mayor, sin que esto genere derecho a reembolso.
-
-10. Aceptación
+8. Aceptación
 Al marcar la casilla de aceptación y completar la inscripción, el participante declara haber leído, entendido y aceptado todos los términos y condiciones aquí establecidos.`
 
 const EXONERATION_TEXT = `CARTA EXONERACIÓN.
 
 3a Carrera APA Colegio Monteverde. Sábado 25 de abril del 2026.
 
-Yo, por el sólo hecho de firmar este documento, acepto cualquier y todos los riesgos y peligros que sobre mi persona recaigan en cuanto a mi participación en el evento antes referido en adelante el "Evento". Por lo tanto, yo soy el único responsable de (l) mi salud, (ll) cualquier consecuencia, accidente, perjuicios, deficiencias que puedan causar, de cualquier manera posible alteraciones a mi salud, integridad física o inclusive la muerte. Por esta razón libero de cualquier responsabilidad ala APA, Colegio Monteverde, al comité organizador, sus directores, patrocinadores, Roberto Sánchez Carrasco (organizador del evento) y por medio de este conducto renuncio, sin limitación alguna a cualquier derecho, demanda o indemnización al respecto. También reconozco y acepto que todas las personas y entidades referidas no son ni serán consideradas responsables de mi salud. Además, no serán responsables por cualquier desperfecto, pérdida o robo relacionado con mis pertenencias personales.
+Yo, por el sólo hecho de firmar este documento, acepto cualquier y todos los riesgos y peligros que sobre mi persona recaigan en cuanto a mi participación en el evento antes referido en adelante el "Evento". Por lo tanto, yo soy el único responsable de (l) mi salud, (ll) cualquier consecuencia, accidente, perjuicios, deficiencias que puedan causar, de cualquier manera posible alteraciones a mi salud, integridad física o inclusive la muerte. Por esta razón libero de cualquier responsabilidad a la APA, Colegio Monteverde, al comité organizador, sus directores, patrocinadores, Roberto Sánchez Carrasco (organizador del evento) y por medio de este conducto renuncio, sin limitación alguna a cualquier derecho, demanda o indemnización al respecto.
 
-Así mismo, autorizo al Comité Organizador y/o a quien ésta designe, el uso de mi imagen y voz, ya sea parcial o totalmente, en cuanto a todo lo relacionado en el "Evento", de cualquier manera y en cualquier momento. Por este conducto reconozco que sé y entiendo todas las regulaciones del "Evento". Igualmente, manifiesto bajo protesta de decir verdad que mi equipo reúne y cumple con todos los requisitos reglamentarios aplicables y los temas establecidos en la mencionada normatividad.
+También reconozco y acepto que todas las personas y entidades referidas no son ni serán consideradas responsables de mi salud. Además, no serán responsables por cualquier desperfecto, pérdida o robo relacionado con mis pertenencias personales.
 
-AUTORIZACIÓN DEL MENOR (EN CASO DE QUE EL INSCRITO SEA MENOR DE EDAD)
+Así mismo, autorizo al Comité Organizador y/o a quien ésta designe, el uso de mi imagen y voz, ya sea parcial o totalmente, en cuanto a todo lo relacionado en el "Evento", de cualquier manera y en cualquier momento. Por este conducto reconozco que sé y entiendo todas las regulaciones del "Evento".
 
-Autorizo a mi hijo a participar en esta carrera. Declaro conocer las condiciones de la competencia y los riesgos que esto implica. Declaro haber leído y comprendido la presente exoneración y aceptarla en su totalidad. Firmo bajo absoluta voluntad.`
+AUTORIZACIÓN DEL MENOR (EN CASO DE QUE EL INSCRITO SEA MENOR DE EDAD): Autorizo a mi hijo a participar en esta carrera. Declaro conocer las condiciones de la competencia y los riesgos que esto implica. Declaro haber leído y comprendido la presente exoneración y aceptarla en su totalidad.`
 
-// ─── Participant data type ───
-interface ParticipantData {
+// ─── Types ──────────────────────────────────────────────────────────────────
+interface ParticipantForm {
+  _id: string
   firstName: string
   lastName: string
   dobDay: string
@@ -85,53 +68,281 @@ interface ParticipantData {
   gender: 'F' | 'M' | null
   phone: string
   email: string
-  emailConfirm: string
   shirtSize: string
+  emergencyContactName: string
+  emergencyContactPhone: string
+  errors: Record<string, string>
+  collapsed: boolean
 }
 
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+function uid() { return Math.random().toString(36).slice(2, 9) }
+
+function getAge(day: string, month: string, year: string): number | null {
+  if (!day || !month || !year) return null
+  const today = new Date()
+  const birth = new Date(parseInt(year), parseInt(month) - 1, parseInt(day))
+  let age = today.getFullYear() - birth.getFullYear()
+  const m = today.getMonth() - birth.getMonth()
+  if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--
+  return isNaN(age) ? null : age
+}
+
+function isValidDate(day: string, month: string, year: string): boolean {
+  if (!day || !month || !year) return false
+  const d = parseInt(day), m = parseInt(month), y = parseInt(year)
+  if (isNaN(d) || isNaN(m) || isNaN(y)) return false
+  const date = new Date(y, m - 1, d)
+  return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d
+}
+
+function getShirtSizes(gender: 'F' | 'M' | null, age: number | null): string[] {
+  if (age !== null && age < 15) return SHIRT_SIZES_NINO
+  return gender === 'F' ? SHIRT_SIZES_DAMA : SHIRT_SIZES_CABALLERO
+}
+
+function blankParticipant(): ParticipantForm {
+  return {
+    _id: uid(), firstName: '', lastName: '', dobDay: '', dobMonth: '', dobYear: '',
+    gender: null, phone: '', email: '', shirtSize: '', emergencyContactName: '',
+    emergencyContactPhone: '', errors: {}, collapsed: false,
+  }
+}
+
+function fmtMXN(centavos: number) {
+  return `$${(centavos / 100).toLocaleString('es-MX', { minimumFractionDigits: 0 })} MXN`
+}
+
+// ─── Field components ────────────────────────────────────────────────────────
+function FieldError({ msg }: { msg?: string }) {
+  if (!msg) return null
+  return (
+    <div className="flex items-center gap-1.5 mt-1.5">
+      <AlertCircle className="w-3.5 h-3.5 text-red-500 flex-shrink-0" />
+      <p className="text-sm text-red-500">{msg}</p>
+    </div>
+  )
+}
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return <p className="text-xs font-semibold text-zinc-400 uppercase tracking-wider mb-3">{children}</p>
+}
+
+// ─── Participant Card ────────────────────────────────────────────────────────
+function ParticipantCard({
+  p, index, total, onChange, onRemove,
+}: {
+  p: ParticipantForm
+  index: number
+  total: number
+  onChange: (field: keyof ParticipantForm, value: any) => void
+  onRemove: () => void
+}) {
+  const age = getAge(p.dobDay, p.dobMonth, p.dobYear)
+  const sizes = getShirtSizes(p.gender, age)
+
+  // Clear shirt size when it's no longer valid for new gender/age
+  useEffect(() => {
+    if (p.shirtSize && !sizes.includes(p.shirtSize)) {
+      onChange('shirtSize', '')
+    }
+  }, [p.gender, p.dobDay, p.dobMonth, p.dobYear])
+
+  return (
+    <div className="rounded-2xl border-2 border-zinc-200 overflow-hidden bg-white">
+      {/* Card header */}
+      <div className="flex items-center justify-between px-5 py-3 bg-zinc-50 border-b border-zinc-200">
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-full bg-emerald-600 flex items-center justify-center text-white text-sm font-bold flex-shrink-0">
+            {index + 1}
+          </div>
+          <span className="font-semibold text-zinc-800 text-sm">
+            {p.firstName ? `${p.firstName}${p.lastName ? ' ' + p.lastName : ''}` : `Participante ${index + 1}`}
+          </span>
+        </div>
+        <div className="flex items-center gap-2">
+          {total > 1 && (
+            <button type="button" onClick={onRemove} className="text-zinc-400 hover:text-red-500 transition-colors p-1">
+              <Trash2 className="w-4 h-4" />
+            </button>
+          )}
+          <button type="button" onClick={() => onChange('collapsed', !p.collapsed)} className="text-zinc-400 hover:text-zinc-700 p-1">
+            {p.collapsed ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {!p.collapsed && (
+        <div className="px-5 py-5 space-y-6">
+          {/* Personal info */}
+          <div>
+            <SectionLabel>Datos personales</SectionLabel>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Nombre(s) *</label>
+                <Input
+                  value={p.firstName}
+                  onChange={e => onChange('firstName', e.target.value)}
+                  placeholder="María José"
+                  className={`border-2 ${p.errors.firstName ? 'border-red-400 focus:border-red-500' : 'border-zinc-200 focus:border-emerald-500'}`}
+                  data-error-field={`firstName-${p._id}`}
+                />
+                <FieldError msg={p.errors.firstName} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Apellido(s) *</label>
+                <Input
+                  value={p.lastName}
+                  onChange={e => onChange('lastName', e.target.value)}
+                  placeholder="González López"
+                  className={`border-2 ${p.errors.lastName ? 'border-red-400 focus:border-red-500' : 'border-zinc-200 focus:border-emerald-500'}`}
+                  data-error-field={`lastName-${p._id}`}
+                />
+                <FieldError msg={p.errors.lastName} />
+              </div>
+            </div>
+
+            {/* Date of birth */}
+            <div className="mt-4">
+              <label className="text-sm font-medium text-zinc-700 block mb-1.5">Fecha de nacimiento *</label>
+              <div className="grid grid-cols-3 gap-3">
+                <div>
+                  <label className="text-xs text-zinc-400 mb-1 block">Día</label>
+                  <select value={p.dobDay} onChange={e => onChange('dobDay', e.target.value)}
+                    className={`w-full rounded-lg border-2 py-2.5 px-3 text-zinc-900 bg-white outline-none text-sm ${p.errors.dob ? 'border-red-400' : 'border-zinc-200 focus:border-emerald-500'}`}
+                    data-error-field={`dob-${p._id}`}>
+                    <option value="">--</option>
+                    {Array.from({ length: 31 }, (_, i) => <option key={i+1} value={String(i+1)}>{i+1}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-zinc-400 mb-1 block">Mes</label>
+                  <select value={p.dobMonth} onChange={e => onChange('dobMonth', e.target.value)}
+                    className={`w-full rounded-lg border-2 py-2.5 px-3 text-zinc-900 bg-white outline-none text-sm ${p.errors.dob ? 'border-red-400' : 'border-zinc-200 focus:border-emerald-500'}`}>
+                    <option value="">--</option>
+                    {MONTHS.map((m, i) => <option key={m} value={String(i+1)}>{m}</option>)}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs text-zinc-400 mb-1 block">Año</label>
+                  <select value={p.dobYear} onChange={e => onChange('dobYear', e.target.value)}
+                    className={`w-full rounded-lg border-2 py-2.5 px-3 text-zinc-900 bg-white outline-none text-sm ${p.errors.dob ? 'border-red-400' : 'border-zinc-200 focus:border-emerald-500'}`}>
+                    <option value="">--</option>
+                    {Array.from({ length: 80 }, (_, i) => { const y = new Date().getFullYear() - 5 - i; return <option key={y} value={String(y)}>{y}</option> })}
+                  </select>
+                </div>
+              </div>
+              <FieldError msg={p.errors.dob} />
+            </div>
+
+            {/* Gender */}
+            <div className="mt-4">
+              <label className="text-sm font-medium text-zinc-700 block mb-2">Rama *</label>
+              <div className="flex gap-3">
+                {([['F', 'Femenil'], ['M', 'Varonil']] as const).map(([val, label]) => (
+                  <button key={val} type="button" onClick={() => onChange('gender', val)}
+                    className={`flex-1 py-2.5 rounded-xl border-2 text-sm font-semibold transition-all ${p.gender === val ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-zinc-200 text-zinc-700 hover:border-emerald-200'}`}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+              <FieldError msg={p.errors.gender} />
+            </div>
+
+            {/* Phone + Email */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Celular *</label>
+                <Input type="tel" value={p.phone} onChange={e => onChange('phone', e.target.value)}
+                  placeholder="55 1234 5678"
+                  className={`border-2 ${p.errors.phone ? 'border-red-400 focus:border-red-500' : 'border-zinc-200 focus:border-emerald-500'}`}
+                  data-error-field={`phone-${p._id}`} />
+                <FieldError msg={p.errors.phone} />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Correo electrónico *</label>
+                <Input type="email" value={p.email} onChange={e => onChange('email', e.target.value)}
+                  placeholder="correo@ejemplo.com"
+                  className={`border-2 ${p.errors.email ? 'border-red-400 focus:border-red-500' : 'border-zinc-200 focus:border-emerald-500'}`}
+                  data-error-field={`email-${p._id}`} />
+                <FieldError msg={p.errors.email} />
+              </div>
+            </div>
+          </div>
+
+          {/* Shirt size */}
+          <div>
+            <SectionLabel>Talla de playera</SectionLabel>
+            {!p.gender && !p.dobYear ? (
+              <p className="text-sm text-zinc-400 italic">Selecciona rama y fecha de nacimiento primero</p>
+            ) : (
+              <>
+                <div className="flex flex-wrap gap-2">
+                  {sizes.map(size => (
+                    <button key={size} type="button" onClick={() => onChange('shirtSize', size)}
+                      className={`px-3 py-2 rounded-lg border-2 text-xs font-semibold transition-all ${p.shirtSize === size ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-zinc-200 text-zinc-600 hover:border-emerald-200'}`}>
+                      {size}
+                    </button>
+                  ))}
+                </div>
+                <FieldError msg={p.errors.shirtSize} />
+              </>
+            )}
+          </div>
+
+          {/* Emergency contact */}
+          <div>
+            <SectionLabel>Contacto de emergencia</SectionLabel>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Nombre del contacto</label>
+                <Input value={p.emergencyContactName} onChange={e => onChange('emergencyContactName', e.target.value)}
+                  placeholder="Nombre completo" className="border-2 border-zinc-200 focus:border-emerald-500" />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-zinc-700 block mb-1.5">Teléfono de contacto</label>
+                <Input type="tel" value={p.emergencyContactPhone} onChange={e => onChange('emergencyContactPhone', e.target.value)}
+                  placeholder="55 1234 5678" className="border-2 border-zinc-200 focus:border-emerald-500" />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  )
+}
+
+// ─── Main component ──────────────────────────────────────────────────────────
 export default function GuestRegistration() {
   const { slug } = useParams()
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const inputRef = useRef<HTMLInputElement>(null)
   const submittingRef = useRef(false)
-  const loadedRef = useRef(false)
+  const formTopRef = useRef<HTMLDivElement>(null)
 
   // Event data
-  const [event, setEvent] = useState<Schema['Event']['type'] | null>(null)
+  const [event,     setEvent]     = useState<Schema['Event']['type'] | null>(null)
   const [distances, setDistances] = useState<Schema['EventDistance']['type'][]>([])
-  const [loading, setLoading] = useState(true)
+  const [loading,   setLoading]   = useState(true)
 
-  // Multi-participant state
-  const [participants, setParticipants] = useState<ParticipantData[]>([])
-
-  // Current participant form state
-  const [step, setStep] = useState(0)
-  const [direction, setDirection] = useState(1)
+  // Form state
   const [selectedDistanceId, setSelectedDistanceId] = useState<string | null>(null)
-  const [firstName, setFirstName] = useState('')
-  const [lastName, setLastName] = useState('')
-  const [dobDay, setDobDay] = useState('')
-  const [dobMonth, setDobMonth] = useState('')
-  const [dobYear, setDobYear] = useState('')
-  const [gender, setGender] = useState<'F' | 'M' | null>(null)
-  const [phone, setPhone] = useState('')
-  const [email, setEmail] = useState('')
-  const [emailConfirm, setEmailConfirm] = useState('')
-  const [shirtSize, setShirtSize] = useState('')
-
-  // T&C state
-  const [acceptTerms, setAcceptTerms] = useState(false)
-  const [acceptExoneration, setAcceptExoneration] = useState(false)
-  const [showTermsDetail, setShowTermsDetail] = useState(false)
+  const [participants,       setParticipants]        = useState<ParticipantForm[]>([blankParticipant()])
+  const [acceptTerms,        setAcceptTerms]         = useState(false)
+  const [acceptExoneration,  setAcceptExoneration]   = useState(false)
+  const [showTermsDetail,    setShowTermsDetail]      = useState(false)
   const [showExonerationDetail, setShowExonerationDetail] = useState(false)
+  const [globalError,        setGlobalError]         = useState<string | null>(null)
+  const [submitting,         setSubmitting]           = useState(false)
+  const [success,            setSuccess]             = useState(false)
+  const [distanceError,      setDistanceError]       = useState('')
+  const [termsError,         setTermsError]          = useState('')
 
-  // Submission state
-  const [submitting, setSubmitting] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  const [success, setSuccess] = useState(false)
+  const distanceRef       = useRef<HTMLDivElement>(null)
+  const termsRef          = useRef<HTMLDivElement>(null)
+  const participantRefs   = useRef<(HTMLDivElement | null)[]>([])
 
-  // Check for payment success/cancel return
+  // Handle redirect back from Stripe
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setSuccess(true)
@@ -143,91 +354,19 @@ export default function GuestRegistration() {
     }
   }, [searchParams])
 
-  // Load event
-  useEffect(() => {
-    if (slug) loadEvent()
-  }, [slug])
-
-  // Auto-focus inputs when step changes
-  useEffect(() => {
-    const t = setTimeout(() => inputRef.current?.focus(), 400)
-    return () => clearTimeout(t)
-  }, [step])
-
-  // Clear shirtSize when gender or age bracket changes
-  useEffect(() => {
-    const sizes = getShirtSizes()
-    if (shirtSize && !sizes.includes(shirtSize)) {
-      setShirtSize('')
-    }
-  }, [gender, dobDay, dobMonth, dobYear])
-
-  // Restore saved form state from localStorage
-  useEffect(() => {
-    if (!slug) { loadedRef.current = true; return }
-    try {
-      const raw = localStorage.getItem(`guest-reg-${slug}`)
-      if (raw) {
-        const s = JSON.parse(raw)
-        // Expire data older than 24 hours
-        if (s.savedAt && Date.now() - s.savedAt > 24 * 60 * 60 * 1000) {
-          localStorage.removeItem(`guest-reg-${slug}`)
-          loadedRef.current = true
-          return
-        }
-        // Don't restore emailConfirm — force user to re-type email confirmation
-        // to prevent bypassing the confirmation step with pre-filled values.
-        // Clamp the restored step to max 7 so the user isn't placed past the
-        // email confirmation step with an empty emailConfirm field.
-        const restoredStep = s.step ?? 0
-        setStep(restoredStep > 7 ? 7 : restoredStep)
-        setSelectedDistanceId(s.selectedDistanceId ?? null)
-        setParticipants(s.participants ?? [])
-        setFirstName(s.firstName ?? '')
-        setLastName(s.lastName ?? '')
-        setDobDay(s.dobDay ?? '')
-        setDobMonth(s.dobMonth ?? '')
-        setDobYear(s.dobYear ?? '')
-        setGender(s.gender ?? null)
-        setPhone(s.phone ?? '')
-        setEmail(s.email ?? '')
-        setEmailConfirm('')
-        setShirtSize(s.shirtSize ?? '')
-        setAcceptTerms(s.acceptTerms ?? false)
-        setAcceptExoneration(s.acceptExoneration ?? false)
-      }
-    } catch { /* corrupted data, start fresh */ }
-    setTimeout(() => { loadedRef.current = true }, 50)
-  }, [])
-
-  // Persist form state to localStorage
-  useEffect(() => {
-    if (!loadedRef.current || !slug) return
-    try {
-      localStorage.setItem(`guest-reg-${slug}`, JSON.stringify({
-        savedAt: Date.now(),
-        step, selectedDistanceId, participants,
-        firstName, lastName, dobDay, dobMonth, dobYear,
-        gender, phone, email, emailConfirm, shirtSize,
-        acceptTerms, acceptExoneration,
-      }))
-    } catch { /* storage full */ }
-  }, [slug, step, selectedDistanceId, participants, firstName, lastName, dobDay, dobMonth, dobYear, gender, phone, email, emailConfirm, shirtSize, acceptTerms, acceptExoneration])
+  useEffect(() => { if (slug) loadEvent() }, [slug])
 
   async function loadEvent() {
     try {
-      const { data } = await client.models.Event.listEventBySlug(
-        { slug: slug! },
-        { authMode: 'identityPool' }
-      )
+      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { authMode: 'identityPool' })
       if (data.length > 0) {
         const ev = data[0]
         setEvent(ev)
-        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId(
-          { eventId: ev.id },
-          { authMode: 'identityPool' }
-        )
+        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { authMode: 'identityPool' })
         setDistances(dists)
+        // Pre-select first available distance
+        const first = dists.find(d => d.spotsRemaining === null || d.spotsRemaining === undefined || d.spotsRemaining > 0)
+        if (first) setSelectedDistanceId(first.id)
       }
     } catch (err) {
       console.error(err)
@@ -238,271 +377,128 @@ export default function GuestRegistration() {
 
   const selectedDistance = distances.find(d => d.id === selectedDistanceId)
 
-  // If we restored to a late step but distances haven't loaded yet (or the
-  // distance was removed), clamp back to step 0 so the user doesn't see
-  // undefined values on the summary screen.
-  useEffect(() => {
-    if (!loading && selectedDistanceId && distances.length > 0 && !selectedDistance) {
-      setSelectedDistanceId(null)
-      setStep(0)
-    }
-  }, [loading, distances, selectedDistanceId, selectedDistance])
-
-  // ─── Age & size helpers ───
-  function getParticipantAge(): number | null {
-    if (!dobYear || !dobMonth || !dobDay) return null
-    const today = new Date()
-    const birth = new Date(parseInt(dobYear), parseInt(dobMonth) - 1, parseInt(dobDay))
-    let age = today.getFullYear() - birth.getFullYear()
-    const m = today.getMonth() - birth.getMonth()
-    if (m < 0 || (m === 0 && today.getDate() < birth.getDate())) age--
-    return age
-  }
-
-  function getShirtSizes(): string[] {
-    const age = getParticipantAge()
-    if (age !== null && age < 15) return SHIRT_SIZES_NINO
-    return gender === 'F' ? SHIRT_SIZES_DAMA : SHIRT_SIZES_CABALLERO
-  }
-
-  function getShirtSizeLabel(): string {
-    const age = getParticipantAge()
-    if (age !== null && age < 15) return '(Niño)'
-    return gender === 'F' ? '(Dama)' : '(Caballero)'
-  }
-
-  // ─── All participants for display (saved + current) ───
-  function getAllParticipants(): ParticipantData[] {
-    const current: ParticipantData = {
-      firstName, lastName, dobDay, dobMonth, dobYear,
-      gender, phone, email, emailConfirm, shirtSize,
-    }
-    return [...participants, current]
-  }
-
-  // ─── Date validation helper ───
-  function isValidDate(day: string, month: string, year: string): boolean {
-    if (!day || !month || !year) return false
-    const d = parseInt(day), m = parseInt(month), y = parseInt(year)
-    if (isNaN(d) || isNaN(m) || isNaN(y)) return false
-    // Use Date constructor: if the day overflows (e.g. Feb 31 -> Mar 3),
-    // the resulting month won't match the input month.
-    const date = new Date(y, m - 1, d)
-    return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d
-  }
-
-  // ─── Validation ───
-  function canAdvance(): boolean {
-    switch (step) {
-      case 0: return !!selectedDistanceId
-      case 1: return firstName.trim().length > 0
-      case 2: return lastName.trim().length > 0
-      case 3: return isValidDate(dobDay, dobMonth, dobYear)
-      case 4: return !!gender
-      case 5: {
-        const digits = phone.replace(/\D/g, '')
-        return digits.length >= 7
+  // ─── Participant helpers ─────────────────────────────────────────────────
+  const updateParticipant = useCallback((index: number, field: keyof ParticipantForm, value: any) => {
+    setParticipants(prev => prev.map((p, i) => {
+      if (i !== index) return p
+      const updated = { ...p, [field]: value }
+      // Clear error on edit
+      if (p.errors[field]) {
+        const errors = { ...p.errors }
+        delete errors[field as string]
+        updated.errors = errors
       }
-      case 6: return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
-      case 7: return emailConfirm === email && email.length > 0
-      case 8: return !!shirtSize
-      case 9: return acceptTerms && acceptExoneration
-      case 10: return true
-      default: return false
-    }
+      return updated
+    }))
+  }, [])
+
+  const addParticipant = () => {
+    if (participants.length >= 10) { toast.error('Máximo 10 participantes por transacción.'); return }
+    // Collapse all existing, add new open one
+    setParticipants(prev => [...prev.map(p => ({ ...p, collapsed: true })), blankParticipant()])
+    setTimeout(() => {
+      participantRefs.current[participants.length]?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }, 100)
   }
 
-  function validationMessage(): string | null {
-    switch (step) {
-      case 3:
-        if (dobDay && dobMonth && dobYear && !isValidDate(dobDay, dobMonth, dobYear))
-          return 'Fecha inválida'
-        return null
-      case 5:
-        if (phone && phone.replace(/\D/g, '').length < 7 && phone.trim().length > 0)
-          return 'Ingresa al menos 7 dígitos numéricos'
-        return null
-      case 6:
-        if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Correo inválido'
-        return null
-      case 7:
-        if (emailConfirm && emailConfirm !== email) return 'Los correos no coinciden'
-        return null
-      default: return null
-    }
-  }
-
-  // ─── Navigation ───
-  function goNext() {
-    if (!canAdvance()) return
-    setError(null)
-    setDirection(1)
-    let next = step + 1
-    // Auto-skip T&C if already accepted (for 2nd+ participant)
-    if (next === 9 && acceptTerms && acceptExoneration) {
-      next = 10
-    }
-    setStep(Math.min(next, TOTAL_STEPS - 1))
-  }
-
-  function goBack() {
-    setError(null)
-    setDirection(-1)
-    setStep(s => {
-      let prev = s - 1
-      // Auto-skip T&C going back if already accepted
-      if (prev === 9 && acceptTerms && acceptExoneration) {
-        prev = 8
-      }
-      return Math.max(prev, 0)
-    })
-  }
-
-  const handleKeyDown = useCallback((e: KeyboardEvent) => {
-    if (e.key === 'Enter' && canAdvance() && step < TOTAL_STEPS - 1) {
-      e.preventDefault()
-      goNext()
-    }
-  }, [step, selectedDistanceId, firstName, lastName, dobDay, dobMonth, dobYear, gender, phone, email, emailConfirm, shirtSize, acceptTerms, acceptExoneration])
-
-  useEffect(() => {
-    window.addEventListener('keydown', handleKeyDown)
-    return () => window.removeEventListener('keydown', handleKeyDown)
-  }, [handleKeyDown])
-
-  // ─── Multi-participant handlers ───
-  function validateCurrentParticipant(): boolean {
-    if (!firstName.trim()) { toast.error('El nombre es obligatorio.'); return false }
-    if (!lastName.trim()) { toast.error('El apellido es obligatorio.'); return false }
-    if (!isValidDate(dobDay, dobMonth, dobYear)) { toast.error('La fecha de nacimiento es inválida.'); return false }
-    if (!gender) { toast.error('La rama es obligatoria.'); return false }
-    if (phone.replace(/\D/g, '').length < 7) { toast.error('El número de celular debe tener al menos 7 dígitos.'); return false }
-    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast.error('El correo electrónico es inválido.'); return false }
-    if (!shirtSize) { toast.error('La talla de playera es obligatoria.'); return false }
-    return true
-  }
-
-  function addAnotherParticipant() {
-    // Validate current participant before saving
-    if (!validateCurrentParticipant()) return
-    // Enforce max 10 participants
-    if (participants.length + 1 >= 10) {
-      toast.error('Máximo 10 participantes por transacción.')
-      return
-    }
-    const current: ParticipantData = {
-      firstName, lastName, dobDay, dobMonth, dobYear,
-      gender, phone, email, emailConfirm, shirtSize,
-    }
-    setParticipants(prev => [...prev, current])
-    // Clear per-participant fields, keep phone for convenience
-    setFirstName('')
-    setLastName('')
-    setDobDay('')
-    setDobMonth('')
-    setDobYear('')
-    setGender(null)
-    setShirtSize('')
-    setEmail('')
-    setEmailConfirm('')
-    setDirection(-1)
-    setStep(1)
-  }
-
-  function removeParticipant(index: number) {
+  const removeParticipant = (index: number) => {
     setParticipants(prev => prev.filter((_, i) => i !== index))
   }
 
-  function editParticipant(index: number) {
-    if (index >= participants.length) return
-    const target = participants[index]
-    // Swap: store current form data in the edited slot, load target into form
-    const current: ParticipantData = {
-      firstName, lastName, dobDay, dobMonth, dobYear,
-      gender, phone, email, emailConfirm, shirtSize,
+  // ─── Validation ──────────────────────────────────────────────────────────
+  function validateAll(): boolean {
+    let valid = true
+    let firstErrorEl: HTMLElement | null = null
+
+    // Distance
+    if (!selectedDistanceId) {
+      setDistanceError('Selecciona una distancia para continuar')
+      valid = false
+      if (!firstErrorEl) firstErrorEl = distanceRef.current
+    } else {
+      setDistanceError('')
     }
-    setParticipants(prev => prev.map((p, i) => i === index ? current : p))
-    setFirstName(target.firstName)
-    setLastName(target.lastName)
-    setDobDay(target.dobDay)
-    setDobMonth(target.dobMonth)
-    setDobYear(target.dobYear)
-    setGender(target.gender)
-    setPhone(target.phone)
-    setEmail(target.email)
-    setEmailConfirm(target.emailConfirm)
-    setShirtSize(target.shirtSize)
-    setDirection(-1)
-    setStep(1)
+
+    // Participants
+    const updated = participants.map(p => {
+      const errors: Record<string, string> = {}
+      if (!p.firstName.trim())                                        errors.firstName = 'El nombre es obligatorio'
+      if (!p.lastName.trim())                                         errors.lastName  = 'El apellido es obligatorio'
+      if (!isValidDate(p.dobDay, p.dobMonth, p.dobYear))              errors.dob       = 'Fecha inválida o incompleta'
+      if (!p.gender)                                                  errors.gender    = 'Selecciona la rama'
+      if (p.phone.replace(/\D/g, '').length < 7)                     errors.phone     = 'Ingresa al menos 7 dígitos'
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email.trim()))        errors.email     = 'Correo electrónico inválido'
+      if (!p.shirtSize)                                               errors.shirtSize = 'Selecciona una talla'
+      return { ...p, errors }
+    })
+    setParticipants(updated)
+
+    // Find first participant error to scroll to
+    if (!firstErrorEl) {
+      const firstErrIdx = updated.findIndex(p => Object.keys(p.errors).length > 0)
+      if (firstErrIdx >= 0) {
+        valid = false
+        firstErrorEl = participantRefs.current[firstErrIdx]
+        // Un-collapse the participant with errors
+        setParticipants(prev => prev.map((p, i) => ({ ...p, collapsed: i !== firstErrIdx ? p.collapsed : false })))
+      }
+    }
+
+    // Terms
+    if (!acceptTerms || !acceptExoneration) {
+      setTermsError('Debes aceptar los términos y la exoneración para continuar')
+      valid = false
+      if (!firstErrorEl) firstErrorEl = termsRef.current
+    } else {
+      setTermsError('')
+    }
+
+    if (firstErrorEl) {
+      setTimeout(() => firstErrorEl!.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50)
+    }
+
+    return valid
   }
 
-  // ─── Submit ───
+  // ─── Submit ──────────────────────────────────────────────────────────────
   async function handleSubmit() {
-    if (!event || !selectedDistance) return
     if (submittingRef.current) return
+    if (!validateAll()) return
+    if (!event || !selectedDistance) return
+
     submittingRef.current = true
-
-    const allParticipants = getAllParticipants()
-
-    // Validate all participants
-    for (const p of allParticipants) {
-      if (!p.firstName.trim()) { toast.error('El nombre es obligatorio para todos los participantes.'); submittingRef.current = false; return }
-      if (!p.lastName.trim()) { toast.error('El apellido es obligatorio para todos los participantes.'); submittingRef.current = false; return }
-      if (!p.gender) { toast.error('La rama es obligatoria para todos los participantes.'); submittingRef.current = false; return }
-      if (!p.dobDay || !p.dobMonth || !p.dobYear || !isValidDate(p.dobDay, p.dobMonth, p.dobYear)) { toast.error('La fecha de nacimiento es inválida para alguno de los participantes.'); submittingRef.current = false; return }
-      if (p.phone.replace(/\D/g, '').length < 7) { toast.error('El número de celular debe tener al menos 7 dígitos numéricos.'); submittingRef.current = false; return }
-      if (!p.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) {
-        toast.error(`Correo inválido para ${p.firstName} ${p.lastName}.`)
-        submittingRef.current = false
-        return
-      }
-      if (!p.shirtSize) { toast.error('La talla de playera es obligatoria para todos los participantes.'); submittingRef.current = false; return }
-    }
-
-    // Limit participants to avoid Stripe metadata overflow (max ~13 UUIDs in 500 chars)
-    if (allParticipants.length > 10) {
-      toast.error('Máximo 10 participantes por transacción.')
-      submittingRef.current = false
-      return
-    }
-
-    if (!acceptTerms || !acceptExoneration) {
-      toast.error('Debes aceptar los términos y la exoneración.')
-      submittingRef.current = false
-      return
-    }
-
     setSubmitting(true)
-    setError(null)
+    setGlobalError(null)
 
     const isFree = !selectedDistance.price || selectedDistance.price === 0
 
     try {
-      // Create all guest registrations
       const registrationIds: string[] = []
 
-      for (const p of allParticipants) {
+      for (const p of participants) {
         const dob = `${p.dobYear}-${p.dobMonth.padStart(2, '0')}-${p.dobDay.padStart(2, '0')}`
         const { data: regData } = await client.models.GuestRegistration.create(
           {
             firstName: p.firstName.trim(),
-            lastName: p.lastName.trim(),
-            email: p.email.trim().toLowerCase(),
-            phone: p.phone.trim(),
+            lastName:  p.lastName.trim(),
+            email:     p.email.trim().toLowerCase(),
+            phone:     p.phone.trim(),
             dateOfBirth: dob,
-            gender: p.gender,
-            eventId: event.id,
-            distanceId: selectedDistance.id,
+            gender:    p.gender,
+            eventId:   event.id,
+            distanceId:   selectedDistance.id,
             distanceName: selectedDistance.name,
-            distanceKm: selectedDistance.distanceKm,
-            category: selectedDistance.category ?? 'GENERAL',
-            status: isFree ? 'CONFIRMED' : 'PENDING',
+            distanceKm:   selectedDistance.distanceKm,
+            category:  selectedDistance.category ?? 'GENERAL',
+            status:    isFree ? 'CONFIRMED' : 'PENDING',
             paymentStatus: isFree ? 'PAID' : 'PENDING',
-            amountPaid: selectedDistance.price ?? 0,
-            registeredAt: new Date().toISOString(),
-            waiverSigned: true,
+            amountPaid:    selectedDistance.price ?? 0,
+            registeredAt:  new Date().toISOString(),
+            waiverSigned:  true,
             shirtSize: p.shirtSize,
-            currency: 'MXN',
+            emergencyContactName:  p.emergencyContactName.trim() || undefined,
+            emergencyContactPhone: p.emergencyContactPhone.trim() || undefined,
+            currency:  'MXN',
           },
           { authMode: 'identityPool' }
         )
@@ -510,24 +506,41 @@ export default function GuestRegistration() {
       }
 
       if (isFree) {
-        setSuccess(true)
         if (slug) localStorage.removeItem(`guest-reg-${slug}`)
+        setSuccess(true)
         return
       }
 
-      // Paid event — create Stripe checkout session for all participants
       if (registrationIds.length > 0) {
+        // Save summary for confirmation page (survives Stripe redirect)
+        try {
+          localStorage.setItem(`guest-reg-summary-${slug}`, JSON.stringify({
+            eventTitle: event.title,
+            eventDate:  event.eventDate,
+            distanceName: selectedDistance.name,
+            pricePerPerson: selectedDistance.price,
+            platformFeePerPerson: PLATFORM_FEE_CENTAVOS,
+            quantity: participants.length,
+            participants: participants.map(p => ({
+              name: `${p.firstName} ${p.lastName}`,
+              email: p.email,
+              gender: p.gender,
+              shirtSize: p.shirtSize,
+            })),
+          }))
+        } catch { /* storage full */ }
+
         const { data: checkoutUrl } = await client.mutations.createGuestCheckoutSession(
           {
-            eventId: event.id,
-            eventSlug: slug!,
+            eventId:    event.id,
+            eventSlug:  slug!,
             distanceId: selectedDistance.id,
             distanceName: selectedDistance.name,
             eventTitle: event.title,
             priceInCentavos: selectedDistance.price,
-            guestEmail: allParticipants[0].email.trim().toLowerCase(),
+            guestEmail: participants[0].email.trim().toLowerCase(),
             guestRegistrationIds: registrationIds.join(','),
-            quantity: allParticipants.length,
+            quantity: participants.length,
           },
           { authMode: 'identityPool' }
         )
@@ -536,565 +549,352 @@ export default function GuestRegistration() {
           return
         }
       }
-    } catch (err) {
+    } catch (err: any) {
       console.error('Registration failed:', err)
-      setError('Hubo un error al crear tu inscripción. Intenta de nuevo.')
+      const msg = err?.message?.includes('DUPLICATE_REGISTRATION')
+        ? 'Ya existe una inscripción confirmada con este correo para este evento.'
+        : 'Hubo un error al procesar tu inscripción. Intenta de nuevo.'
+      setGlobalError(msg)
+      formTopRef.current?.scrollIntoView({ behavior: 'smooth' })
     } finally {
       setSubmitting(false)
       submittingRef.current = false
     }
   }
 
+  // ─── Loading / not found ─────────────────────────────────────────────────
   if (loading) return <LoadingSpinner className="h-screen items-center" />
-  if (!event) return <div className="flex items-center justify-center h-screen text-zinc-400">Evento no encontrado</div>
+  if (!event)  return <div className="flex items-center justify-center h-screen text-zinc-400">Evento no encontrado</div>
 
-  // Success screen (must be checked before registration-closed guard,
-  // because the event may become SOLDOUT or deadline may pass during payment)
+  // ─── Success / confirmation screen ───────────────────────────────────────
   if (success) {
-    const countParam = parseInt(searchParams.get('count') || '1', 10)
-    const totalParticipants = countParam >= 1 ? countParam : 1
+    let summary: any = null
+    try {
+      const raw = localStorage.getItem(`guest-reg-summary-${slug}`)
+      if (raw) summary = JSON.parse(raw)
+    } catch { /* ignore */ }
+
+    const qty           = summary?.quantity ?? parseInt(searchParams.get('count') || '1', 10)
+    const racePrice     = summary?.pricePerPerson ?? selectedDistance?.price ?? 0
+    const feePerPerson  = PLATFORM_FEE_CENTAVOS
+    const totalPerPerson = racePrice + feePerPerson
+    const grandTotal    = totalPerPerson * qty
+
     return (
-      <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white flex items-center justify-center px-6">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, ease: smooth }}
-          className="text-center max-w-md"
-        >
-          <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
-          <h1 className="text-3xl font-bold text-zinc-900 mb-2">
-            {totalParticipants > 1 ? '¡Inscripciones confirmadas!' : '¡Inscripción confirmada!'}
-          </h1>
-          <p className="text-zinc-500 mb-6">
-            {totalParticipants > 1
-              ? `${totalParticipants} inscripciones a `
-              : 'Tu inscripción a '}
-            <strong>{event.title}</strong>
-            {totalParticipants > 1
-              ? ' han sido registradas exitosamente.'
-              : ' ha sido registrada exitosamente.'}
-          </p>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
-            onClick={() => navigate(`/evento/${slug}`)}
-          >
+      <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white">
+        <div className="max-w-lg mx-auto px-6 py-12">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <CheckCircle className="w-16 h-16 text-emerald-500 mx-auto mb-4" />
+            <h1 className="text-3xl font-bold text-zinc-900 mb-2">Tu inscripción está confirmada</h1>
+            <p className="text-zinc-500">
+              {qty > 1
+                ? `${qty} inscripciones a `
+                : 'Inscripción a '}
+              <strong>{summary?.eventTitle || event.title}</strong> registradas exitosamente.
+            </p>
+          </div>
+
+          {/* Event info */}
+          <div className="bg-white rounded-2xl border-2 border-zinc-100 overflow-hidden mb-4">
+            <div className="bg-emerald-600 px-5 py-3">
+              <p className="text-white font-semibold text-sm">Detalles del evento</p>
+            </div>
+            <div className="divide-y divide-zinc-100">
+              {[
+                ['Evento',    summary?.eventTitle || event.title],
+                ['Distancia', summary?.distanceName || selectedDistance?.name || '—'],
+                ['Fecha',     event.eventDate ? new Date(event.eventDate).toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }) : '—'],
+                ['Participantes', String(qty)],
+              ].map(([label, value]) => (
+                <div key={label} className="flex justify-between px-5 py-3">
+                  <span className="text-sm text-zinc-500">{label}</span>
+                  <span className="text-sm font-medium text-zinc-900 text-right">{value}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          {/* Participants list */}
+          {summary?.participants && summary.participants.length > 0 && (
+            <div className="bg-white rounded-2xl border-2 border-zinc-100 overflow-hidden mb-4">
+              <div className="bg-zinc-800 px-5 py-3">
+                <p className="text-white font-semibold text-sm">Participantes</p>
+              </div>
+              <div className="divide-y divide-zinc-100">
+                {summary.participants.map((p: any, i: number) => (
+                  <div key={i} className="flex items-center justify-between px-5 py-3">
+                    <div>
+                      <p className="text-sm font-medium text-zinc-900">{p.name}</p>
+                      <p className="text-xs text-zinc-400">{p.email} · {p.gender === 'F' ? 'Femenil' : 'Varonil'} · Playera {p.shirtSize}</p>
+                    </div>
+                    <span className="badge bg-emerald-100 text-emerald-700 text-xs px-2 py-0.5 rounded-full font-medium">✓</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Payment breakdown */}
+          {racePrice > 0 && (
+            <div className="bg-white rounded-2xl border-2 border-zinc-100 overflow-hidden mb-4">
+              <div className="bg-zinc-800 px-5 py-3">
+                <p className="text-white font-semibold text-sm">Desglose de pago</p>
+              </div>
+              <div className="divide-y divide-zinc-100">
+                <div className="flex justify-between px-5 py-3">
+                  <span className="text-sm text-zinc-600">Inscripción × {qty}</span>
+                  <span className="text-sm font-medium text-zinc-900">{fmtMXN(racePrice * qty)}</span>
+                </div>
+                <div className="flex justify-between px-5 py-3">
+                  <span className="text-sm text-zinc-600">Tarifa plataforma × {qty}</span>
+                  <span className="text-sm font-medium text-zinc-900">{fmtMXN(feePerPerson * qty)}</span>
+                </div>
+                <div className="flex justify-between px-5 py-3 bg-emerald-50">
+                  <span className="text-sm font-bold text-zinc-900">Total cobrado</span>
+                  <span className="text-sm font-bold text-emerald-700">{fmtMXN(grandTotal)}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Support */}
+          <div className="bg-zinc-50 rounded-2xl px-5 py-4 mb-6 text-center">
+            <p className="text-sm text-zinc-600 mb-1">¿Preguntas o problemas con tu inscripción?</p>
+            <a href="mailto:contacto@alfallo.mx" className="text-sm font-medium text-emerald-600 hover:text-emerald-700">
+              contacto@alfallo.mx
+            </a>
+          </div>
+
+          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}`)}>
             Volver al evento
           </Button>
-        </motion.div>
+        </div>
       </div>
     )
   }
 
-  // Check event status — block registration for non-published events
+  // ─── Registration closed guard ───────────────────────────────────────────
   const isRegistrationClosed = event.status !== 'PUBLISHED'
   const isDeadlinePassed = event.registrationDeadline ? new Date() > new Date(event.registrationDeadline) : false
 
   if (isRegistrationClosed || isDeadlinePassed) {
-    const message = event.status === 'CANCELLED'
-      ? 'Este evento ha sido cancelado.'
-      : event.status === 'COMPLETED'
-        ? 'Este evento ya finalizó.'
-        : event.status === 'SOLDOUT'
-          ? 'Este evento está agotado.'
-          : event.status === 'DRAFT'
-            ? 'Este evento aún no está disponible para inscripción.'
-            : isDeadlinePassed
-              ? 'El plazo de inscripción ha finalizado.'
-              : 'La inscripción no está disponible.'
-
+    const message = event.status === 'CANCELLED' ? 'Este evento ha sido cancelado.'
+      : event.status === 'COMPLETED' ? 'Este evento ya finalizó.'
+      : event.status === 'SOLDOUT'   ? 'Este evento está agotado.'
+      : event.status === 'DRAFT'     ? 'Este evento aún no está disponible.'
+      : isDeadlinePassed             ? 'El plazo de inscripción ha finalizado.'
+      : 'La inscripción no está disponible.'
     return (
-      <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white flex items-center justify-center px-6">
-        <motion.div
-          initial={{ scale: 0.9, opacity: 0 }}
-          animate={{ scale: 1, opacity: 1 }}
-          transition={{ duration: 0.5, ease: smooth }}
-          className="text-center max-w-md"
-        >
-          <Shield className="w-16 h-16 text-zinc-400 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Inscripcion cerrada</h1>
+      <div className="min-h-screen bg-white flex items-center justify-center px-6">
+        <div className="text-center max-w-sm">
+          <Shield className="w-12 h-12 text-zinc-400 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Inscripción cerrada</h1>
           <p className="text-zinc-500 mb-6">{message}</p>
-          <Button
-            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
-            onClick={() => navigate(`/evento/${slug}`)}
-          >
-            Volver al evento
-          </Button>
-        </motion.div>
+          <Button className="bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}`)}>Volver al evento</Button>
+        </div>
       </div>
     )
   }
 
-  const progress = ((step + 1) / TOTAL_STEPS) * 100
-  const valMsg = validationMessage()
-  const shirtSizes = getShirtSizes()
-  const sizeLabel = getShirtSizeLabel()
-  const allParticipantsDisplay = getAllParticipants()
-  const unitPrice = selectedDistance?.price ?? 0
-  const totalPrice = unitPrice * allParticipantsDisplay.length
+  // ─── Price helpers ───────────────────────────────────────────────────────
+  const racePrice       = selectedDistance?.price ?? 0
+  const isFree          = !racePrice
+  const feePerPerson    = isFree ? 0 : PLATFORM_FEE_CENTAVOS
+  const totalPerPerson  = racePrice + feePerPerson
+  const grandTotal      = totalPerPerson * participants.length
 
+  // ─── Form ────────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white flex flex-col">
-      {/* Progress bar */}
-      <div className="fixed top-0 left-0 right-0 z-50 h-1 bg-zinc-100">
-        <motion.div
-          className="h-full bg-emerald-500"
-          initial={{ width: 0 }}
-          animate={{ width: `${progress}%` }}
-          transition={{ duration: 0.4, ease: smooth }}
-        />
-      </div>
-
-      {/* Header */}
-      <div className="flex items-center justify-between px-6 py-4">
-        <button
-          onClick={step === 0 ? () => navigate(`/evento/${slug}`) : goBack}
-          className="flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-900 transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" />
-          {step === 0 ? 'Volver' : 'Atrás'}
+    <div className="min-h-screen bg-gradient-to-b from-emerald-50/60 via-white to-white" ref={formTopRef}>
+      {/* Header bar */}
+      <div className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-zinc-100 px-4 py-3 flex items-center gap-3">
+        <button type="button" onClick={() => navigate(`/evento/${slug}`)} className="text-zinc-400 hover:text-zinc-700 transition-colors">
+          <ArrowLeft className="w-5 h-5" />
         </button>
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
+        <div className="flex items-center gap-2 flex-1 min-w-0">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center flex-shrink-0">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-zinc-900 text-sm">{event.title}</span>
+          <span className="font-semibold text-zinc-900 text-sm truncate">{event.title}</span>
         </div>
-        <div className="flex items-center gap-2">
-          {participants.length > 0 && step >= 1 && step <= 8 && (
-            <span className="text-xs text-emerald-600 font-medium">
-              Participante {participants.length + 1}
-            </span>
-          )}
-          <span className="text-xs text-zinc-400">{step + 1}/{TOTAL_STEPS}</span>
-        </div>
+        <span className="text-xs text-zinc-400 flex-shrink-0">{participants.length} participante{participants.length !== 1 ? 's' : ''}</span>
       </div>
 
-      {/* Content */}
-      <div className="flex-1 flex items-center justify-center px-6 py-8">
-        <div className="w-full max-w-lg">
-          <AnimatePresence mode="wait" custom={direction}>
-            {/* Step 0: Distance selection */}
-            {step === 0 && (
-              <motion.div key="step0" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Elige tu distancia</h2>
-                <p className="text-zinc-500 mb-8">Selecciona la modalidad en la que quieres participar.</p>
-                <div className="space-y-3">
-                  {distances.map(dist => {
-                    const isSoldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
-                    return (
-                      <motion.button
-                        key={dist.id}
-                        whileHover={isSoldOut ? {} : { scale: 1.01 }}
-                        whileTap={isSoldOut ? {} : { scale: 0.99 }}
-                        onClick={() => { if (!isSoldOut) setSelectedDistanceId(dist.id) }}
-                        disabled={isSoldOut}
-                        className={`w-full flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all ${
-                          isSoldOut
-                            ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
-                            : selectedDistanceId === dist.id
-                              ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                              : 'border-zinc-200 hover:border-emerald-200 bg-white'
-                        }`}
-                      >
-                        <div>
-                          <p className={`font-semibold text-lg ${isSoldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
-                          {dist.distanceKm && <p className={`text-sm ${isSoldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
-                        </div>
-                        <div className="flex items-center gap-3">
-                          {isSoldOut ? (
-                            <span className="font-bold text-red-400 text-lg">Agotado</span>
-                          ) : (
-                            <span className="font-bold text-emerald-600 text-lg">
-                              {dist.price && dist.price > 0 ? `$${(dist.price / 100).toLocaleString('es-MX')}` : 'Gratis'}
-                            </span>
-                          )}
-                          {selectedDistanceId === dist.id && !isSoldOut && (
-                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
-                              <Check className="w-4 h-4 text-white" />
-                            </div>
-                          )}
-                        </div>
-                      </motion.button>
-                    )
-                  })}
-                </div>
-              </motion.div>
-            )}
+      <div className="max-w-2xl mx-auto px-4 py-8 space-y-6">
+        {/* Global error */}
+        {globalError && (
+          <div className="bg-red-50 border-2 border-red-200 rounded-xl px-4 py-3 flex items-start gap-3">
+            <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+            <p className="text-sm text-red-700">{globalError}</p>
+          </div>
+        )}
 
-            {/* Step 1: First name */}
-            {step === 1 && (
-              <motion.div key="step1" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">¿Cuál es tu nombre?</h2>
-                <p className="text-zinc-500 mb-8">Nombre(s) como aparecerá en tu inscripción.</p>
-                <Input
-                  ref={inputRef}
-                  value={firstName}
-                  onChange={e => setFirstName(e.target.value)}
-                  placeholder="Ej. María José"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-              </motion.div>
-            )}
-
-            {/* Step 2: Last name */}
-            {step === 2 && (
-              <motion.div key="step2" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">¿Cuáles son tus apellidos?</h2>
-                <p className="text-zinc-500 mb-8">Apellido(s) completos.</p>
-                <Input
-                  ref={inputRef}
-                  value={lastName}
-                  onChange={e => setLastName(e.target.value)}
-                  placeholder="Ej. González López"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-              </motion.div>
-            )}
-
-            {/* Step 3: Date of birth */}
-            {step === 3 && (
-              <motion.div key="step3" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Fecha de nacimiento</h2>
-                <p className="text-zinc-500 mb-8">Necesaria para asignarte categoría de edad.</p>
-                <div className="grid grid-cols-3 gap-3">
+        {/* ── Section 1: Distancia ── */}
+        <div ref={distanceRef}>
+          <h2 className="text-lg font-bold text-zinc-900 mb-1">Elige tu distancia</h2>
+          <p className="text-sm text-zinc-500 mb-3">Selecciona la modalidad en la que quieres participar.</p>
+          <div className="space-y-2">
+            {distances.map(dist => {
+              const soldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
+              const selected = selectedDistanceId === dist.id
+              return (
+                <button key={dist.id} type="button" disabled={soldOut}
+                  onClick={() => { if (!soldOut) { setSelectedDistanceId(dist.id); setDistanceError('') } }}
+                  className={`w-full flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all ${
+                    soldOut ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
+                    : selected ? 'border-emerald-500 bg-emerald-50 shadow-sm'
+                    : 'border-zinc-200 hover:border-emerald-300 bg-white'
+                  }`}>
                   <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Día</label>
-                    <select
-                      value={dobDay}
-                      onChange={e => setDobDay(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {Array.from({ length: 31 }, (_, i) => (
-                        <option key={i + 1} value={String(i + 1)}>{i + 1}</option>
-                      ))}
-                    </select>
+                    <p className={`font-semibold ${soldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
+                    {dist.distanceKm && <p className={`text-xs mt-0.5 ${soldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
                   </div>
-                  <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Mes</label>
-                    <select
-                      value={dobMonth}
-                      onChange={e => setDobMonth(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {MONTHS.map((m, i) => (
-                        <option key={m} value={String(i + 1)}>{m}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label className="text-xs text-zinc-500 mb-1 block">Año</label>
-                    <select
-                      value={dobYear}
-                      onChange={e => setDobYear(e.target.value)}
-                      className="w-full rounded-xl border-2 border-zinc-200 focus:border-emerald-500 py-3 px-3 text-zinc-900 bg-white text-lg outline-none"
-                    >
-                      <option value="">--</option>
-                      {Array.from({ length: 80 }, (_, i) => {
-                        const y = new Date().getFullYear() - 5 - i
-                        return <option key={y} value={String(y)}>{y}</option>
-                      })}
-                    </select>
-                  </div>
-                </div>
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 4: Gender */}
-            {step === 4 && (
-              <motion.div key="step4" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Rama</h2>
-                <p className="text-zinc-500 mb-8">Selecciona tu categoría.</p>
-                <div className="grid grid-cols-2 gap-4">
-                  {([['F', 'Femenil'], ['M', 'Varonil']] as const).map(([val, label]) => (
-                    <motion.button
-                      key={val}
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      onClick={() => setGender(val)}
-                      className={`p-6 rounded-xl border-2 text-center transition-all ${
-                        gender === val
-                          ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                          : 'border-zinc-200 hover:border-emerald-200 bg-white'
-                      }`}
-                    >
-                      <p className="text-xl font-bold text-zinc-900">{label}</p>
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 5: Phone */}
-            {step === 5 && (
-              <motion.div key="step5" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Número de celular</h2>
-                <p className="text-zinc-500 mb-8">Para contactarte el día del evento.</p>
-                <Input
-                  ref={inputRef}
-                  type="tel"
-                  value={phone}
-                  onChange={e => setPhone(e.target.value)}
-                  placeholder="Ej. 55 1234 5678"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 6: Email */}
-            {step === 6 && (
-              <motion.div key="step6" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Correo electrónico</h2>
-                <p className="text-zinc-500 mb-8">Te enviaremos la confirmación aquí.</p>
-                <Input
-                  ref={inputRef}
-                  type="email"
-                  value={email}
-                  onChange={e => setEmail(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 7: Confirm email */}
-            {step === 7 && (
-              <motion.div key="step7" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Confirma tu correo</h2>
-                <p className="text-zinc-500 mb-8">Escríbelo de nuevo para verificar.</p>
-                <Input
-                  ref={inputRef}
-                  type="email"
-                  value={emailConfirm}
-                  onChange={e => setEmailConfirm(e.target.value)}
-                  placeholder="correo@ejemplo.com"
-                  className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
-                />
-                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
-              </motion.div>
-            )}
-
-            {/* Step 8: Shirt size */}
-            {step === 8 && (
-              <motion.div key="step8" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Talla de playera</h2>
-                <p className="text-zinc-500 mb-8">Selecciona tu talla {sizeLabel}.</p>
-                <div className="grid grid-cols-3 gap-3">
-                  {shirtSizes.map(size => (
-                    <motion.button
-                      key={size}
-                      whileHover={{ scale: 1.03 }}
-                      whileTap={{ scale: 0.97 }}
-                      onClick={() => setShirtSize(size)}
-                      className={`py-4 rounded-xl border-2 font-semibold transition-all text-sm ${
-                        shirtSize === size
-                          ? 'border-emerald-500 bg-emerald-50 text-emerald-700'
-                          : 'border-zinc-200 hover:border-emerald-200 bg-white text-zinc-700'
-                      }`}
-                    >
-                      {size}
-                    </motion.button>
-                  ))}
-                </div>
-              </motion.div>
-            )}
-
-            {/* Step 9: Terms & Conditions + Exoneration */}
-            {step === 9 && (
-              <motion.div key="step9" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Términos y Exoneración</h2>
-                <p className="text-zinc-500 mb-6">Lee y acepta los siguientes documentos para continuar.</p>
-
-                <div className="space-y-4">
-                  {/* Terms checkbox */}
-                  <div className={`rounded-xl border-2 transition-all ${acceptTerms ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
-                    <label className="flex items-center gap-3 p-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={acceptTerms}
-                        onChange={() => setAcceptTerms(!acceptTerms)}
-                        className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
-                      />
-                      <span className="text-sm text-zinc-800 font-medium">Acepto Términos y Condiciones</span>
-                    </label>
-                    <button
-                      onClick={() => setShowTermsDetail(!showTermsDetail)}
-                      className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
-                    >
-                      <FileText className="w-3.5 h-3.5" />
-                      {showTermsDetail ? 'Ocultar' : 'Ver términos y condiciones'}
-                    </button>
-                    {showTermsDetail && (
-                      <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
-                        {TERMS_TEXT}
+                  <div className="flex items-center gap-3">
+                    {soldOut ? (
+                      <span className="text-sm font-bold text-red-400">Agotado</span>
+                    ) : (
+                      <span className={`font-bold text-lg ${selected ? 'text-emerald-700' : 'text-emerald-600'}`}>
+                        {dist.price && dist.price > 0 ? fmtMXN(dist.price) : 'Gratis'}
+                      </span>
+                    )}
+                    {selected && !soldOut && (
+                      <div className="w-5 h-5 rounded-full bg-emerald-500 flex items-center justify-center flex-shrink-0">
+                        <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
                       </div>
                     )}
                   </div>
+                </button>
+              )
+            })}
+          </div>
+          {distanceError && <p className="text-sm text-red-500 mt-2 flex items-center gap-1.5"><AlertCircle className="w-3.5 h-3.5" />{distanceError}</p>}
+        </div>
 
-                  {/* Exoneration checkbox */}
-                  <div className={`rounded-xl border-2 transition-all ${acceptExoneration ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200'}`}>
-                    <label className="flex items-center gap-3 p-4 cursor-pointer">
-                      <input
-                        type="checkbox"
-                        checked={acceptExoneration}
-                        onChange={() => setAcceptExoneration(!acceptExoneration)}
-                        className="w-5 h-5 rounded border-zinc-300 text-emerald-600 focus:ring-emerald-500 accent-emerald-600 flex-shrink-0"
-                      />
-                      <span className="text-sm text-zinc-800 font-medium">Acepto Exoneración de Responsabilidad</span>
-                    </label>
-                    <button
-                      onClick={() => setShowExonerationDetail(!showExonerationDetail)}
-                      className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700 transition-colors"
-                    >
-                      <Shield className="w-3.5 h-3.5" />
-                      {showExonerationDetail ? 'Ocultar' : 'Ver exoneración de responsabilidad'}
-                    </button>
-                    {showExonerationDetail && (
-                      <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
-                        {EXONERATION_TEXT}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
-            )}
+        {/* ── Section 2: Participantes ── */}
+        <div>
+          <h2 className="text-lg font-bold text-zinc-900 mb-1">Datos de los participantes</h2>
+          <p className="text-sm text-zinc-500 mb-3">Completa los datos de cada persona que se inscribirá.</p>
 
-            {/* Step 10: Summary */}
-            {step === 10 && (
-              <motion.div key="step10" custom={direction} variants={stepVariants} initial="enter" animate="center" exit="exit">
-                <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Confirma tu inscripción</h2>
-                <p className="text-zinc-500 mb-6">
-                  {allParticipantsDisplay.length > 1
-                    ? `Revisa los datos de los ${allParticipantsDisplay.length} participantes.`
-                    : 'Revisa que tus datos sean correctos.'}
-                </p>
-
-                <div className="space-y-4 max-h-[50vh] overflow-y-auto">
-                  {allParticipantsDisplay.map((p, i) => (
-                    <div key={i} className="bg-white rounded-xl border-2 border-zinc-200 overflow-hidden">
-                      {/* Participant header (shown if multiple) */}
-                      {allParticipantsDisplay.length > 1 && (
-                        <div className="flex items-center justify-between px-5 py-2 bg-zinc-50 border-b border-zinc-100">
-                          <span className="text-sm font-semibold text-zinc-700">Participante {i + 1}</span>
-                          <div className="flex items-center gap-2">
-                            {i < participants.length ? (
-                              <>
-                                <button
-                                  onClick={() => editParticipant(i)}
-                                  className="text-zinc-400 hover:text-emerald-600 transition-colors"
-                                  title="Editar participante"
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </button>
-                                <button
-                                  onClick={() => removeParticipant(i)}
-                                  className="text-red-400 hover:text-red-600 transition-colors"
-                                  title="Eliminar participante"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </>
-                            ) : (
-                              <button
-                                onClick={() => { setDirection(-1); setStep(1) }}
-                                className="text-zinc-400 hover:text-emerald-600 transition-colors"
-                                title="Editar datos"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                      <div className="divide-y divide-zinc-100">
-                        {[
-                          ['Distancia', selectedDistance?.name],
-                          ['Nombre', `${p.firstName} ${p.lastName}`],
-                          ['Fecha de nacimiento', `${p.dobDay.padStart(2, '0')}/${p.dobMonth.padStart(2, '0')}/${p.dobYear}`],
-                          ['Rama', p.gender === 'F' ? 'Femenil' : 'Varonil'],
-                          ['Celular', p.phone],
-                          ['Correo', p.email],
-                          ['Playera', p.shirtSize],
-                        ].map(([label, value]) => (
-                          <div key={label} className="flex justify-between px-5 py-2.5">
-                            <span className="text-sm text-zinc-500">{label}</span>
-                            <span className="text-sm font-medium text-zinc-900">{value}</span>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-
-                {/* Total price */}
-                <div className="mt-4 bg-emerald-50 rounded-xl border-2 border-emerald-200 px-5 py-3 flex justify-between items-center">
-                  <span className="text-sm font-medium text-zinc-700">
-                    {allParticipantsDisplay.length > 1
-                      ? `Total (${allParticipantsDisplay.length} inscripciones)`
-                      : 'Precio'}
-                  </span>
-                  <span className="text-lg font-bold text-emerald-700">
-                    {totalPrice > 0
-                      ? `$${(totalPrice / 100).toLocaleString('es-MX')} MXN`
-                      : 'Gratis'}
-                  </span>
-                </div>
-
-                {/* Add another participant (hidden at max 10) */}
-                {allParticipantsDisplay.length < 10 && (
-                  <button
-                    onClick={addAnotherParticipant}
-                    className="mt-4 w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-zinc-300 text-zinc-500 hover:border-emerald-400 hover:text-emerald-600 transition-all"
-                  >
-                    <Plus className="w-4 h-4" />
-                    <span className="text-sm font-medium">Agregar otro participante</span>
-                  </button>
-                )}
-
-                {error && (
-                  <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2 mt-4">{error}</p>
-                )}
-              </motion.div>
-            )}
-          </AnimatePresence>
-
-          {/* Navigation */}
-          <div className="mt-8 flex items-center justify-between">
-            <div />
-            {step < TOTAL_STEPS - 1 ? (
-              <div className="flex items-center gap-3">
-                <Button
-                  disabled={!canAdvance()}
-                  onClick={goNext}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 rounded-xl"
-                >
-                  Siguiente <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-                <span className="text-xs text-zinc-400 hidden sm:block">
-                  Enter ↵
-                </span>
+          <div className="space-y-4">
+            {participants.map((p, i) => (
+              <div key={p._id} ref={el => { participantRefs.current[i] = el }}>
+                <ParticipantCard
+                  p={p}
+                  index={i}
+                  total={participants.length}
+                  onChange={(field, value) => updateParticipant(i, field, value)}
+                  onRemove={() => removeParticipant(i)}
+                />
               </div>
-            ) : (
-              <Button
-                disabled={submitting}
-                onClick={handleSubmit}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-8 rounded-xl"
-              >
-                {submitting
-                  ? 'Procesando...'
-                  : totalPrice > 0
-                    ? `Pagar ${allParticipantsDisplay.length > 1 ? `${allParticipantsDisplay.length} inscripciones` : 'e inscribirme'}`
-                    : allParticipantsDisplay.length > 1
-                      ? `Confirmar ${allParticipantsDisplay.length} inscripciones`
-                      : 'Confirmar inscripción'}
-              </Button>
-            )}
+            ))}
+          </div>
+
+          {participants.length < 10 && (
+            <button type="button" onClick={addParticipant}
+              className="mt-3 w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-zinc-300 text-zinc-500 hover:border-emerald-400 hover:text-emerald-600 transition-all">
+              <Plus className="w-4 h-4" />
+              <span className="text-sm font-medium">Agregar otro participante</span>
+            </button>
+          )}
+        </div>
+
+        {/* ── Section 3: Términos ── */}
+        <div ref={termsRef}>
+          <h2 className="text-lg font-bold text-zinc-900 mb-3">Términos y exoneración</h2>
+          <div className="space-y-3">
+            {/* T&C */}
+            <div className={`rounded-xl border-2 transition-all ${acceptTerms ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200 bg-white'}`}>
+              <label className="flex items-center gap-3 p-4 cursor-pointer">
+                <input type="checkbox" checked={acceptTerms} onChange={() => { setAcceptTerms(!acceptTerms); setTermsError('') }}
+                  className="w-5 h-5 rounded border-zinc-300 text-emerald-600 accent-emerald-600 flex-shrink-0" />
+                <span className="text-sm font-medium text-zinc-800">Acepto los Términos y Condiciones</span>
+              </label>
+              <button type="button" onClick={() => setShowTermsDetail(!showTermsDetail)}
+                className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700">
+                <FileText className="w-3.5 h-3.5" />
+                {showTermsDetail ? 'Ocultar' : 'Ver términos y condiciones'}
+              </button>
+              {showTermsDetail && (
+                <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
+                  {TERMS_TEXT}
+                </div>
+              )}
+            </div>
+
+            {/* Exoneration */}
+            <div className={`rounded-xl border-2 transition-all ${acceptExoneration ? 'border-emerald-500 bg-emerald-50/50' : 'border-zinc-200 bg-white'}`}>
+              <label className="flex items-center gap-3 p-4 cursor-pointer">
+                <input type="checkbox" checked={acceptExoneration} onChange={() => { setAcceptExoneration(!acceptExoneration); setTermsError('') }}
+                  className="w-5 h-5 rounded border-zinc-300 text-emerald-600 accent-emerald-600 flex-shrink-0" />
+                <span className="text-sm font-medium text-zinc-800">Acepto la Exoneración de Responsabilidad</span>
+              </label>
+              <button type="button" onClick={() => setShowExonerationDetail(!showExonerationDetail)}
+                className="flex items-center gap-2 px-4 pb-3 text-xs text-emerald-600 hover:text-emerald-700">
+                <Shield className="w-3.5 h-3.5" />
+                {showExonerationDetail ? 'Ocultar' : 'Ver exoneración'}
+              </button>
+              {showExonerationDetail && (
+                <div className="mx-4 mb-4 bg-white rounded-lg p-4 max-h-48 overflow-y-auto text-xs text-zinc-600 leading-relaxed whitespace-pre-wrap border border-zinc-100">
+                  {EXONERATION_TEXT}
+                </div>
+              )}
+            </div>
+            {termsError && <p className="text-sm text-red-500 flex items-center gap-1.5"><AlertCircle className="w-3.5 h-3.5" />{termsError}</p>}
           </div>
         </div>
+
+        {/* ── Section 4: Resumen + Submit ── */}
+        <div className="bg-white rounded-2xl border-2 border-zinc-200 overflow-hidden">
+          <div className="px-5 py-4 bg-zinc-50 border-b border-zinc-200">
+            <h3 className="font-semibold text-zinc-800 text-sm">Resumen del pago</h3>
+          </div>
+          <div className="divide-y divide-zinc-100">
+            {!isFree && (
+              <>
+                <div className="flex justify-between px-5 py-3">
+                  <span className="text-sm text-zinc-600">Inscripción ({selectedDistance?.name}) × {participants.length}</span>
+                  <span className="text-sm font-medium text-zinc-900">{fmtMXN(racePrice * participants.length)}</span>
+                </div>
+                <div className="flex justify-between px-5 py-3">
+                  <span className="text-sm text-zinc-600">Tarifa de plataforma × {participants.length}</span>
+                  <span className="text-sm text-zinc-500">{fmtMXN(feePerPerson * participants.length)}</span>
+                </div>
+              </>
+            )}
+            <div className="flex justify-between px-5 py-3 bg-emerald-50">
+              <span className="text-sm font-bold text-zinc-900">
+                {isFree ? 'Total' : 'Total a cobrar'}
+              </span>
+              <span className="text-lg font-bold text-emerald-700">
+                {isFree ? 'Gratis' : fmtMXN(grandTotal)}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Submit */}
+        <Button
+          type="button"
+          size="lg"
+          disabled={submitting}
+          onClick={handleSubmit}
+          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-base font-bold py-6 rounded-2xl shadow-lg shadow-emerald-600/20 transition-all"
+        >
+          {submitting ? (
+            <span className="flex items-center gap-2 justify-center">
+              <Loader2 className="w-5 h-5 animate-spin" /> Procesando…
+            </span>
+          ) : isFree ? (
+            participants.length > 1 ? `Confirmar ${participants.length} inscripciones` : 'Confirmar inscripción'
+          ) : (
+            `Pagar e inscribirme — ${fmtMXN(grandTotal)}`
+          )}
+        </Button>
+
+        <p className="text-center text-xs text-zinc-400 pb-8">
+          Pago seguro procesado por Stripe · alfallo.mx
+        </p>
       </div>
     </div>
   )

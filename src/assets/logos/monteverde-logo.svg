@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 80" fill="none">
+  <!-- Monteberde logo placeholder — replace with actual asset from school/org -->
+  <rect width="200" height="80" rx="10" fill="#1a472a"/>
+  <!-- Mountains silhouette -->
+  <polygon points="30,65 70,20 110,65" fill="#2d6a4f"/>
+  <polygon points="80,65 115,28 150,65" fill="#40916c"/>
+  <polygon points="0,65 35,40 65,65" fill="#1b4332"/>
+  <!-- Sun/circle -->
+  <circle cx="150" cy="22" r="12" fill="#f9c74f"/>
+  <!-- Text -->
+  <text x="100" y="76" font-family="serif" font-size="11" font-weight="700" fill="#d8f3dc" text-anchor="middle" letter-spacing="2">COLEGIO MONTEVERDE</text>
+</svg>

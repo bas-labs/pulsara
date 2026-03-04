@@ -11,6 +11,14 @@ import { MapPin, Calendar, Users, Clock, ArrowLeft, CheckCircle } from 'lucide-r
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { fadeUp, stagger, scaleIn, springHover } from '@/lib/animations'
+import monteverdeLogoUrl from '@/assets/logos/monteverde-logo.svg'
+
+// Race logo map — keyed by event slug or title fragment.
+// Add entries here as new races are onboarded.
+const RACE_LOGOS: Record<string, string> = {
+  'monteverde': monteverdeLogoUrl,
+  'carrera-apa-monteverde': monteverdeLogoUrl,
+}
 
 const client = generateClient<Schema>()
 
@@ -121,9 +129,21 @@ export default function EventDetail() {
             <div className="w-full h-64 md:h-80 bg-gradient-to-br from-emerald-100 to-teal-100" />
           )}
           <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-          <div className="absolute bottom-6 left-6">
-            <Badge className="bg-emerald-600 text-white mb-3">{event.sport}</Badge>
-            <h1 className="text-3xl md:text-4xl font-bold text-white">{event.title}</h1>
+          <div className="absolute bottom-6 left-6 right-6 flex items-end justify-between">
+            <div>
+              <Badge className="bg-emerald-600 text-white mb-3">{event.sport}</Badge>
+              <h1 className="text-3xl md:text-4xl font-bold text-white">{event.title}</h1>
+            </div>
+            {/* Race logo — reads from event.logoUrl (schema field), falls back to slug/title map */}
+            {(() => {
+              const logoSrc = (event as any).logoUrl
+                || RACE_LOGOS[slug || '']
+                || Object.entries(RACE_LOGOS).find(([k]) => (slug || '').includes(k) || event.title.toLowerCase().includes(k))?.[1]
+              return logoSrc ? (
+                <img src={logoSrc} alt={`${event.title} logo`}
+                  className="h-16 w-auto object-contain rounded-xl bg-white/10 backdrop-blur-sm p-2 border border-white/20" />
+              ) : null
+            })()}
           </div>
         </motion.div>
 
@@ -234,22 +254,13 @@ export default function EventDetail() {
                         <Button disabled className="w-full">Agotado</Button>
                       ) : event.registrationDeadline && new Date() > new Date(event.registrationDeadline) ? (
                         <Button disabled className="w-full">Inscripción cerrada</Button>
-                      ) : !user ? (
-                        <div className="space-y-2">
-                          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}/inscripcion`)}>
-                            Inscribirme
-                          </Button>
-                          <Button variant="outline" className="w-full" onClick={() => navigate('/login')}>
-                            Ya tengo cuenta
-                          </Button>
-                        </div>
                       ) : (
+                        // Always route to guest registration — no login required
                         <Button
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                          disabled={registering || !selectedDistance}
-                          onClick={handleRegister}
+                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-6 text-base rounded-xl shadow-md shadow-emerald-600/20"
+                          onClick={() => navigate(`/evento/${slug}/inscripcion`)}
                         >
-                          {registering ? 'Inscribiendo...' : 'Inscribirme'}
+                          Inscribirme
                         </Button>
                       )}
                     </motion.div>

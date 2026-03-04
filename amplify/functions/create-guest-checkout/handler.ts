@@ -3,6 +3,8 @@ import type { AppSyncResolverHandler } from 'aws-lambda'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { DynamoDBDocumentClient, ScanCommand, GetCommand } from '@aws-sdk/lib-dynamodb'
 
+const PLATFORM_FEE_CENTAVOS = 2000  // 20 MXN — always charged on top of race price
+
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-02-25.clover' })
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
@@ -143,7 +145,11 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
   const successUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?success=true&count=${args.quantity}`
   const cancelUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?cancelled=true`
 
-  const session = await stripe.checkout.sessions.create({
+  // Check if event has a Stripe connected account for payment split (Stripe Connect)
+  const stripeConnectedAccountId: string | undefined = eventResult?.Item?.stripeConnectedAccountId
+
+  // Build session params
+  const sessionParams: Stripe.Checkout.SessionCreateParams = {
     mode: 'payment',
     customer_email: args.guestEmail,
     line_items: [
@@ -163,10 +169,10 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
       {
         price_data: {
           currency: 'mxn',
-          unit_amount: 2000,
+          unit_amount: PLATFORM_FEE_CENTAVOS,
           product_data: {
-            name: 'Tarifa de Registro Al Fallo',
-            description: 'Al Fallo Registration Fee',
+            name: 'Tarifa de plataforma — Al Fallo',
+            description: 'Al Fallo platform registration fee',
           },
         },
         quantity: args.quantity,
@@ -177,10 +183,27 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
       eventId: args.eventId,
       distanceId: args.distanceId,
       guestRegistrationIds: args.guestRegistrationIds,
+      // Internal split for accounting (centavos × quantity)
+      beneficiary_amount: String(verifiedPrice * args.quantity),
+      platform_fee:       String(PLATFORM_FEE_CENTAVOS * args.quantity),
+      race_slug:          args.eventSlug,
     },
     success_url: successUrl,
-    cancel_url: cancelUrl,
-  })
+    cancel_url:  cancelUrl,
+  }
+
+  // Stripe Connect: route race fee to beneficiary account if configured
+  if (stripeConnectedAccountId) {
+    sessionParams.payment_intent_data = {
+      // Platform keeps PLATFORM_FEE_CENTAVOS × quantity; race fee goes to beneficiary
+      application_fee_amount: PLATFORM_FEE_CENTAVOS * args.quantity,
+      transfer_data: {
+        destination: stripeConnectedAccountId,
+      },
+    }
+  }
+
+  const session = await stripe.checkout.sessions.create(sessionParams)
 
   return session.url!
 }

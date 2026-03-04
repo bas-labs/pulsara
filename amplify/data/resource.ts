@@ -75,6 +75,9 @@ const schema = a.schema({
       // Media
       imageUrl: a.string(),
       bannerUrl: a.string(),
+      logoUrl: a.string(),           // race/organizer logo (square, displayed on event page)
+      // Stripe Connect
+      stripeConnectedAccountId: a.string(), // beneficiary's Stripe connected account ID
       // Organizer
       organizerId: a.id().required(),
       organizerName: a.string(),
@@ -199,6 +202,8 @@ const schema = a.schema({
       teamName: a.string(),
       promoCode: a.string(),
       shirtSize: a.string(),
+      emergencyContactName: a.string(),
+      emergencyContactPhone: a.string(),
     })
     .secondaryIndexes((idx) => [
       idx('eventId').sortKeys(['status']),
