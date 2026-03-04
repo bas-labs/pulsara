@@ -1,5 +1,5 @@
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState, useRef, useCallback } from 'react'
+import { Link, useSearchParams } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
@@ -21,39 +21,70 @@ const sportLabels: Record<string, string> = {
 }
 
 export default function EventBrowser() {
+  const [searchParams] = useSearchParams()
   const [events, setEvents] = useState<Schema['Event']['type'][]>([])
-  const [search, setSearch] = useState('')
-  const [sportFilter, setSportFilter] = useState<string | null>(null)
+  const [search, setSearch] = useState(searchParams.get('q') ?? '')
+  const [sportFilter, setSportFilter] = useState<string | null>(() => {
+    const sport = searchParams.get('sport')
+    if (!sport) return null
+    const key = Object.keys(sportLabels).find(k => sportLabels[k].toLowerCase() === sport.toLowerCase())
+    return key ?? null
+  })
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
+  const [nextToken, setNextToken] = useState<string | null | undefined>(null)
+  const loaderRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    loadEvents()
+    setEvents([])
+    setNextToken(null)
+    loadEvents(null)
   }, [sportFilter])
 
-  async function loadEvents() {
-    setLoading(true)
+  async function loadEvents(token: string | null | undefined) {
+    if (token) {
+      setLoadingMore(true)
+    } else {
+      setLoading(true)
+    }
     try {
       const filter: Record<string, { eq: string }> = { status: { eq: 'PUBLISHED' } }
       if (sportFilter) filter.sport = { eq: sportFilter }
-      const all: Schema['Event']['type'][] = []
-      let nextToken: string | null | undefined
-      do {
-        const { data, nextToken: nt } = await client.models.Event.list({
-          filter,
-          authMode: 'identityPool',
-          limit: 1000,
-          ...(nextToken ? { nextToken } : {}),
-        })
-        all.push(...data)
-        nextToken = nt
-      } while (nextToken)
-      setEvents(all.sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime()))
+      const { data, nextToken: nt } = await client.models.Event.list({
+        filter,
+        authMode: 'identityPool',
+        limit: 24,
+        ...(token ? { nextToken: token } : {}),
+      })
+      setEvents(prev => {
+        const merged = token ? [...prev, ...data] : data
+        return merged.sort((a, b) => new Date(a.eventDate).getTime() - new Date(b.eventDate).getTime())
+      })
+      setNextToken(nt ?? null)
     } catch (err) {
       console.error('Failed to load events:', err)
     } finally {
       setLoading(false)
+      setLoadingMore(false)
     }
   }
+
+  const handleLoadMore = useCallback(() => {
+    if (nextToken && !loadingMore) {
+      loadEvents(nextToken)
+    }
+  }, [nextToken, loadingMore])
+
+  useEffect(() => {
+    const el = loaderRef.current
+    if (!el) return
+    const observer = new IntersectionObserver(
+      ([entry]) => { if (entry.isIntersecting) handleLoadMore() },
+      { threshold: 0.1 }
+    )
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [handleLoadMore])
 
   const filtered = events.filter(e =>
     !search || e.title.toLowerCase().includes(search.toLowerCase()) ||
@@ -159,6 +190,17 @@ export default function EventBrowser() {
               </motion.div>
             ))}
           </motion.div>
+        )}
+
+        {/* Infinite scroll trigger & loading indicator */}
+        {!loading && nextToken && (
+          <div ref={loaderRef} className="flex justify-center py-8">
+            {loadingMore ? (
+              <LoadingSpinner />
+            ) : (
+              <span className="text-zinc-400 text-sm">Cargando más eventos...</span>
+            )}
+          </div>
         )}
       </div>
     </PageWrapper>

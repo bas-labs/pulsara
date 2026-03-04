@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { Trophy, Building, ArrowRight, Zap } from 'lucide-react'
+import { Trophy, ArrowRight, Zap } from 'lucide-react'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { smooth } from '@/lib/animations'
@@ -23,7 +23,7 @@ export default function Onboarding() {
   const { user, refreshAuth, isOrganizador, isAtleta } = useAuth()
   const navigate = useNavigate()
   const [step, setStep] = useState<'role' | 'profile'>('role')
-  const [role, setRole] = useState<'ATLETA' | 'ORGANIZADOR' | null>(null)
+  const [role, setRole] = useState<'ATLETA' | 'ORGANIZADOR' | null>('ATLETA')
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [city, setCity] = useState('')
@@ -127,36 +127,17 @@ export default function Onboarding() {
               exit="exit"
             >
               <h1 className="text-3xl font-bold text-zinc-900 text-center mb-2">¡Bienvenido a Al Fallo!</h1>
-              <p className="text-zinc-500 text-center mb-10">¿Cómo quieres usar la plataforma?</p>
-              <div className="grid md:grid-cols-2 gap-6">
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Card
-                    className={`cursor-pointer transition-all hover:shadow-lg ${role === 'ATLETA' ? 'ring-2 ring-emerald-500 shadow-lg' : 'hover:border-emerald-200'}`}
-                    onClick={() => setRole('ATLETA')}
-                  >
-                    <CardContent className="p-8 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
-                        <Trophy className="w-8 h-8 text-emerald-600" />
-                      </div>
-                      <h3 className="font-bold text-xl text-zinc-900 mb-2">Soy Atleta</h3>
-                      <p className="text-zinc-500 text-sm">Quiero descubrir eventos, inscribirme y consultar mis resultados.</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
-                <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-                  <Card
-                    className={`cursor-pointer transition-all hover:shadow-lg ${role === 'ORGANIZADOR' ? 'ring-2 ring-emerald-500 shadow-lg' : 'hover:border-emerald-200'}`}
-                    onClick={() => setRole('ORGANIZADOR')}
-                  >
-                    <CardContent className="p-8 text-center">
-                      <div className="w-16 h-16 rounded-2xl bg-teal-100 flex items-center justify-center mx-auto mb-4">
-                        <Building className="w-8 h-8 text-teal-600" />
-                      </div>
-                      <h3 className="font-bold text-xl text-zinc-900 mb-2">Soy Organizador</h3>
-                      <p className="text-zinc-500 text-sm">Quiero crear y gestionar eventos deportivos.</p>
-                    </CardContent>
-                  </Card>
-                </motion.div>
+              <p className="text-zinc-500 text-center mb-10">Crea tu perfil de atleta para empezar.</p>
+              <div className="max-w-sm mx-auto">
+                <Card className="ring-2 ring-emerald-500 shadow-lg">
+                  <CardContent className="p-8 text-center">
+                    <div className="w-16 h-16 rounded-2xl bg-emerald-100 flex items-center justify-center mx-auto mb-4">
+                      <Trophy className="w-8 h-8 text-emerald-600" />
+                    </div>
+                    <h3 className="font-bold text-xl text-zinc-900 mb-2">Soy Atleta</h3>
+                    <p className="text-zinc-500 text-sm">Descubre eventos, inscríbete y consulta tus resultados.</p>
+                  </CardContent>
+                </Card>
               </div>
               <div className="mt-8 text-center">
                 <Button
