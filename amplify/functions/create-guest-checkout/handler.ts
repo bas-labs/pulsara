@@ -51,16 +51,17 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
     throw new Error('guestRegistrationId is required and must be a string')
   }
 
-  // Check for duplicate guest registration (same email + eventId)
+  // Check for duplicate guest registration (same email + eventId), excluding the current registration
   if (process.env.GUEST_REGISTRATION_TABLE) {
     const existing = await ddb.send(new ScanCommand({
       TableName: process.env.GUEST_REGISTRATION_TABLE,
-      FilterExpression: 'email = :email AND eventId = :eventId AND #s <> :cancelled',
+      FilterExpression: 'email = :email AND eventId = :eventId AND #s <> :cancelled AND id <> :currentId',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: {
         ':email': args.guestEmail,
         ':eventId': args.eventId,
         ':cancelled': 'CANCELLED',
+        ':currentId': args.guestRegistrationId,
       },
     }))
 

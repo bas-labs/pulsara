@@ -33,6 +33,7 @@ export default function GuestRegistration() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const inputRef = useRef<HTMLInputElement>(null)
+  const submittingRef = useRef(false)
 
   // Event data
   const [event, setEvent] = useState<Schema['Event']['type'] | null>(null)
@@ -154,13 +155,16 @@ export default function GuestRegistration() {
 
   async function handleSubmit() {
     if (!event || !selectedDistance) return
+    if (submittingRef.current) return
+    submittingRef.current = true
 
     // Client-side validation
-    if (!firstName.trim()) { toast.error('El nombre es obligatorio.'); return }
-    if (!lastName.trim()) { toast.error('El apellido es obligatorio.'); return }
-    if (!phone.trim()) { toast.error('El número de celular es obligatorio.'); return }
+    if (!firstName.trim()) { toast.error('El nombre es obligatorio.'); submittingRef.current = false; return }
+    if (!lastName.trim()) { toast.error('El apellido es obligatorio.'); submittingRef.current = false; return }
+    if (!phone.trim()) { toast.error('El número de celular es obligatorio.'); submittingRef.current = false; return }
     if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       toast.error('Ingresa un correo electrónico válido.')
+      submittingRef.current = false
       return
     }
 
@@ -225,6 +229,7 @@ export default function GuestRegistration() {
       setError('Hubo un error al crear tu inscripción. Intenta de nuevo.')
     } finally {
       setSubmitting(false)
+      submittingRef.current = false
     }
   }
 
