@@ -10,6 +10,7 @@ import { Button } from '@/components/ui/button'
 import { Search, MapPin, Calendar, ArrowRight } from 'lucide-react'
 
 import PageWrapper from '@/components/PageWrapper'
+import StorageImage from '@/components/StorageImage'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
 import { fadeUp, stagger, springHover } from '@/lib/animations'
@@ -153,7 +154,7 @@ export default function EventBrowser() {
                   <Card className="group overflow-hidden border-zinc-200/60 hover:border-emerald-200 hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 h-full">
                     <div className="relative h-48 bg-gradient-to-br from-zinc-200 to-zinc-100 overflow-hidden">
                       {event.imageUrl ? (
-                        <img src={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                        <StorageImage path={event.imageUrl} alt={event.title} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                       ) : (
                         <div className="w-full h-full flex items-center justify-center text-zinc-400 text-sm">{sportLabels[event.sport ?? 'OTRO']}</div>
                       )}

@@ -3,7 +3,7 @@ import { defineStorage } from '@aws-amplify/backend'
 export const storage = defineStorage({
   name: 'alfalloMedia',
   access: (allow) => ({
-    'event-images/{entity_id}/*': [
+    'event-images/*': [
       allow.guest.to(['read']),
     ],
     'avatars/{entity_id}/*': [

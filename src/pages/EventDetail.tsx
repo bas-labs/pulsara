@@ -8,6 +8,7 @@ import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { MapPin, Calendar, Users, Clock, ArrowLeft } from 'lucide-react'
 import PageWrapper from '@/components/PageWrapper'
+import StorageImage from '@/components/StorageImage'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { fadeUp, stagger, springHover } from '@/lib/animations'
 
@@ -61,7 +62,7 @@ export default function EventDetail() {
           transition={{ duration: 0.6 }}
         >
           {event.bannerUrl || event.imageUrl ? (
-            <img src={event.bannerUrl ?? event.imageUrl ?? ''} alt={event.title} className="w-full h-64 md:h-80 object-cover" />
+            <StorageImage path={event.bannerUrl ?? event.imageUrl} alt={event.title} className="w-full h-64 md:h-80 object-cover" />
           ) : (
             <div className="w-full h-64 md:h-80 bg-gradient-to-br from-emerald-100 to-teal-100" />
           )}
