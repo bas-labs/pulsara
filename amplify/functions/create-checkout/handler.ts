@@ -60,6 +60,14 @@ export const handler: AppSyncResolverHandler<CreateCheckoutArgs, string> = async
     if (eventResult.Item.status !== 'PUBLISHED') {
       throw new Error('Event is not available for registration')
     }
+
+    // Check registration deadline
+    if (eventResult.Item.registrationDeadline) {
+      const deadline = new Date(eventResult.Item.registrationDeadline)
+      if (new Date() > deadline) {
+        throw new Error('Registration deadline has passed')
+      }
+    }
   }
 
   // Look up EventDistance from DynamoDB for server-side price and capacity check

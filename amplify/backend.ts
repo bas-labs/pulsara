@@ -74,6 +74,16 @@ if (guestRegistrationTable) {
   guestRegistrationTable.grantReadData(backend.createGuestCheckout.resources.lambda)
 }
 
+// Wire APP_URL for checkout functions (Stripe redirect URLs).
+// During Amplify CI/CD builds, AWS_APP_ID and AWS_BRANCH are available.
+// For sandbox/local dev, fall back to localhost.
+const ampBranch = process.env.AWS_BRANCH || 'main'
+const ampAppId = process.env.AWS_APP_ID || ''
+const appUrl = process.env.APP_URL
+  || (ampAppId ? `https://${ampBranch}.${ampAppId}.amplifyapp.com` : 'http://localhost:5173')
+backend.createCheckout.resources.lambda.addEnvironment('APP_URL', appUrl)
+backend.createGuestCheckout.resources.lambda.addEnvironment('APP_URL', appUrl)
+
 // Wire Event and EventDistance tables for create-checkout (event/capacity validation)
 const eventTable = backend.data.resources.tables['Event']
 const eventDistanceTable = backend.data.resources.tables['EventDistance']

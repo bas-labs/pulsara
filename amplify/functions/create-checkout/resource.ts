@@ -6,7 +6,7 @@ export const createCheckout = defineFunction({
   resourceGroupName: 'data',
   environment: {
     STRIPE_SECRET_KEY: secret('STRIPE_SECRET_KEY'),
-    APP_URL: 'https://main.d96et8gd30uo0.amplifyapp.com', // will be updated per env
+    APP_URL: '', // wired in backend.ts
     EVENT_TABLE: '', // wired in backend.ts
     EVENT_DISTANCE_TABLE: '', // wired in backend.ts
   },

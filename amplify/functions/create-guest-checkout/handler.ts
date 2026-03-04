@@ -63,16 +63,18 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
     throw new Error('Number of registration IDs must match quantity')
   }
 
-  // Check for duplicate guest registration (same email + eventId), excluding current batch
+  // Check for duplicate guest registration (same email + eventId), excluding
+  // current batch AND PENDING records (which may be from abandoned checkouts).
+  // Only CONFIRMED registrations should block a retry.
   if (process.env.GUEST_REGISTRATION_TABLE) {
     const existing = await ddb.send(new ScanCommand({
       TableName: process.env.GUEST_REGISTRATION_TABLE,
-      FilterExpression: 'email = :email AND eventId = :eventId AND #s <> :cancelled',
+      FilterExpression: 'email = :email AND eventId = :eventId AND #s = :confirmed',
       ExpressionAttributeNames: { '#s': 'status' },
       ExpressionAttributeValues: {
         ':email': args.guestEmail,
         ':eventId': args.eventId,
-        ':cancelled': 'CANCELLED',
+        ':confirmed': 'CONFIRMED',
       },
     }))
 
@@ -97,6 +99,14 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
 
     if (eventResult.Item.status !== 'PUBLISHED') {
       throw new Error('Event is not available for registration')
+    }
+
+    // Check registration deadline
+    if (eventResult.Item.registrationDeadline) {
+      const deadline = new Date(eventResult.Item.registrationDeadline)
+      if (new Date() > deadline) {
+        throw new Error('Registration deadline has passed')
+      }
     }
   }
 
@@ -130,7 +140,7 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
     throw new Error('Invalid price configured for this distance')
   }
 
-  const successUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?success=true`
+  const successUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?success=true&count=${args.quantity}`
   const cancelUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?cancelled=true`
 
   const session = await stripe.checkout.sessions.create({

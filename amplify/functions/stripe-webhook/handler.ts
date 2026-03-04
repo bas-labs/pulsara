@@ -1,7 +1,10 @@
 import Stripe from 'stripe'
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
+import { GetCommand, UpdateCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-02-25.clover' })
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
+const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
 // Simple in-memory set to deduplicate webhook events within the same Lambda instance
 const processedEvents = new Set<string>()
@@ -35,10 +38,6 @@ export const handler = async (event: any) => {
   if (stripeEvent.type === 'checkout.session.completed') {
     const session = stripeEvent.data.object as Stripe.Checkout.Session
     const metadata = session.metadata!
-
-    const { DynamoDBClient } = await import('@aws-sdk/client-dynamodb')
-    const { GetCommand, UpdateCommand, DynamoDBDocumentClient } = await import('@aws-sdk/lib-dynamodb')
-    const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
     if (metadata.type === 'guest') {
       // Guest registration payment — supports multiple registration IDs
@@ -139,6 +138,60 @@ export const handler = async (event: any) => {
       }))
 
       console.log(`Registration ${registrationId} confirmed with payment`)
+    }
+  }
+
+  // Handle expired checkout sessions — cancel PENDING registrations so users can retry
+  if (stripeEvent.type === 'checkout.session.expired') {
+    const session = stripeEvent.data.object as Stripe.Checkout.Session
+    const metadata = session.metadata || {}
+
+    if (metadata.type === 'guest' && metadata.guestRegistrationIds) {
+      const registrationIds = metadata.guestRegistrationIds.split(',').filter(Boolean)
+      console.log(`Checkout session expired: cancelling ${registrationIds.length} PENDING guest registrations`)
+
+      for (const guestRegistrationId of registrationIds) {
+        try {
+          // Only cancel if still PENDING (don't overwrite CONFIRMED records)
+          await ddb.send(new UpdateCommand({
+            TableName: process.env.GUEST_REGISTRATION_TABLE!,
+            Key: { id: guestRegistrationId },
+            UpdateExpression: 'SET #s = :cancelled, paymentStatus = :cancelled',
+            ConditionExpression: '#s = :pending',
+            ExpressionAttributeNames: { '#s': 'status' },
+            ExpressionAttributeValues: {
+              ':cancelled': 'CANCELLED',
+              ':pending': 'PENDING',
+            },
+          }))
+          console.log(`Guest registration ${guestRegistrationId} cancelled due to expired session`)
+        } catch (err: any) {
+          // ConditionalCheckFailedException is expected if the registration was already
+          // confirmed or cancelled — safe to ignore
+          if (err.name !== 'ConditionalCheckFailedException') {
+            console.error(`Failed to cancel guest registration ${guestRegistrationId}:`, err)
+          }
+        }
+      }
+    } else if (metadata.type === 'registration' && metadata.registrationId) {
+      try {
+        await ddb.send(new UpdateCommand({
+          TableName: process.env.REGISTRATION_TABLE!,
+          Key: { id: metadata.registrationId },
+          UpdateExpression: 'SET #s = :cancelled, paymentStatus = :cancelled',
+          ConditionExpression: '#s = :pending',
+          ExpressionAttributeNames: { '#s': 'status' },
+          ExpressionAttributeValues: {
+            ':cancelled': 'CANCELLED',
+            ':pending': 'PENDING',
+          },
+        }))
+        console.log(`Registration ${metadata.registrationId} cancelled due to expired session`)
+      } catch (err: any) {
+        if (err.name !== 'ConditionalCheckFailedException') {
+          console.error(`Failed to cancel registration ${metadata.registrationId}:`, err)
+        }
+      }
     }
   }
 

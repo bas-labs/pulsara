@@ -37,7 +37,8 @@ export default function EventDetail() {
         setEvent(ev)
         const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { authMode: 'identityPool' })
         setDistances(dists)
-        if (dists.length > 0) setSelectedDistance(dists[0].id)
+        const firstAvailable = dists.find(d => d.spotsRemaining === null || d.spotsRemaining === undefined || d.spotsRemaining > 0)
+        if (firstAvailable) setSelectedDistance(firstAvailable.id)
       }
     } catch (err) {
       console.error(err)
@@ -190,28 +191,49 @@ export default function EventDetail() {
                       <h3 className="font-bold text-lg text-zinc-900 mb-4">Inscripción</h3>
                       {distances.length > 0 ? (
                         <div className="space-y-3 mb-6">
-                          {distances.map(dist => (
-                            <motion.label
-                              key={dist.id}
-                              whileHover={{ scale: 1.01 }}
-                              transition={springHover}
-                              className={`flex items-center justify-between p-3 rounded-xl border cursor-pointer transition-all ${selectedDistance === dist.id ? 'border-emerald-500 bg-emerald-50' : 'border-zinc-200 hover:border-emerald-200'}`}
-                              onClick={() => setSelectedDistance(dist.id)}
-                            >
-                              <div>
-                                <p className="font-semibold text-zinc-900">{dist.name}</p>
-                                {dist.distanceKm && <p className="text-xs text-zinc-500">{dist.distanceKm} km</p>}
-                              </div>
-                              <span className="font-bold text-emerald-600">${((dist.price ?? 0) / 100).toLocaleString('es-MX')}</span>
-                            </motion.label>
-                          ))}
+                          {distances.map(dist => {
+                            const isSoldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
+                            return (
+                              <motion.label
+                                key={dist.id}
+                                whileHover={isSoldOut ? {} : { scale: 1.01 }}
+                                transition={springHover}
+                                className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                                  isSoldOut
+                                    ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
+                                    : selectedDistance === dist.id
+                                      ? 'border-emerald-500 bg-emerald-50 cursor-pointer'
+                                      : 'border-zinc-200 hover:border-emerald-200 cursor-pointer'
+                                }`}
+                                onClick={() => { if (!isSoldOut) setSelectedDistance(dist.id) }}
+                              >
+                                <div>
+                                  <p className={`font-semibold ${isSoldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
+                                  {dist.distanceKm && <p className={`text-xs ${isSoldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
+                                </div>
+                                {isSoldOut ? (
+                                  <span className="font-bold text-red-400">Agotado</span>
+                                ) : (
+                                  <span className="font-bold text-emerald-600">${((dist.price ?? 0) / 100).toLocaleString('es-MX')}</span>
+                                )}
+                              </motion.label>
+                            )
+                          })}
                         </div>
                       ) : (
                         <p className="text-zinc-500 text-sm mb-6">Precio por confirmar</p>
                       )}
 
-                      {event.status === 'SOLDOUT' ? (
+                      {event.status === 'CANCELLED' ? (
+                        <Button disabled className="w-full">Evento cancelado</Button>
+                      ) : event.status === 'COMPLETED' ? (
+                        <Button disabled className="w-full">Evento finalizado</Button>
+                      ) : event.status === 'DRAFT' ? (
+                        <Button disabled className="w-full">Próximamente</Button>
+                      ) : event.status === 'SOLDOUT' ? (
                         <Button disabled className="w-full">Agotado</Button>
+                      ) : event.registrationDeadline && new Date() > new Date(event.registrationDeadline) ? (
+                        <Button disabled className="w-full">Inscripción cerrada</Button>
                       ) : !user ? (
                         <div className="space-y-2">
                           <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}/inscripcion`)}>

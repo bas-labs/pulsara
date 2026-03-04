@@ -5,7 +5,7 @@ import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { ArrowLeft, ArrowRight, Check, Zap, CheckCircle, Plus, Trash2, FileText, Shield } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Check, Zap, CheckCircle, Plus, Trash2, FileText, Shield, Pencil } from 'lucide-react'
 import { toast } from 'sonner'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import { smooth } from '@/lib/animations'
@@ -95,6 +95,7 @@ export default function GuestRegistration() {
   const [searchParams] = useSearchParams()
   const inputRef = useRef<HTMLInputElement>(null)
   const submittingRef = useRef(false)
+  const loadedRef = useRef(false)
 
   // Event data
   const [event, setEvent] = useState<Schema['Event']['type'] | null>(null)
@@ -130,10 +131,15 @@ export default function GuestRegistration() {
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState(false)
 
-  // Check for payment success return
+  // Check for payment success/cancel return
   useEffect(() => {
     if (searchParams.get('success') === 'true') {
       setSuccess(true)
+      if (slug) localStorage.removeItem(`guest-reg-${slug}`)
+    }
+    if (searchParams.get('cancelled') === 'true') {
+      toast('El pago fue cancelado. Puedes intentar de nuevo.', { icon: '⚠️' })
+      window.history.replaceState({}, '', window.location.pathname)
     }
   }, [searchParams])
 
@@ -155,6 +161,58 @@ export default function GuestRegistration() {
       setShirtSize('')
     }
   }, [gender, dobDay, dobMonth, dobYear])
+
+  // Restore saved form state from localStorage
+  useEffect(() => {
+    if (!slug) { loadedRef.current = true; return }
+    try {
+      const raw = localStorage.getItem(`guest-reg-${slug}`)
+      if (raw) {
+        const s = JSON.parse(raw)
+        // Expire data older than 24 hours
+        if (s.savedAt && Date.now() - s.savedAt > 24 * 60 * 60 * 1000) {
+          localStorage.removeItem(`guest-reg-${slug}`)
+          loadedRef.current = true
+          return
+        }
+        // Don't restore emailConfirm — force user to re-type email confirmation
+        // to prevent bypassing the confirmation step with pre-filled values.
+        // Clamp the restored step to max 7 so the user isn't placed past the
+        // email confirmation step with an empty emailConfirm field.
+        const restoredStep = s.step ?? 0
+        setStep(restoredStep > 7 ? 7 : restoredStep)
+        setSelectedDistanceId(s.selectedDistanceId ?? null)
+        setParticipants(s.participants ?? [])
+        setFirstName(s.firstName ?? '')
+        setLastName(s.lastName ?? '')
+        setDobDay(s.dobDay ?? '')
+        setDobMonth(s.dobMonth ?? '')
+        setDobYear(s.dobYear ?? '')
+        setGender(s.gender ?? null)
+        setPhone(s.phone ?? '')
+        setEmail(s.email ?? '')
+        setEmailConfirm('')
+        setShirtSize(s.shirtSize ?? '')
+        setAcceptTerms(s.acceptTerms ?? false)
+        setAcceptExoneration(s.acceptExoneration ?? false)
+      }
+    } catch { /* corrupted data, start fresh */ }
+    setTimeout(() => { loadedRef.current = true }, 50)
+  }, [])
+
+  // Persist form state to localStorage
+  useEffect(() => {
+    if (!loadedRef.current || !slug) return
+    try {
+      localStorage.setItem(`guest-reg-${slug}`, JSON.stringify({
+        savedAt: Date.now(),
+        step, selectedDistanceId, participants,
+        firstName, lastName, dobDay, dobMonth, dobYear,
+        gender, phone, email, emailConfirm, shirtSize,
+        acceptTerms, acceptExoneration,
+      }))
+    } catch { /* storage full */ }
+  }, [slug, step, selectedDistanceId, participants, firstName, lastName, dobDay, dobMonth, dobYear, gender, phone, email, emailConfirm, shirtSize, acceptTerms, acceptExoneration])
 
   async function loadEvent() {
     try {
@@ -179,6 +237,16 @@ export default function GuestRegistration() {
   }
 
   const selectedDistance = distances.find(d => d.id === selectedDistanceId)
+
+  // If we restored to a late step but distances haven't loaded yet (or the
+  // distance was removed), clamp back to step 0 so the user doesn't see
+  // undefined values on the summary screen.
+  useEffect(() => {
+    if (!loading && selectedDistanceId && distances.length > 0 && !selectedDistance) {
+      setSelectedDistanceId(null)
+      setStep(0)
+    }
+  }, [loading, distances, selectedDistanceId, selectedDistance])
 
   // ─── Age & size helpers ───
   function getParticipantAge(): number | null {
@@ -212,15 +280,29 @@ export default function GuestRegistration() {
     return [...participants, current]
   }
 
+  // ─── Date validation helper ───
+  function isValidDate(day: string, month: string, year: string): boolean {
+    if (!day || !month || !year) return false
+    const d = parseInt(day), m = parseInt(month), y = parseInt(year)
+    if (isNaN(d) || isNaN(m) || isNaN(y)) return false
+    // Use Date constructor: if the day overflows (e.g. Feb 31 -> Mar 3),
+    // the resulting month won't match the input month.
+    const date = new Date(y, m - 1, d)
+    return date.getFullYear() === y && date.getMonth() === m - 1 && date.getDate() === d
+  }
+
   // ─── Validation ───
   function canAdvance(): boolean {
     switch (step) {
       case 0: return !!selectedDistanceId
       case 1: return firstName.trim().length > 0
       case 2: return lastName.trim().length > 0
-      case 3: return !!dobDay && !!dobMonth && !!dobYear
+      case 3: return isValidDate(dobDay, dobMonth, dobYear)
       case 4: return !!gender
-      case 5: return phone.trim().length >= 7
+      case 5: {
+        const digits = phone.replace(/\D/g, '')
+        return digits.length >= 7
+      }
       case 6: return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)
       case 7: return emailConfirm === email && email.length > 0
       case 8: return !!shirtSize
@@ -232,11 +314,19 @@ export default function GuestRegistration() {
 
   function validationMessage(): string | null {
     switch (step) {
-      case 7:
-        if (emailConfirm && emailConfirm !== email) return 'Los correos no coinciden'
+      case 3:
+        if (dobDay && dobMonth && dobYear && !isValidDate(dobDay, dobMonth, dobYear))
+          return 'Fecha inválida'
+        return null
+      case 5:
+        if (phone && phone.replace(/\D/g, '').length < 7 && phone.trim().length > 0)
+          return 'Ingresa al menos 7 dígitos numéricos'
         return null
       case 6:
         if (email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return 'Correo inválido'
+        return null
+      case 7:
+        if (emailConfirm && emailConfirm !== email) return 'Los correos no coinciden'
         return null
       default: return null
     }
@@ -281,7 +371,25 @@ export default function GuestRegistration() {
   }, [handleKeyDown])
 
   // ─── Multi-participant handlers ───
+  function validateCurrentParticipant(): boolean {
+    if (!firstName.trim()) { toast.error('El nombre es obligatorio.'); return false }
+    if (!lastName.trim()) { toast.error('El apellido es obligatorio.'); return false }
+    if (!isValidDate(dobDay, dobMonth, dobYear)) { toast.error('La fecha de nacimiento es inválida.'); return false }
+    if (!gender) { toast.error('La rama es obligatoria.'); return false }
+    if (phone.replace(/\D/g, '').length < 7) { toast.error('El número de celular debe tener al menos 7 dígitos.'); return false }
+    if (!email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { toast.error('El correo electrónico es inválido.'); return false }
+    if (!shirtSize) { toast.error('La talla de playera es obligatoria.'); return false }
+    return true
+  }
+
   function addAnotherParticipant() {
+    // Validate current participant before saving
+    if (!validateCurrentParticipant()) return
+    // Enforce max 10 participants
+    if (participants.length + 1 >= 10) {
+      toast.error('Máximo 10 participantes por transacción.')
+      return
+    }
     const current: ParticipantData = {
       firstName, lastName, dobDay, dobMonth, dobYear,
       gender, phone, email, emailConfirm, shirtSize,
@@ -305,6 +413,29 @@ export default function GuestRegistration() {
     setParticipants(prev => prev.filter((_, i) => i !== index))
   }
 
+  function editParticipant(index: number) {
+    if (index >= participants.length) return
+    const target = participants[index]
+    // Swap: store current form data in the edited slot, load target into form
+    const current: ParticipantData = {
+      firstName, lastName, dobDay, dobMonth, dobYear,
+      gender, phone, email, emailConfirm, shirtSize,
+    }
+    setParticipants(prev => prev.map((p, i) => i === index ? current : p))
+    setFirstName(target.firstName)
+    setLastName(target.lastName)
+    setDobDay(target.dobDay)
+    setDobMonth(target.dobMonth)
+    setDobYear(target.dobYear)
+    setGender(target.gender)
+    setPhone(target.phone)
+    setEmail(target.email)
+    setEmailConfirm(target.emailConfirm)
+    setShirtSize(target.shirtSize)
+    setDirection(-1)
+    setStep(1)
+  }
+
   // ─── Submit ───
   async function handleSubmit() {
     if (!event || !selectedDistance) return
@@ -318,8 +449,8 @@ export default function GuestRegistration() {
       if (!p.firstName.trim()) { toast.error('El nombre es obligatorio para todos los participantes.'); submittingRef.current = false; return }
       if (!p.lastName.trim()) { toast.error('El apellido es obligatorio para todos los participantes.'); submittingRef.current = false; return }
       if (!p.gender) { toast.error('La rama es obligatoria para todos los participantes.'); submittingRef.current = false; return }
-      if (!p.dobDay || !p.dobMonth || !p.dobYear) { toast.error('La fecha de nacimiento es obligatoria para todos los participantes.'); submittingRef.current = false; return }
-      if (!p.phone.trim()) { toast.error('El número de celular es obligatorio para todos los participantes.'); submittingRef.current = false; return }
+      if (!p.dobDay || !p.dobMonth || !p.dobYear || !isValidDate(p.dobDay, p.dobMonth, p.dobYear)) { toast.error('La fecha de nacimiento es inválida para alguno de los participantes.'); submittingRef.current = false; return }
+      if (p.phone.replace(/\D/g, '').length < 7) { toast.error('El número de celular debe tener al menos 7 dígitos numéricos.'); submittingRef.current = false; return }
       if (!p.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(p.email)) {
         toast.error(`Correo inválido para ${p.firstName} ${p.lastName}.`)
         submittingRef.current = false
@@ -380,6 +511,7 @@ export default function GuestRegistration() {
 
       if (isFree) {
         setSuccess(true)
+        if (slug) localStorage.removeItem(`guest-reg-${slug}`)
         return
       }
 
@@ -416,9 +548,11 @@ export default function GuestRegistration() {
   if (loading) return <LoadingSpinner className="h-screen items-center" />
   if (!event) return <div className="flex items-center justify-center h-screen text-zinc-400">Evento no encontrado</div>
 
-  // Success screen
+  // Success screen (must be checked before registration-closed guard,
+  // because the event may become SOLDOUT or deadline may pass during payment)
   if (success) {
-    const totalParticipants = participants.length + 1
+    const countParam = parseInt(searchParams.get('count') || '1', 10)
+    const totalParticipants = countParam >= 1 ? countParam : 1
     return (
       <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white flex items-center justify-center px-6">
         <motion.div
@@ -440,6 +574,45 @@ export default function GuestRegistration() {
               ? ' han sido registradas exitosamente.'
               : ' ha sido registrada exitosamente.'}
           </p>
+          <Button
+            className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
+            onClick={() => navigate(`/evento/${slug}`)}
+          >
+            Volver al evento
+          </Button>
+        </motion.div>
+      </div>
+    )
+  }
+
+  // Check event status — block registration for non-published events
+  const isRegistrationClosed = event.status !== 'PUBLISHED'
+  const isDeadlinePassed = event.registrationDeadline ? new Date() > new Date(event.registrationDeadline) : false
+
+  if (isRegistrationClosed || isDeadlinePassed) {
+    const message = event.status === 'CANCELLED'
+      ? 'Este evento ha sido cancelado.'
+      : event.status === 'COMPLETED'
+        ? 'Este evento ya finalizó.'
+        : event.status === 'SOLDOUT'
+          ? 'Este evento está agotado.'
+          : event.status === 'DRAFT'
+            ? 'Este evento aún no está disponible para inscripción.'
+            : isDeadlinePassed
+              ? 'El plazo de inscripción ha finalizado.'
+              : 'La inscripción no está disponible.'
+
+    return (
+      <div className="min-h-screen bg-gradient-to-b from-emerald-50/80 via-white to-white flex items-center justify-center px-6">
+        <motion.div
+          initial={{ scale: 0.9, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.5, ease: smooth }}
+          className="text-center max-w-md"
+        >
+          <Shield className="w-16 h-16 text-zinc-400 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-zinc-900 mb-2">Inscripcion cerrada</h1>
+          <p className="text-zinc-500 mb-6">{message}</p>
           <Button
             className="bg-emerald-600 hover:bg-emerald-700 text-white px-8"
             onClick={() => navigate(`/evento/${slug}`)}
@@ -506,34 +679,44 @@ export default function GuestRegistration() {
                 <h2 className="text-2xl md:text-3xl font-bold text-zinc-900 mb-2">Elige tu distancia</h2>
                 <p className="text-zinc-500 mb-8">Selecciona la modalidad en la que quieres participar.</p>
                 <div className="space-y-3">
-                  {distances.map(dist => (
-                    <motion.button
-                      key={dist.id}
-                      whileHover={{ scale: 1.01 }}
-                      whileTap={{ scale: 0.99 }}
-                      onClick={() => setSelectedDistanceId(dist.id)}
-                      className={`w-full flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all ${
-                        selectedDistanceId === dist.id
-                          ? 'border-emerald-500 bg-emerald-50 shadow-sm'
-                          : 'border-zinc-200 hover:border-emerald-200 bg-white'
-                      }`}
-                    >
-                      <div>
-                        <p className="font-semibold text-zinc-900 text-lg">{dist.name}</p>
-                        {dist.distanceKm && <p className="text-sm text-zinc-500">{dist.distanceKm} km</p>}
-                      </div>
-                      <div className="flex items-center gap-3">
-                        <span className="font-bold text-emerald-600 text-lg">
-                          {dist.price && dist.price > 0 ? `$${(dist.price / 100).toLocaleString('es-MX')}` : 'Gratis'}
-                        </span>
-                        {selectedDistanceId === dist.id && (
-                          <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
-                            <Check className="w-4 h-4 text-white" />
-                          </div>
-                        )}
-                      </div>
-                    </motion.button>
-                  ))}
+                  {distances.map(dist => {
+                    const isSoldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
+                    return (
+                      <motion.button
+                        key={dist.id}
+                        whileHover={isSoldOut ? {} : { scale: 1.01 }}
+                        whileTap={isSoldOut ? {} : { scale: 0.99 }}
+                        onClick={() => { if (!isSoldOut) setSelectedDistanceId(dist.id) }}
+                        disabled={isSoldOut}
+                        className={`w-full flex items-center justify-between p-4 rounded-xl border-2 text-left transition-all ${
+                          isSoldOut
+                            ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
+                            : selectedDistanceId === dist.id
+                              ? 'border-emerald-500 bg-emerald-50 shadow-sm'
+                              : 'border-zinc-200 hover:border-emerald-200 bg-white'
+                        }`}
+                      >
+                        <div>
+                          <p className={`font-semibold text-lg ${isSoldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
+                          {dist.distanceKm && <p className={`text-sm ${isSoldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
+                        </div>
+                        <div className="flex items-center gap-3">
+                          {isSoldOut ? (
+                            <span className="font-bold text-red-400 text-lg">Agotado</span>
+                          ) : (
+                            <span className="font-bold text-emerald-600 text-lg">
+                              {dist.price && dist.price > 0 ? `$${(dist.price / 100).toLocaleString('es-MX')}` : 'Gratis'}
+                            </span>
+                          )}
+                          {selectedDistanceId === dist.id && !isSoldOut && (
+                            <div className="w-6 h-6 rounded-full bg-emerald-500 flex items-center justify-center">
+                              <Check className="w-4 h-4 text-white" />
+                            </div>
+                          )}
+                        </div>
+                      </motion.button>
+                    )
+                  })}
                 </div>
               </motion.div>
             )}
@@ -615,6 +798,7 @@ export default function GuestRegistration() {
                     </select>
                   </div>
                 </div>
+                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
               </motion.div>
             )}
 
@@ -656,6 +840,7 @@ export default function GuestRegistration() {
                   placeholder="Ej. 55 1234 5678"
                   className="text-lg py-6 border-2 border-zinc-200 focus:border-emerald-500"
                 />
+                {valMsg && <p className="text-sm text-red-500 mt-2">{valMsg}</p>}
               </motion.div>
             )}
 
@@ -795,14 +980,34 @@ export default function GuestRegistration() {
                       {allParticipantsDisplay.length > 1 && (
                         <div className="flex items-center justify-between px-5 py-2 bg-zinc-50 border-b border-zinc-100">
                           <span className="text-sm font-semibold text-zinc-700">Participante {i + 1}</span>
-                          {i < participants.length && (
-                            <button
-                              onClick={() => removeParticipant(i)}
-                              className="text-red-400 hover:text-red-600 transition-colors"
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          )}
+                          <div className="flex items-center gap-2">
+                            {i < participants.length ? (
+                              <>
+                                <button
+                                  onClick={() => editParticipant(i)}
+                                  className="text-zinc-400 hover:text-emerald-600 transition-colors"
+                                  title="Editar participante"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  onClick={() => removeParticipant(i)}
+                                  className="text-red-400 hover:text-red-600 transition-colors"
+                                  title="Eliminar participante"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </>
+                            ) : (
+                              <button
+                                onClick={() => { setDirection(-1); setStep(1) }}
+                                className="text-zinc-400 hover:text-emerald-600 transition-colors"
+                                title="Editar datos"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                            )}
+                          </div>
                         </div>
                       )}
                       <div className="divide-y divide-zinc-100">
@@ -839,14 +1044,16 @@ export default function GuestRegistration() {
                   </span>
                 </div>
 
-                {/* Add another participant */}
-                <button
-                  onClick={addAnotherParticipant}
-                  className="mt-4 w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-zinc-300 text-zinc-500 hover:border-emerald-400 hover:text-emerald-600 transition-all"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span className="text-sm font-medium">Agregar otro participante</span>
-                </button>
+                {/* Add another participant (hidden at max 10) */}
+                {allParticipantsDisplay.length < 10 && (
+                  <button
+                    onClick={addAnotherParticipant}
+                    className="mt-4 w-full flex items-center justify-center gap-2 p-3 rounded-xl border-2 border-dashed border-zinc-300 text-zinc-500 hover:border-emerald-400 hover:text-emerald-600 transition-all"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span className="text-sm font-medium">Agregar otro participante</span>
+                  </button>
+                )}
 
                 {error && (
                   <p className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg px-4 py-2 mt-4">{error}</p>
