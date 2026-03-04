@@ -8,6 +8,7 @@ const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
 
 interface CreateGuestCheckoutArgs {
   eventId: string
+  eventSlug: string
   distanceId: string
   distanceName: string
   eventTitle: string
@@ -24,6 +25,9 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
   // --- Bug 3: Input validation ---
   if (!args.eventId || typeof args.eventId !== 'string') {
     throw new Error('eventId is required and must be a string')
+  }
+  if (!args.eventSlug || typeof args.eventSlug !== 'string') {
+    throw new Error('eventSlug is required and must be a string')
   }
   if (!args.distanceId || typeof args.distanceId !== 'string') {
     throw new Error('distanceId is required and must be a string')
@@ -109,8 +113,8 @@ export const handler: AppSyncResolverHandler<CreateGuestCheckoutArgs, string> = 
     throw new Error('Invalid price configured for this distance')
   }
 
-  const successUrl = `${process.env.APP_URL}/eventos?payment=success`
-  const cancelUrl = `${process.env.APP_URL}/eventos?payment=cancelled`
+  const successUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?success=true`
+  const cancelUrl = `${process.env.APP_URL}/evento/${encodeURIComponent(args.eventSlug)}/inscripcion?cancelled=true`
 
   const session = await stripe.checkout.sessions.create({
     mode: 'payment',

@@ -205,6 +205,7 @@ export default function GuestRegistration() {
         const { data: checkoutUrl } = await client.mutations.createGuestCheckoutSession(
           {
             eventId: event.id,
+            eventSlug: slug!,
             distanceId: selectedDistance.id,
             distanceName: selectedDistance.name,
             eventTitle: event.title,

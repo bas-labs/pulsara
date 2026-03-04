@@ -1,4 +1,7 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
+import { switchToOrganizer } from '../functions/switch-to-organizer/resource'
+import { createCheckout } from '../functions/create-checkout/resource'
+import { createGuestCheckout } from '../functions/create-guest-checkout/resource'
 
 const schema = a.schema({
   // ─── USER PROFILE ───
@@ -329,7 +332,7 @@ const schema = a.schema({
     .arguments({})
     .returns(a.boolean())
     .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function('switchToOrganizer')),
+    .handler(a.handler.function(switchToOrganizer)),
 
   createCheckoutSession: a
     .mutation()
@@ -345,12 +348,13 @@ const schema = a.schema({
     })
     .returns(a.string())
     .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function('createCheckout')),
+    .handler(a.handler.function(createCheckout)),
 
   createGuestCheckoutSession: a
     .mutation()
     .arguments({
       eventId: a.string().required(),
+      eventSlug: a.string().required(),
       distanceId: a.string().required(),
       distanceName: a.string().required(),
       eventTitle: a.string().required(),
@@ -360,7 +364,7 @@ const schema = a.schema({
     })
     .returns(a.string())
     .authorization((allow) => [allow.guest()])
-    .handler(a.handler.function('createGuestCheckout')),
+    .handler(a.handler.function(createGuestCheckout)),
 })
 
 export type Schema = ClientSchema<typeof schema>
