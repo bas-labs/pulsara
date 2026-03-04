@@ -1,6 +1,4 @@
 import { type ClientSchema, a, defineData } from '@aws-amplify/backend'
-import { switchToOrganizer } from '../functions/switch-to-organizer/resource'
-import { createCheckout } from '../functions/create-checkout/resource'
 import { createGuestCheckout } from '../functions/create-guest-checkout/resource'
 
 const schema = a.schema({
@@ -46,8 +44,7 @@ const schema = a.schema({
       idx('role'),
     ])
     .authorization((allow) => [
-      allow.owner(),
-      allow.authenticated().to(['read']),
+      allow.guest().to(['read']),
     ]),
 
   // ─── EVENTS ───
@@ -109,8 +106,6 @@ const schema = a.schema({
       idx('serialId').sortKeys(['eventDate']),
     ])
     .authorization((allow) => [
-      allow.authenticated().to(['read']),
-      allow.group('organizadores').to(['create', 'update', 'delete']),
       allow.guest().to(['read']),
     ]),
 
@@ -133,10 +128,7 @@ const schema = a.schema({
       idx('eventId'),
     ])
     .authorization((allow) => [
-      allow.authenticated().to(['read']),
-      allow.group('organizadores'),
       allow.guest().to(['read']),
-
     ]),
 
   // ─── REGISTRATIONS ───
@@ -168,8 +160,7 @@ const schema = a.schema({
       idx('eventId').sortKeys(['status']),
     ])
     .authorization((allow) => [
-      allow.owner(),
-      allow.group('organizadores').to(['read', 'update']),
+      allow.guest().to(['read']),
     ]),
 
   // ─── GUEST REGISTRATIONS ───
@@ -205,8 +196,7 @@ const schema = a.schema({
       idx('email'),
     ])
     .authorization((allow) => [
-      allow.guest().to(['create']),
-      allow.group('organizadores').to(['read', 'update']),
+      allow.guest().to(['create', 'read']),
     ]),
 
   // ─── RESULTS ───
@@ -237,8 +227,6 @@ const schema = a.schema({
       idx('userId'),
     ])
     .authorization((allow) => [
-      allow.authenticated().to(['read']),
-      allow.group('organizadores'),
       allow.guest().to(['read']),
     ]),
 
@@ -264,10 +252,7 @@ const schema = a.schema({
       idx('slug'),
     ])
     .authorization((allow) => [
-      allow.authenticated().to(['read']),
-      allow.group('organizadores'),
       allow.guest().to(['read']),
-
     ]),
 
   // ─── ORDERS ───
@@ -295,7 +280,7 @@ const schema = a.schema({
       idx('stripePaymentIntentId'),
     ])
     .authorization((allow) => [
-      allow.owner(),
+      allow.guest().to(['read']),
     ]),
 
   // ─── BLOG ───
@@ -319,37 +304,10 @@ const schema = a.schema({
       idx('category').sortKeys(['publishedAt']),
     ])
     .authorization((allow) => [
-      allow.authenticated().to(['read']),
-      allow.group('organizadores'),
-      allow.group('atletas').to(['read']),
       allow.guest().to(['read']),
-
     ]),
 
   // Custom mutations
-  switchToOrganizer: a
-    .mutation()
-    .arguments({})
-    .returns(a.boolean())
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(switchToOrganizer)),
-
-  createCheckoutSession: a
-    .mutation()
-    .arguments({
-      eventId: a.string().required(),
-      distanceId: a.string().required(),
-      distanceName: a.string().required(),
-      eventTitle: a.string().required(),
-      priceInCentavos: a.integer().required(),
-      userId: a.string().required(),
-      userEmail: a.string().required(),
-      registrationId: a.string().required(),
-    })
-    .returns(a.string())
-    .authorization((allow) => [allow.authenticated()])
-    .handler(a.handler.function(createCheckout)),
-
   createGuestCheckoutSession: a
     .mutation()
     .arguments({
@@ -372,6 +330,6 @@ export type Schema = ClientSchema<typeof schema>
 export const data = defineData({
   schema,
   authorizationModes: {
-    defaultAuthorizationMode: 'userPool',
+    defaultAuthorizationMode: 'identityPool',
   },
 })

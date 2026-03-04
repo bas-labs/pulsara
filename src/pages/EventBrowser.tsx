@@ -8,7 +8,7 @@ import { Badge } from '@/components/ui/badge'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Search, MapPin, Calendar, ArrowRight } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
@@ -22,7 +22,6 @@ const sportLabels: Record<string, string> = {
 }
 
 export default function EventBrowser() {
-  const { user } = useAuth()
   const [searchParams] = useSearchParams()
   const [events, setEvents] = useState<Schema['Event']['type'][]>([])
   const [search, setSearch] = useState(searchParams.get('q') ?? '')
@@ -54,7 +53,7 @@ export default function EventBrowser() {
       if (sportFilter) filter.sport = { eq: sportFilter }
       const { data, nextToken: nt } = await client.models.Event.list({
         filter,
-        ...(user ? {} : { authMode: 'identityPool' as const }),
+        authMode: 'identityPool',
         limit: 24,
         ...(token ? { nextToken: token } : {}),
       })

@@ -5,7 +5,7 @@ import type { Schema } from '../../amplify/data/resource'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Clock, BookOpen } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
@@ -20,7 +20,6 @@ const CATEGORY_LABELS: Record<string, string> = {
 }
 
 export default function Blog() {
-  const { user } = useAuth()
   const [articles, setArticles] = useState<Schema['Article']['type'][]>([])
   const [loading, setLoading] = useState(true)
 
@@ -28,7 +27,7 @@ export default function Blog() {
 
   async function load() {
     try {
-      const { data } = await client.models.Article.list({ ...(user ? {} : { authMode: 'identityPool' as const }) })
+      const { data } = await client.models.Article.list({ authMode: 'identityPool' })
       setArticles(data.filter(a => a.status === 'PUBLISHED').sort((a, b) =>
         new Date(b.publishedAt ?? 0).getTime() - new Date(a.publishedAt ?? 0).getTime()
       ))

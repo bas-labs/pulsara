@@ -3,26 +3,22 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { generateClient } from 'aws-amplify/data'
 import type { Schema } from '../../amplify/data/resource'
-import { useAuth } from '../context/AuthContext'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { MapPin, Calendar, Users, Clock, ArrowLeft, CheckCircle } from 'lucide-react'
+import { MapPin, Calendar, Users, Clock, ArrowLeft } from 'lucide-react'
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
-import { fadeUp, stagger, scaleIn, springHover } from '@/lib/animations'
+import { fadeUp, stagger, springHover } from '@/lib/animations'
 
 const client = generateClient<Schema>()
 
 export default function EventDetail() {
   const { slug } = useParams()
-  const { user } = useAuth()
   const navigate = useNavigate()
   const [event, setEvent] = useState<Schema['Event']['type'] | null>(null)
   const [distances, setDistances] = useState<Schema['EventDistance']['type'][]>([])
   const [selectedDistance, setSelectedDistance] = useState<string | null>(null)
-  const [registering, setRegistering] = useState(false)
-  const [registered, setRegistered] = useState(false)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
@@ -31,11 +27,11 @@ export default function EventDetail() {
 
   async function loadEvent() {
     try {
-      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { ...(user ? {} : { authMode: 'identityPool' as const }) })
+      const { data } = await client.models.Event.listEventBySlug({ slug: slug! }, { authMode: 'identityPool' })
       if (data.length > 0) {
         const ev = data[0]
         setEvent(ev)
-        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { ...(user ? {} : { authMode: 'identityPool' as const }) })
+        const { data: dists } = await client.models.EventDistance.listEventDistanceByEventId({ eventId: ev.id }, { authMode: 'identityPool' })
         setDistances(dists)
         const firstAvailable = dists.find(d => d.spotsRemaining === null || d.spotsRemaining === undefined || d.spotsRemaining > 0)
         if (firstAvailable) setSelectedDistance(firstAvailable.id)
@@ -44,57 +40,6 @@ export default function EventDetail() {
       console.error(err)
     } finally {
       setLoading(false)
-    }
-  }
-
-  async function handleRegister() {
-    if (!user || !event || !selectedDistance) return
-    setRegistering(true)
-    try {
-      const dist = distances.find(d => d.id === selectedDistance)
-      const isFree = !dist?.price || dist.price === 0
-      const { data: regData } = await client.models.Registration.create({
-        userId: user.userId,
-        eventId: event.id,
-        distanceId: selectedDistance,
-        distanceName: dist?.name ?? '',
-        distanceKm: dist?.distanceKm,
-        category: dist?.category ?? 'GENERAL',
-        status: isFree ? 'CONFIRMED' : 'PENDING',
-        paymentStatus: isFree ? 'PAID' : 'PENDING',
-        amountPaid: dist?.price ?? 0,
-        registeredAt: new Date().toISOString(),
-        waiverSigned: true,
-      })
-
-      if (isFree) {
-        setRegistered(true)
-      }
-
-      if (dist && dist.price && dist.price > 0 && regData) {
-        try {
-          const { data: checkoutUrl } = await client.mutations.createCheckoutSession({
-            eventId: event.id,
-            distanceId: dist.id,
-            distanceName: dist.name,
-            eventTitle: event.title,
-            priceInCentavos: dist.price,
-            userId: user!.userId,
-            userEmail: user!.signInDetails?.loginId ?? '',
-            registrationId: regData.id,
-          })
-          if (checkoutUrl) {
-            window.location.href = checkoutUrl
-            return
-          }
-        } catch (payErr) {
-          console.error('Checkout creation failed:', payErr)
-        }
-      }
-    } catch (err) {
-      console.error('Registration failed:', err)
-    } finally {
-      setRegistering(false)
     }
   }
 
@@ -171,89 +116,59 @@ export default function EventDetail() {
             <Card className="sticky top-24">
               <CardContent className="p-6">
                 <AnimatePresence mode="wait">
-                  {registered ? (
-                    <motion.div
-                      key="success"
-                      variants={scaleIn}
-                      initial="hidden"
-                      animate="visible"
-                      className="text-center py-6"
-                    >
-                      <CheckCircle className="w-12 h-12 text-emerald-500 mx-auto mb-3" />
-                      <h3 className="font-bold text-xl text-zinc-900 mb-1">¡Inscrito!</h3>
-                      <p className="text-zinc-500 text-sm">Te enviamos la confirmación por email.</p>
-                      <Button className="mt-4 w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate('/atleta/mis-eventos')}>
-                        Ver mis eventos
-                      </Button>
-                    </motion.div>
-                  ) : (
-                    <motion.div key="form" initial={{ opacity: 1 }}>
-                      <h3 className="font-bold text-lg text-zinc-900 mb-4">Inscripción</h3>
-                      {distances.length > 0 ? (
-                        <div className="space-y-3 mb-6">
-                          {distances.map(dist => {
-                            const isSoldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
-                            return (
-                              <motion.label
-                                key={dist.id}
-                                whileHover={isSoldOut ? {} : { scale: 1.01 }}
-                                transition={springHover}
-                                className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
-                                  isSoldOut
-                                    ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
-                                    : selectedDistance === dist.id
-                                      ? 'border-emerald-500 bg-emerald-50 cursor-pointer'
-                                      : 'border-zinc-200 hover:border-emerald-200 cursor-pointer'
-                                }`}
-                                onClick={() => { if (!isSoldOut) setSelectedDistance(dist.id) }}
-                              >
-                                <div>
-                                  <p className={`font-semibold ${isSoldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
-                                  {dist.distanceKm && <p className={`text-xs ${isSoldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
-                                </div>
-                                {isSoldOut ? (
-                                  <span className="font-bold text-red-400">Agotado</span>
-                                ) : (
-                                  <span className="font-bold text-emerald-600">${((dist.price ?? 0) / 100).toLocaleString('es-MX')}</span>
-                                )}
-                              </motion.label>
-                            )
-                          })}
-                        </div>
-                      ) : (
-                        <p className="text-zinc-500 text-sm mb-6">Precio por confirmar</p>
-                      )}
+                  <motion.div key="form" initial={{ opacity: 1 }}>
+                    <h3 className="font-bold text-lg text-zinc-900 mb-4">Inscripción</h3>
+                    {distances.length > 0 ? (
+                      <div className="space-y-3 mb-6">
+                        {distances.map(dist => {
+                          const isSoldOut = dist.spotsRemaining !== null && dist.spotsRemaining !== undefined && dist.spotsRemaining <= 0
+                          return (
+                            <motion.label
+                              key={dist.id}
+                              whileHover={isSoldOut ? {} : { scale: 1.01 }}
+                              transition={springHover}
+                              className={`flex items-center justify-between p-3 rounded-xl border transition-all ${
+                                isSoldOut
+                                  ? 'border-zinc-200 bg-zinc-100 opacity-60 cursor-not-allowed'
+                                  : selectedDistance === dist.id
+                                    ? 'border-emerald-500 bg-emerald-50 cursor-pointer'
+                                    : 'border-zinc-200 hover:border-emerald-200 cursor-pointer'
+                              }`}
+                              onClick={() => { if (!isSoldOut) setSelectedDistance(dist.id) }}
+                            >
+                              <div>
+                                <p className={`font-semibold ${isSoldOut ? 'text-zinc-400' : 'text-zinc-900'}`}>{dist.name}</p>
+                                {dist.distanceKm && <p className={`text-xs ${isSoldOut ? 'text-zinc-400' : 'text-zinc-500'}`}>{dist.distanceKm} km</p>}
+                              </div>
+                              {isSoldOut ? (
+                                <span className="font-bold text-red-400">Agotado</span>
+                              ) : (
+                                <span className="font-bold text-emerald-600">${((dist.price ?? 0) / 100).toLocaleString('es-MX')}</span>
+                              )}
+                            </motion.label>
+                          )
+                        })}
+                      </div>
+                    ) : (
+                      <p className="text-zinc-500 text-sm mb-6">Precio por confirmar</p>
+                    )}
 
-                      {event.status === 'CANCELLED' ? (
-                        <Button disabled className="w-full">Evento cancelado</Button>
-                      ) : event.status === 'COMPLETED' ? (
-                        <Button disabled className="w-full">Evento finalizado</Button>
-                      ) : event.status === 'DRAFT' ? (
-                        <Button disabled className="w-full">Próximamente</Button>
-                      ) : event.status === 'SOLDOUT' ? (
-                        <Button disabled className="w-full">Agotado</Button>
-                      ) : event.registrationDeadline && new Date() > new Date(event.registrationDeadline) ? (
-                        <Button disabled className="w-full">Inscripción cerrada</Button>
-                      ) : !user ? (
-                        <div className="space-y-2">
-                          <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}/inscripcion`)}>
-                            Inscribirme
-                          </Button>
-                          <Button variant="outline" className="w-full" onClick={() => navigate('/login')}>
-                            Ya tengo cuenta
-                          </Button>
-                        </div>
-                      ) : (
-                        <Button
-                          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                          disabled={registering || !selectedDistance}
-                          onClick={handleRegister}
-                        >
-                          {registering ? 'Inscribiendo...' : 'Inscribirme'}
-                        </Button>
-                      )}
-                    </motion.div>
-                  )}
+                    {event.status === 'CANCELLED' ? (
+                      <Button disabled className="w-full">Evento cancelado</Button>
+                    ) : event.status === 'COMPLETED' ? (
+                      <Button disabled className="w-full">Evento finalizado</Button>
+                    ) : event.status === 'DRAFT' ? (
+                      <Button disabled className="w-full">Próximamente</Button>
+                    ) : event.status === 'SOLDOUT' ? (
+                      <Button disabled className="w-full">Agotado</Button>
+                    ) : event.registrationDeadline && new Date() > new Date(event.registrationDeadline) ? (
+                      <Button disabled className="w-full">Inscripción cerrada</Button>
+                    ) : (
+                      <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white" onClick={() => navigate(`/evento/${slug}/inscripcion`)}>
+                        Inscribirme
+                      </Button>
+                    )}
+                  </motion.div>
                 </AnimatePresence>
               </CardContent>
             </Card>

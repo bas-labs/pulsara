@@ -604,7 +604,7 @@ export default function Landing() {
                 <span className="text-4xl font-bold text-white">$99</span>
                 <span className="text-white/60">MXN/mes</span>
               </div>
-              <Link to="/login">
+              <Link to="/eventos">
                 <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="inline-block">
                   <Button size="lg" className="bg-white text-emerald-700 hover:bg-white/90 font-bold px-10 rounded-xl text-base shadow-xl">
                     Suscribirme a PLUS <ArrowRight className="w-5 h-5 ml-2" />
@@ -716,17 +716,12 @@ export default function Landing() {
               ?
             </motion.h2>
             <motion.p variants={fadeUp} custom={1} className="text-zinc-500 text-lg mb-10 max-w-xl mx-auto">
-              Crea tu cuenta gratis y encuentra tu próximo evento deportivo.
+              Encuentra tu próximo evento deportivo.
             </motion.p>
             <motion.div variants={fadeUp} custom={2} className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Link to="/login">
-                <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-10 rounded-xl text-base shadow-lg shadow-emerald-500/25">
-                  Crear Cuenta Gratis <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
               <Link to="/eventos">
-                <Button size="lg" variant="outline" className="border-zinc-300 text-zinc-700 font-semibold px-10 rounded-xl text-base">
-                  Explorar Eventos
+                <Button size="lg" className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-10 rounded-xl text-base shadow-lg shadow-emerald-500/25">
+                  Explorar Eventos <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </Link>
             </motion.div>
@@ -755,7 +750,7 @@ export default function Landing() {
                 <li><Link to="/eventos" className="nav-underline text-sm text-zinc-400 hover:text-white transition-colors">Eventos</Link></li>
                 <li><Link to="/seriales" className="nav-underline text-sm text-zinc-400 hover:text-white transition-colors">Seriales</Link></li>
                 <li><Link to="/resultados" className="nav-underline text-sm text-zinc-400 hover:text-white transition-colors">Resultados</Link></li>
-                <li><Link to="/login" className="nav-underline text-sm text-zinc-400 hover:text-white transition-colors">PLUS</Link></li>
+                <li><Link to="/eventos" className="nav-underline text-sm text-zinc-400 hover:text-white transition-colors">PLUS</Link></li>
               </ul>
             </div>
             <div>

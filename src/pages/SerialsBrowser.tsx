@@ -5,7 +5,7 @@ import type { Schema } from '../../amplify/data/resource'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Trophy, MapPin, Calendar } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
@@ -14,7 +14,6 @@ import { fadeUp, stagger } from '@/lib/animations'
 const client = generateClient<Schema>()
 
 export default function SerialsBrowser() {
-  const { user } = useAuth()
   const [serials, setSerials] = useState<Schema['Serial']['type'][]>([])
   const [loading, setLoading] = useState(true)
 
@@ -22,7 +21,7 @@ export default function SerialsBrowser() {
 
   async function load() {
     try {
-      const { data } = await client.models.Serial.list({ ...(user ? {} : { authMode: 'identityPool' as const }) })
+      const { data } = await client.models.Serial.list({ authMode: 'identityPool' })
       setSerials(data)
     } catch (err) { console.error(err) }
     finally { setLoading(false) }

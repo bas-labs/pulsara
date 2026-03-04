@@ -1,10 +1,7 @@
 import { useState, useEffect } from 'react'
-import { Link, useLocation, useNavigate } from 'react-router-dom'
+import { Link, useLocation } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useAuth } from '@/context/AuthContext'
-import { Button } from '@/components/ui/button'
-import { Badge } from '@/components/ui/badge'
-import { Zap, LogOut, User, Menu, X, LayoutDashboard } from 'lucide-react'
+import { Zap, Menu, X } from 'lucide-react'
 
 const publicLinks = [
   { label: 'Eventos', to: '/eventos' },
@@ -16,8 +13,6 @@ const publicLinks = [
 export default function Navbar() {
   const [open, setOpen] = useState(false)
   const [scrolled, setScrolled] = useState(false)
-  const { user, isOrganizador, isAtleta, logout } = useAuth()
-  const navigate = useNavigate()
   const location = useLocation()
 
   useEffect(() => {
@@ -25,11 +20,6 @@ export default function Navbar() {
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
-
-  const handleLogout = async () => {
-    await logout()
-    navigate('/')
-  }
 
   const isActive = (to: string) =>
     location.pathname === to || location.pathname.startsWith(to + '/')
@@ -66,77 +56,10 @@ export default function Navbar() {
               {link.label}
             </Link>
           ))}
-          {isOrganizador && (
-            <Link
-              to="/org"
-              className={`nav-underline text-sm font-medium transition-colors flex items-center gap-1 ${
-                isActive('/org') ? 'active text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'
-              }`}
-            >
-              <LayoutDashboard className="w-3.5 h-3.5" /> Mi Panel
-            </Link>
-          )}
-          {isAtleta && (
-            <>
-              <Link
-                to="/atleta"
-                className={`nav-underline text-sm font-medium transition-colors ${
-                  location.pathname === '/atleta' ? 'active text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'
-                }`}
-              >
-                Mi Dashboard
-              </Link>
-              <Link
-                to="/atleta/mis-eventos"
-                className={`nav-underline text-sm font-medium transition-colors ${
-                  isActive('/atleta/mis-eventos') ? 'active text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'
-                }`}
-              >
-                Mis Eventos
-              </Link>
-              <Link
-                to="/atleta/resultados"
-                className={`nav-underline text-sm font-medium transition-colors ${
-                  isActive('/atleta/resultados') ? 'active text-zinc-900' : 'text-zinc-500 hover:text-zinc-900'
-                }`}
-              >
-                Resultados
-              </Link>
-            </>
-          )}
         </div>
 
-        {/* Desktop right */}
-        <div className="hidden md:flex items-center gap-3">
-          {user ? (
-            <>
-              {(isOrganizador || isAtleta) && (
-                <Badge variant="secondary" className="text-xs">
-                  {isOrganizador ? 'Organizador' : 'Atleta'}
-                </Badge>
-              )}
-              <Link to="/perfil">
-                <Button variant="ghost" size="sm" className="text-zinc-500">
-                  <User className="w-4 h-4" />
-                </Button>
-              </Link>
-              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-zinc-500">
-                <LogOut className="w-4 h-4" />
-              </Button>
-            </>
-          ) : (
-            <>
-              <Link to="/login">
-                <Button variant="ghost" className="text-zinc-700">Iniciar Sesión</Button>
-              </Link>
-              <Link to="/login">
-                <Button className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold rounded-xl">
-                  Crear Cuenta
-                </Button>
-              </Link>
-            </>
-          )}
-        </div>
+        {/* Spacer for desktop right side */}
+        <div className="hidden md:block w-8" />
 
         {/* Mobile hamburger */}
         <button className="md:hidden p-2" onClick={() => setOpen(!open)}>
@@ -167,29 +90,6 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              {isOrganizador && (
-                <Link to="/org" onClick={() => setOpen(false)} className="block text-sm font-medium py-2.5 text-zinc-600">
-                  Mi Panel
-                </Link>
-              )}
-              {isAtleta && (
-                <>
-                  <Link to="/atleta" onClick={() => setOpen(false)} className="block text-sm font-medium py-2.5 text-zinc-600">Mi Dashboard</Link>
-                  <Link to="/atleta/mis-eventos" onClick={() => setOpen(false)} className="block text-sm font-medium py-2.5 text-zinc-600">Mis Eventos</Link>
-                  <Link to="/atleta/resultados" onClick={() => setOpen(false)} className="block text-sm font-medium py-2.5 text-zinc-600">Resultados</Link>
-                </>
-              )}
-              <div className="pt-3 border-t border-zinc-100">
-                {user ? (
-                  <Button variant="ghost" className="w-full text-zinc-600" onClick={() => { handleLogout(); setOpen(false) }}>
-                    Cerrar Sesión
-                  </Button>
-                ) : (
-                  <Link to="/login" onClick={() => setOpen(false)}>
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Crear Cuenta</Button>
-                  </Link>
-                )}
-              </div>
             </div>
           </motion.div>
         )}

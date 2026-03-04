@@ -5,7 +5,7 @@ import type { Schema } from '../../amplify/data/resource'
 import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import { Search, Trophy, Timer, Medal } from 'lucide-react'
-import { useAuth } from '../context/AuthContext'
+
 import PageWrapper from '@/components/PageWrapper'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import EmptyState from '@/components/EmptyState'
@@ -14,7 +14,6 @@ import { fadeIn, staggerFast } from '@/lib/animations'
 const client = generateClient<Schema>()
 
 export default function ResultsBrowser() {
-  const { user } = useAuth()
   const [results, setResults] = useState<Schema['Result']['type'][]>([])
   const [search, setSearch] = useState('')
   const [loading, setLoading] = useState(true)
@@ -23,7 +22,7 @@ export default function ResultsBrowser() {
 
   async function loadResults() {
     try {
-      const { data } = await client.models.Result.list({ limit: 100, ...(user ? {} : { authMode: 'identityPool' as const }) })
+      const { data } = await client.models.Result.list({ limit: 100, authMode: 'identityPool' })
       setResults(data.sort((a, b) =>
         new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
       ))
