@@ -64,7 +64,7 @@ async function seed() {
           country: 'MX',
           status: 'PUBLISHED',
           organizerId: 'system',
-          organizerName: 'Pulsara',
+          organizerName: 'Al Fallo',
           featured: Math.random() < 0.1,
           tags: [],
           priceMin: price,
@@ -164,7 +164,7 @@ async function seed() {
         Item: {
           id: randomUUID(),
           ...a,
-          authorName: 'Pulsara',
+          authorName: 'Al Fallo',
           status: 'PUBLISHED',
           publishedAt: now,
           __typename: 'Article',

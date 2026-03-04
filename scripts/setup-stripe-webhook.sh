@@ -104,7 +104,7 @@ else
     -u "$STRIPE_SECRET_KEY:" \
     -d "url=$WEBHOOK_URL" \
     -d "enabled_events[]"="checkout.session.completed" \
-    -d "description=Pulsara $ENV webhook" \
+    -d "description=Al Fallo $ENV webhook" \
     -d "api_version=2026-02-25.clover")
 fi
 

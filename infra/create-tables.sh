@@ -1,14 +1,14 @@
 #!/bin/bash
-# Pulsara DynamoDB Tables — Create Script
+# Al Fallo DynamoDB Tables — Create Script
 # Run with: AWS_REGION=us-east-1 bash infra/create-tables.sh
 
 REGION="${AWS_REGION:-us-east-1}"
 
-echo "Creating Pulsara DynamoDB tables in $REGION..."
+echo "Creating Al Fallo DynamoDB tables in $REGION..."
 
 # 1. Events
 aws dynamodb create-table \
-  --table-name pulsara-events \
+  --table-name alfallo-events \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -28,11 +28,11 @@ aws dynamodb create-table \
       {"IndexName":"slug-index","KeySchema":[{"AttributeName":"slug","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"serial-date-index","KeySchema":[{"AttributeName":"serialId","KeyType":"HASH"},{"AttributeName":"eventDate","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-events" || echo "❌ pulsara-events"
+  --region $REGION 2>&1 && echo "✅ alfallo-events" || echo "❌ alfallo-events"
 
 # 2. Users
 aws dynamodb create-table \
-  --table-name pulsara-users \
+  --table-name alfallo-users \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -41,11 +41,11 @@ aws dynamodb create-table \
   --billing-mode PAY_PER_REQUEST \
   --global-secondary-indexes \
     '[{"IndexName":"email-index","KeySchema":[{"AttributeName":"email","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}}]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-users" || echo "❌ pulsara-users"
+  --region $REGION 2>&1 && echo "✅ alfallo-users" || echo "❌ alfallo-users"
 
 # 3. Registrations
 aws dynamodb create-table \
-  --table-name pulsara-registrations \
+  --table-name alfallo-registrations \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -61,11 +61,11 @@ aws dynamodb create-table \
       {"IndexName":"event-status-index","KeySchema":[{"AttributeName":"eventId","KeyType":"HASH"},{"AttributeName":"status","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"event-bib-index","KeySchema":[{"AttributeName":"eventId","KeyType":"HASH"},{"AttributeName":"bibNumber","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-registrations" || echo "❌ pulsara-registrations"
+  --region $REGION 2>&1 && echo "✅ alfallo-registrations" || echo "❌ alfallo-registrations"
 
 # 4. Results
 aws dynamodb create-table \
-  --table-name pulsara-results \
+  --table-name alfallo-results \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -80,11 +80,11 @@ aws dynamodb create-table \
       {"IndexName":"event-chiptime-index","KeySchema":[{"AttributeName":"eventId","KeyType":"HASH"},{"AttributeName":"chipTimeSeconds","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"user-results-index","KeySchema":[{"AttributeName":"userId","KeyType":"HASH"},{"AttributeName":"createdAt","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-results" || echo "❌ pulsara-results"
+  --region $REGION 2>&1 && echo "✅ alfallo-results" || echo "❌ alfallo-results"
 
 # 5. Serials
 aws dynamodb create-table \
-  --table-name pulsara-serials \
+  --table-name alfallo-serials \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -98,21 +98,21 @@ aws dynamodb create-table \
       {"IndexName":"slug-index","KeySchema":[{"AttributeName":"slug","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"year-status-index","KeySchema":[{"AttributeName":"year","KeyType":"HASH"},{"AttributeName":"status","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-serials" || echo "❌ pulsara-serials"
+  --region $REGION 2>&1 && echo "✅ alfallo-serials" || echo "❌ alfallo-serials"
 
 # 6. Serial Standings
 aws dynamodb create-table \
-  --table-name pulsara-serial-standings \
+  --table-name alfallo-serial-standings \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
   --key-schema AttributeName=PK,KeyType=HASH AttributeName=SK,KeyType=RANGE \
   --billing-mode PAY_PER_REQUEST \
-  --region $REGION 2>&1 && echo "✅ pulsara-serial-standings" || echo "❌ pulsara-serial-standings"
+  --region $REGION 2>&1 && echo "✅ alfallo-serial-standings" || echo "❌ alfallo-serial-standings"
 
 # 7. Orders
 aws dynamodb create-table \
-  --table-name pulsara-orders \
+  --table-name alfallo-orders \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -126,11 +126,11 @@ aws dynamodb create-table \
       {"IndexName":"user-orders-index","KeySchema":[{"AttributeName":"userId","KeyType":"HASH"},{"AttributeName":"createdAt","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"stripe-index","KeySchema":[{"AttributeName":"stripePaymentIntentId","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-orders" || echo "❌ pulsara-orders"
+  --region $REGION 2>&1 && echo "✅ alfallo-orders" || echo "❌ alfallo-orders"
 
 # 8. Blog
 aws dynamodb create-table \
-  --table-name pulsara-blog \
+  --table-name alfallo-blog \
   --attribute-definitions \
     AttributeName=PK,AttributeType=S \
     AttributeName=SK,AttributeType=S \
@@ -144,7 +144,7 @@ aws dynamodb create-table \
       {"IndexName":"slug-index","KeySchema":[{"AttributeName":"slug","KeyType":"HASH"}],"Projection":{"ProjectionType":"ALL"}},
       {"IndexName":"category-date-index","KeySchema":[{"AttributeName":"category","KeyType":"HASH"},{"AttributeName":"publishedAt","KeyType":"RANGE"}],"Projection":{"ProjectionType":"ALL"}}
     ]' \
-  --region $REGION 2>&1 && echo "✅ pulsara-blog" || echo "❌ pulsara-blog"
+  --region $REGION 2>&1 && echo "✅ alfallo-blog" || echo "❌ alfallo-blog"
 
 echo ""
 echo "Done! 8 tables created."

@@ -10,10 +10,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: 'autoUpdate',
-      includeAssets: ['pulsara-icon.svg', 'apple-touch-icon.png'],
+      includeAssets: ['alfallo-icon.svg', 'apple-touch-icon.png'],
       manifest: {
-        name: 'Pulsara — Eventos Deportivos de México',
-        short_name: 'Pulsara',
+        name: 'Al Fallo — Eventos Deportivos de México',
+        short_name: 'Al Fallo',
         description: 'Descubre, inscríbete y vive los mejores eventos deportivos de México.',
         theme_color: '#10B981',
         background_color: '#ffffff',
@@ -23,17 +23,17 @@ export default defineConfig({
         scope: '/',
         icons: [
           {
-            src: 'pulsara-192x192.png',
+            src: 'alfallo-192x192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: 'pulsara-512x512.png',
+            src: 'alfallo-512x512.png',
             sizes: '512x512',
             type: 'image/png',
           },
           {
-            src: 'pulsara-maskable-512x512.png',
+            src: 'alfallo-maskable-512x512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',

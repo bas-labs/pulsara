@@ -1,4 +1,4 @@
-# Pulsara — DynamoDB Schema Design
+# Al Fallo — DynamoDB Schema Design
 
 ## Design Principles
 - Single-table design where access patterns allow it
@@ -11,7 +11,7 @@
 
 ## Tables
 
-### 1. `pulsara-events`
+### 1. `alfallo-events`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -53,7 +53,7 @@
 
 ---
 
-### 2. `pulsara-users`
+### 2. `alfallo-users`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -85,7 +85,7 @@
 
 ---
 
-### 3. `pulsara-registrations`
+### 3. `alfallo-registrations`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -117,7 +117,7 @@
 
 ---
 
-### 4. `pulsara-results`
+### 4. `alfallo-results`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -152,7 +152,7 @@
 
 ---
 
-### 5. `pulsara-serials`
+### 5. `alfallo-serials`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -180,7 +180,7 @@
 
 ---
 
-### 6. `pulsara-serial-standings`
+### 6. `alfallo-serial-standings`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -196,7 +196,7 @@
 
 ---
 
-### 7. `pulsara-orders`
+### 7. `alfallo-orders`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|
@@ -225,7 +225,7 @@
 
 ---
 
-### 8. `pulsara-blog`
+### 8. `alfallo-blog`
 
 | Attribute | Type | Description |
 |-----------|------|-------------|

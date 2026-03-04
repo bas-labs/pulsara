@@ -48,7 +48,7 @@ export default function Navbar() {
           <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
             <Zap className="w-4 h-4 text-white" />
           </div>
-          <span className="font-bold text-xl text-zinc-900 tracking-tight">Pulsara</span>
+          <span className="font-bold text-xl text-zinc-900 tracking-tight">Al Fallo</span>
         </Link>
 
         {/* Desktop links */}

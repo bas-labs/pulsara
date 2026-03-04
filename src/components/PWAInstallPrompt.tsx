@@ -7,7 +7,7 @@ interface BeforeInstallPromptEvent extends Event {
   userChoice: Promise<{ outcome: 'accepted' | 'dismissed' }>
 }
 
-const DISMISS_KEY = 'pulsara-pwa-dismissed'
+const DISMISS_KEY = 'alfallo-pwa-dismissed'
 
 export default function PWAInstallPrompt() {
   const [deferredPrompt, setDeferredPrompt] = useState<BeforeInstallPromptEvent | null>(null)
@@ -55,7 +55,7 @@ export default function PWAInstallPrompt() {
             <Download className="h-5 w-5 text-white" />
           </div>
           <div className="flex-1 min-w-0">
-            <p className="font-semibold text-white text-sm">Instalar Pulsara</p>
+            <p className="font-semibold text-white text-sm">Instalar Al Fallo</p>
             <p className="text-emerald-100 text-xs mt-0.5">
               Accede más rápido y recibe notificaciones de tus eventos.
             </p>

@@ -1,5 +1,5 @@
 {
-  "name": "pulsara",
+  "name": "alfallo",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -15,6 +15,7 @@
     "@aws-amplify/ui-react": "^6.15.1",
     "@aws-sdk/client-cognito-identity-provider": "^3.1000.0",
     "@aws-sdk/client-dynamodb": "^3.1000.0",
+    "@aws-sdk/client-ses": "^3.1001.0",
     "@aws-sdk/lib-dynamodb": "^3.1000.0",
     "aws-amplify": "^6.16.2",
     "class-variance-authority": "^0.7.1",

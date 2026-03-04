@@ -113,7 +113,7 @@ export default function Onboarding() {
           <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
             <Zap className="w-5 h-5 text-white" />
           </div>
-          <span className="font-bold text-2xl text-zinc-900">Pulsara</span>
+          <span className="font-bold text-2xl text-zinc-900">Al Fallo</span>
         </div>
 
         <AnimatePresence mode="wait" custom={direction}>
@@ -126,7 +126,7 @@ export default function Onboarding() {
               animate="center"
               exit="exit"
             >
-              <h1 className="text-3xl font-bold text-zinc-900 text-center mb-2">¡Bienvenido a Pulsara!</h1>
+              <h1 className="text-3xl font-bold text-zinc-900 text-center mb-2">¡Bienvenido a Al Fallo!</h1>
               <p className="text-zinc-500 text-center mb-10">¿Cómo quieres usar la plataforma?</p>
               <div className="grid md:grid-cols-2 gap-6">
                 <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>

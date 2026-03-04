@@ -743,7 +743,7 @@ export default function Landing() {
                 <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500 flex items-center justify-center">
                   <Zap className="w-4 h-4 text-white" />
                 </div>
-                <span className="font-bold text-xl text-white">Pulsara</span>
+                <span className="font-bold text-xl text-white">Al Fallo</span>
               </Link>
               <p className="text-zinc-400 text-sm leading-relaxed">
                 La plataforma deportiva líder en México. Descubre, compite y supera tus límites.
@@ -777,7 +777,7 @@ export default function Landing() {
             </div>
           </div>
           <div className="border-t border-zinc-800 pt-8 flex flex-col md:flex-row justify-between items-center gap-4">
-            <p className="text-zinc-500 text-sm">&copy; 2026 Pulsara. Todos los derechos reservados.</p>
+            <p className="text-zinc-500 text-sm">&copy; 2026 Al Fallo. Todos los derechos reservados.</p>
             <div className="flex gap-4">
               <span className="text-sm text-zinc-500 cursor-default">Instagram</span>
               <span className="text-sm text-zinc-500 cursor-default">Facebook</span>

@@ -92,6 +92,9 @@ if (eventTable) {
   eventTable.grantReadData(backend.createCheckout.resources.lambda)
   backend.createGuestCheckout.resources.lambda.addEnvironment('EVENT_TABLE', eventTable.tableName)
   eventTable.grantReadData(backend.createGuestCheckout.resources.lambda)
+  // Wire Event table for stripe-webhook (email confirmations)
+  backend.stripeWebhook.resources.lambda.addEnvironment('EVENT_TABLE', eventTable.tableName)
+  eventTable.grantReadData(backend.stripeWebhook.resources.lambda)
 }
 if (eventDistanceTable) {
   backend.createCheckout.resources.lambda.addEnvironment('EVENT_DISTANCE_TABLE', eventDistanceTable.tableName)
@@ -99,6 +102,19 @@ if (eventDistanceTable) {
   backend.createGuestCheckout.resources.lambda.addEnvironment('EVENT_DISTANCE_TABLE', eventDistanceTable.tableName)
   eventDistanceTable.grantReadData(backend.createGuestCheckout.resources.lambda)
 }
+
+// Wire SENDER_EMAIL for registration confirmation emails
+const senderEmail = process.env.SENDER_EMAIL || 'no-reply@alfallo.mx'
+backend.stripeWebhook.resources.lambda.addEnvironment('SENDER_EMAIL', senderEmail)
+
+// Grant SES permissions for sending registration confirmation emails
+backend.stripeWebhook.resources.lambda.addToRolePolicy(
+  new PolicyStatement({
+    effect: Effect.ALLOW,
+    actions: ['ses:SendEmail', 'ses:SendRawEmail'],
+    resources: ['*'],
+  })
+)
 
 // Create a public Function URL for the Stripe webhook so Stripe can POST to it
 const webhookFnUrl = backend.stripeWebhook.resources.lambda.addFunctionUrl({

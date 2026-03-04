@@ -10,6 +10,8 @@ export const stripeWebhook = defineFunction({
     REGISTRATION_TABLE: '', // wired in backend.ts
     ORDER_TABLE: '', // wired in backend.ts
     GUEST_REGISTRATION_TABLE: '', // wired in backend.ts
+    EVENT_TABLE: '', // wired in backend.ts
+    SENDER_EMAIL: '', // wired in backend.ts
   },
   timeoutSeconds: 30,
 })

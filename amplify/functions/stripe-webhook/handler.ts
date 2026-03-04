@@ -1,13 +1,61 @@
 import Stripe from 'stripe'
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb'
 import { GetCommand, UpdateCommand, DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb'
+import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses'
+import { buildRegistrationConfirmationEmail } from './email-templates'
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2026-02-25.clover' })
 const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET!
 const ddb = DynamoDBDocumentClient.from(new DynamoDBClient({}))
+const ses = new SESClient({})
+const SENDER_EMAIL = process.env.SENDER_EMAIL || 'no-reply@alfallo.mx'
 
 // Simple in-memory set to deduplicate webhook events within the same Lambda instance
 const processedEvents = new Set<string>()
+
+async function fetchEvent(eventId: string) {
+  const result = await ddb.send(new GetCommand({
+    TableName: process.env.EVENT_TABLE!,
+    Key: { id: eventId },
+    ProjectionExpression: 'title, eventDate, city, venue',
+  }))
+  return result.Item
+}
+
+async function sendConfirmationEmail(
+  recipientEmail: string,
+  participantName: string,
+  eventData: Record<string, any>,
+  distanceName: string,
+  amountPaid: number,
+  shirtSize?: string,
+) {
+  try {
+    const { subject, htmlBody } = buildRegistrationConfirmationEmail({
+      participantName,
+      eventTitle: eventData.title || '',
+      eventDate: eventData.eventDate || '',
+      eventCity: eventData.city || '',
+      eventVenue: eventData.venue,
+      distanceName,
+      amountPaid,
+      shirtSize,
+    })
+
+    await ses.send(new SendEmailCommand({
+      Source: SENDER_EMAIL,
+      Destination: { ToAddresses: [recipientEmail] },
+      Message: {
+        Subject: { Data: subject, Charset: 'UTF-8' },
+        Body: { Html: { Data: htmlBody, Charset: 'UTF-8' } },
+      },
+    }))
+
+    console.log(`Confirmation email sent to ${recipientEmail}`)
+  } catch (err) {
+    console.error(`Failed to send confirmation email to ${recipientEmail}:`, err)
+  }
+}
 
 export const handler = async (event: any) => {
   const sig = event.headers?.['stripe-signature'] || event.headers?.['Stripe-Signature']
@@ -53,19 +101,23 @@ export const handler = async (event: any) => {
       const perPerson = Math.floor(total / registrationIds.length)
       const remainder = total - perPerson * registrationIds.length
 
+      // Fetch event details for confirmation emails
+      const eventData = await fetchEvent(metadata.eventId)
+
       for (let idx = 0; idx < registrationIds.length; idx++) {
         const guestRegistrationId = registrationIds[idx]
 
-        // Check if already processed in DynamoDB
+        // Fetch guest record to check status and get contact info for emails
         const existing = await ddb.send(new GetCommand({
           TableName: process.env.GUEST_REGISTRATION_TABLE!,
           Key: { id: guestRegistrationId },
-          ProjectionExpression: 'paymentStatus',
         }))
         if (existing.Item?.paymentStatus === 'PAID') {
           console.log(`Guest registration ${guestRegistrationId} already paid, skipping`)
           continue
         }
+
+        const guest = existing.Item
 
         // First participant absorbs any rounding remainder
         const amount = idx === 0 ? perPerson + remainder : perPerson
@@ -85,6 +137,18 @@ export const handler = async (event: any) => {
         }))
 
         console.log(`Guest registration ${guestRegistrationId} confirmed with payment`)
+
+        // Send confirmation email to guest
+        if (guest?.email && eventData) {
+          await sendConfirmationEmail(
+            guest.email,
+            `${guest.firstName} ${guest.lastName}`,
+            eventData,
+            guest.distanceName || metadata.distanceName || '',
+            amount,
+            guest.shirtSize,
+          )
+        }
       }
     } else if (metadata.type === 'registration' || (metadata.userId && metadata.registrationId)) {
       // Authenticated user registration payment
@@ -138,6 +202,30 @@ export const handler = async (event: any) => {
       }))
 
       console.log(`Registration ${registrationId} confirmed with payment`)
+
+      // Send confirmation email to authenticated user
+      const customerEmail = session.customer_email || session.customer_details?.email
+      if (customerEmail) {
+        const eventData = await fetchEvent(metadata.eventId)
+        if (eventData) {
+          // Fetch registration record for distanceName and shirtSize
+          const regRecord = await ddb.send(new GetCommand({
+            TableName: process.env.REGISTRATION_TABLE!,
+            Key: { id: registrationId },
+            ProjectionExpression: 'distanceName, shirtSize',
+          }))
+          const reg = regRecord.Item
+          const customerName = session.customer_details?.name || customerEmail
+          await sendConfirmationEmail(
+            customerEmail,
+            customerName,
+            eventData,
+            reg?.distanceName || '',
+            session.amount_total ?? 0,
+            reg?.shirtSize,
+          )
+        }
+      }
     }
   }
 

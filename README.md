@@ -1,4 +1,4 @@
-# Pulsara 🏃⚡
+# Al Fallo 🏃⚡
 
 Sports event discovery & registration platform for Mexico. Built with React + TypeScript + Vite + Tailwind CSS + shadcn/ui + AWS Amplify Gen 2.
 
@@ -43,8 +43,8 @@ Sports event discovery & registration platform for Mexico. Built with React + Ty
 
 ```bash
 # Clone
-git clone https://github.com/bas-labs/pulsara.git
-cd pulsara
+git clone https://github.com/bas-labs/alfallo.git
+cd alfallo
 
 # Install deps
 npm install
@@ -64,7 +64,7 @@ npx tsx scripts/seed.ts
 ```bash
 # Connect to Amplify Hosting in AWS Console:
 # 1. Go to AWS Amplify Console
-# 2. "Host web app" → Connect to GitHub → select bas-labs/pulsara
+# 2. "Host web app" → Connect to GitHub → select bas-labs/alfallo
 # 3. Amplify auto-detects the build settings
 # 4. Deploy
 
@@ -86,7 +86,7 @@ npx ampx pipeline-deploy --branch main --app-id <your-app-id>
 ## Project Structure
 
 ```
-pulsara/
+alfallo/
 ├── amplify/
 │   ├── auth/resource.ts          # Cognito config
 │   ├── data/resource.ts          # 8 data models + GSIs
